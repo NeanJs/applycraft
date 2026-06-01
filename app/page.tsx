@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { downloadPDF, handleDownload } from "./services/download";
-import PrintResumePage from "./resume/print/page";
 import { ResponseData, ResumeData } from "./types/types";
 import { SampleData } from "./constant/data";
 import ResumePreview from "./components/ResumePreview";
@@ -22,7 +21,7 @@ const ResultSection = ({
 export default function Home() {
   const [resume, setResume] = useState("");
   const [jobDescription, setJobDescription] = useState("");
-  const [result, setResult] = useState<ResponseData>(SampleData);
+  const [result, setResult] = useState<ResponseData>();
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
 

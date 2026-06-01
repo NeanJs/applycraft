@@ -5,40 +5,18 @@ import puppeteer from "puppeteer";
 
 export async function POST(req: Request) {
   try {
-    const rawData = await req.json();
-    const resumeData = normalizeResume(rawData);
+    const resumeData = await req.json();
 
-    const html = renderResume(resumeData);
-    // 1. Render React component to HTML
-
-    // 2. Wrap it in a full HTML document
-
-    const fullHtml = `
-      <html>
-        <head>
-          <style>
-            /* optional: inject your global CSS or Tailwind build */
-            body { margin: 0; font-family: sans-serif; }
-          </style>
-        </head>
-        <body>
-          <div id="resume-template">
-            ${html}
-          </div>
-        </body>
-      </html>
-    `;
-
-    // 3. Launch Puppeteer
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
 
-    // 4. Directly set content (NO routing, NO URL)
-    await page.setContent(fullHtml, {
+    const url = `http://localhost:3000/resume/print?data=${encodeURIComponent(
+      JSON.stringify(resumeData),
+    )}`;
+
+    await page.goto(url, {
       waitUntil: "networkidle0",
     });
-
-    await page.emulateMediaType("screen");
 
     await page.waitForSelector("#resume-template");
 

@@ -12,7 +12,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "ApplyCraft - AI Resume & Job Application Optimizer",
   description:
     "ApplyCraft helps you tailor your resume to any job description. Get ATS-optimized resumes, missing keywords, and AI cover letters instantly.",
@@ -32,11 +32,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="en" className="dark">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} min-h-full flex flex-col`}
+      >
+        {children}
+      </body>
     </html>
   );
 }
