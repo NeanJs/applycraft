@@ -76,25 +76,25 @@ const handleDownload = (optimizedResume: ResumeData) => {
 };
 
 // NEW METHOD
-const downloadPDF = async (resumeData: ResumeData) => {
-  console.log(resumeData);
-  const res = await fetch("/api/export-pdf", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(resumeData),
-  });
+// const downloadPDF = async (resumeData: ResumeData) => {
+//   console.log(resumeData);
+//   const res = await fetch("/api/export-pdf", {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify(resumeData),
+//   });
 
-  const blob = await res.blob();
+//   const blob = await res.blob();
 
-  const url = URL.createObjectURL(blob);
+//   const url = URL.createObjectURL(blob);
 
-  const a = document.createElement("a");
-  a.href = url;
-  a.target = "_blank";
-  a.download = "resume.pdf";
-  a.click();
-};
+//   const a = document.createElement("a");
+//   a.href = url;
+//   a.target = "_blank";
+//   a.download = "resume.pdf";
+//   a.click();
+// };
 
-export { handleDownload, downloadPDF };
+export { handleDownload };
