@@ -1,7 +1,11 @@
 "use client";
 
 import { useState } from "react";
-
+import { downloadPDF, handleDownload } from "./services/download";
+import PrintResumePage from "./resume/print/page";
+import { ResponseData, ResumeData } from "./types/types";
+import { SampleData } from "./constant/data";
+import ResumePreview from "./components/ResumePreview";
 const ResultSection = ({
   title,
   children,
@@ -18,8 +22,9 @@ const ResultSection = ({
 export default function Home() {
   const [resume, setResume] = useState("");
   const [jobDescription, setJobDescription] = useState("");
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<ResponseData>(SampleData);
   const [loading, setLoading] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   async function generate() {
     setLoading(true);
@@ -39,6 +44,17 @@ export default function Home() {
     setResult(data);
     setLoading(false);
   }
+  const handleCopy = async (copiedData: ResumeData) => {
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(copiedData, null, 2));
+      setCopied(true);
+      setTimeout(() => {
+        setCopied(false);
+      }, 2000);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <main className="min-h-screen bg-gray-50">
@@ -96,7 +112,7 @@ export default function Home() {
             {/* ATS Score */}
             <div className="flex items-center gap-4 pb-8 border-b border-gray-200">
               <div className="text-6xl font-bold text-blue-600">
-                {result.atsScore}%
+                {result?.atsScore}%
               </div>
               <div>
                 <p className="text-sm text-gray-600">ATS Match Score</p>
@@ -105,17 +121,37 @@ export default function Home() {
 
             {/* Optimized Resume */}
             <ResultSection title="Optimized Resume">
-              <div className="bg-gray-50 rounded-lg p-6 border border-gray-200 overflow-auto max-h-96">
-                <pre className="whitespace-pre-wrap text-sm text-gray-800 font-mono">
-                  {result.optimizedResume}
-                </pre>
+              <div className="flex flex-col gap-2">
+                <div className="flex gap-2 self-end">
+                  <button
+                    className=" text-white bg-blue-600 p-2"
+                    onClick={() => handleCopy(result.optimizedResume)}
+                  >
+                    {copied ? "Copied✓" : "Copy JSON"}
+                  </button>
+                  <button
+                    className="text-white bg-blue-600 p-2"
+                    onClick={() => handleDownload(result.optimizedResume)}
+                  >
+                    Download Plain Text
+                  </button>
+                  {/* <button
+                    className="text-white bg-blue-600 p-2"
+                    onClick={() => downloadPDF(result.optimizedResume)}
+                  >
+                    Export PDF
+                  </button> */}
+                </div>
+                <div className="bg-gray-50 rounded-lg p-6 border border-gray-200 overflow-auto max-h-96">
+                  <ResumePreview responseData={result.optimizedResume} />
+                </div>
               </div>
             </ResultSection>
 
             {/* Missing Keywords */}
             <ResultSection title="Missing Keywords">
               <ul className="grid grid-cols-2 gap-3">
-                {result.missingKeywords.map((keyword: string, i: number) => (
+                {result?.missingKeywords?.map((keyword: string, i: number) => (
                   <li key={i} className="flex items-center gap-2 text-gray-700">
                     <span className="text-blue-500 font-semibold">•</span>
                     <span>{keyword}</span>
@@ -128,7 +164,7 @@ export default function Home() {
             <ResultSection title="Cover Letter">
               <div className="bg-gray-50 rounded-lg p-6 border border-gray-200 overflow-auto max-h-96">
                 <pre className="whitespace-pre-wrap text-sm text-gray-800 leading-relaxed">
-                  {result.coverLetter}
+                  {result?.coverLetter}
                 </pre>
               </div>
             </ResultSection>

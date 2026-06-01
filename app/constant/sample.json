@@ -1,0 +1,147 @@
+{
+  "name": "NIJAN ADHIKARI",
+  "title": "Full Stack Developer",
+  "email": "neancodes@gmail.com",
+  "phone": "236-867-4302",
+  "location": "Vancouver, BC",
+  "website": "www.nijanadhikari.com.np",
+  "summary": "Full Stack Developer with hands-on experience building and maintaining scalable web and mobile applications across the full development lifecycle. Proficient in JavaScript, C, C++, React, and the MERN stack, with exposure to cloud architecture, third-party API integration, and codebase security auditing. Experienced in agile, results-oriented development cycles with a strong focus on problem-solving, code quality, and reliable delivery. Currently pursuing dual degrees in Computer Science and Management Information Systems.",
+  "skills": [
+    {
+      "category": "Languages",
+      "items": [
+        "JavaScript",
+        "C",
+        "C++",
+        "SQL",
+        "Python"
+      ]
+    },
+    {
+      "category": "Frameworks & Libraries",
+      "items": [
+        "React",
+        "Next.js",
+        "Node.js",
+        "Express.js"
+      ]
+    },
+    {
+      "category": "Databases",
+      "items": [
+        "MongoDB",
+        "Firebase",
+        "Relational Databases",
+        "SQL"
+      ]
+    },
+    {
+      "category": "Tools & Platforms",
+      "items": [
+        "Git",
+        "GitHub",
+        "CI/CD Pipelines",
+        "REST APIs",
+        "Cloud Architecture"
+      ]
+    },
+    {
+      "category": "Testing & Quality",
+      "items": [
+        "Unit Testing",
+        "Debugging",
+        "Code Review",
+        "Security Auditing"
+      ]
+    },
+    {
+      "category": "Practices",
+      "items": [
+        "Agile Development",
+        "Version Control",
+        "Technical Documentation",
+        "API Integration"
+      ]
+    }
+  ],
+  "experience": [
+    {
+      "company": "Acsenda School of Management",
+      "title": "Website Content & Maintenance Developer",
+      "location": "Vancouver, BC",
+      "startDate": "Oct 2025",
+      "endDate": "Present",
+      "bullets": [
+        "Developed and deployed feature updates for the official school web platform, improving functionality and user experience for students and faculty.",
+        "Collaborated cross-functionally with administrative departments to validate content accuracy and implement new features, reducing information discrepancies by an estimated 25%.",
+        "Diagnosed and resolved critical bugs in the production environment, maintaining platform stability, performance, and reliability.",
+        "Maintained technical documentation to support ongoing development and institutional knowledge transfer."
+      ]
+    },
+    {
+      "company": "Hawa Production",
+      "title": "Co-founder & Full Stack Developer",
+      "location": "Remote",
+      "startDate": "Nov 2023",
+      "endDate": "Present",
+      "bullets": [
+        "Engineered and launched multiple full-stack web and mobile applications, owning all technical operations from requirement gathering to production deployment.",
+        "Implemented scalable cloud architectures supporting both media production workflows and application backends, ensuring system reliability and performance.",
+        "Led client-facing technical discussions to align product roadmaps with business objectives and delivery timelines.",
+        "Maintained comprehensive technical documentation and contributed to iterative development cycles."
+      ]
+    },
+    {
+      "company": "Bujhau Logistics",
+      "title": "Full Stack Developer",
+      "location": "Remote",
+      "startDate": "June 2023",
+      "endDate": "Sept 2023",
+      "bullets": [
+        "Developed a scalable logistics management web application using the MERN stack (MongoDB, Express.js, React, Node.js), delivering a robust platform for core business operations.",
+        "Integrated third-party APIs for payment gateways and real-time location tracking, expanding core application functionality.",
+        "Audited and refactored the existing codebase to resolve security vulnerabilities and improve overall system performance by 20%.",
+        "Wrote reliable, efficient code while maintaining version control practices throughout the development lifecycle."
+      ]
+    },
+    {
+      "company": "GrowTech",
+      "title": "Lead Frontend Developer",
+      "location": "Remote",
+      "startDate": "Aug 2021",
+      "endDate": "May 2023",
+      "bullets": [
+        "Led the full development lifecycle for over 10 successful client projects, from planning and technical specification through to final delivery.",
+        "Architected and implemented a component-based frontend architecture using modern JavaScript frameworks, reducing feature development time by 30%.",
+        "Engineered key CRM features that improved customer engagement metrics and streamlined internal business workflows.",
+        "Participated in product roadmap planning and contributed to technical specification reviews to ensure quality outputs in results-oriented cycles."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "institution": "Acsenda School of Management",
+      "degree": "Bachelor of Business Administration",
+      "field": "Management Information Systems (MIS)",
+      "graduationDate": "Sep 2027"
+    },
+    {
+      "institution": "Tribhuwan University",
+      "degree": "Bachelor of Computer Science & Information Technology",
+      "field": "Computer Science & Information Technology (CSIT)",
+      "graduationDate": "July 2024"
+    }
+  ],
+  "projects": [
+    {
+      "name": "Leadger – Ethical Finance App (SFU StormHacks 2025)",
+      "description": "Architected and developed the backend infrastructure and AI integration for a privacy-first ethical finance application during a 24-hour hackathon. Engineered core functionality by integrating the Gemini API to analyze spending habits against ethical metrics and provide personalized, sustainable alternatives. Utilized Firebase for secure data management and real-time functionality.",
+      "technologies": [
+        "Next.js",
+        "Firebase",
+        "Gemini API",
+        "JavaScript"
+      ]
+    }
+  ]
+}
