@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { downloadPDF, handleDownload } from "./services/download";
+import { handleDownload } from "./services/download";
 import { ResponseData, ResumeData } from "./types/types";
-import { SampleData } from "./constant/data";
+
 import ResumePreview from "./components/ResumePreview";
 const ResultSection = ({
   title,
