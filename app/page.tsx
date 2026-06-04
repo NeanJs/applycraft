@@ -1,185 +1,281 @@
-"use client";
+import { SignInButton, SignUpButton } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
+import Link from "next/link";
+import { redirect } from "next/navigation";
 
-import { useState } from "react";
-import { handleDownload } from "./services/download";
-import { ResponseData, ResumeData } from "./types/types";
+const features = [
+  {
+    icon: "✦",
+    title: "ATS-Friendly Structure",
+    desc: "Formatted to pass applicant tracking systems used by top employers — every time.",
+  },
+  {
+    icon: "⚡",
+    title: "Instant Resume Creation",
+    desc: "Fill in your details and get a complete, polished resume in seconds.",
+  },
+  {
+    icon: "◈",
+    title: "Clean Minimal Design",
+    desc: "Distraction-free layouts that let your experience do the talking.",
+  },
+  {
+    icon: "↓",
+    title: "PDF Export Ready",
+    desc: "Download a pixel-perfect PDF that's ready to send to any recruiter.",
+  },
+];
 
-import ResumePreview from "./components/ResumePreview";
-const ResultSection = ({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) => (
-  <section className="space-y-3">
-    <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
-    {children}
-  </section>
-);
+const steps = [
+  {
+    num: "01",
+    title: "Sign up",
+    desc: "Create a free account in under a minute.",
+  },
+  {
+    num: "02",
+    title: "Build your resume",
+    desc: "Enter your experience, skills, and education.",
+  },
+  {
+    num: "03",
+    title: "Download & apply",
+    desc: "Export as PDF and start applying immediately.",
+  },
+];
 
-export default function Home() {
-  const [resume, setResume] = useState("");
-  const [jobDescription, setJobDescription] = useState("");
-  const [result, setResult] = useState<ResponseData>();
-  const [loading, setLoading] = useState(false);
-  const [copied, setCopied] = useState(false);
+export default async function Home() {
+  const { userId } = await auth();
 
-  async function generate() {
-    setLoading(true);
+  if (userId) redirect("/dashboard");
 
-    const res = await fetch("/api/tailor", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        resume,
-        jobDescription,
-      }),
-    });
+  return <LandingPage />;
+}
 
-    const data = await res.json();
-    setResult(data);
-    setLoading(false);
-  }
-  const handleCopy = async (copiedData: ResumeData) => {
-    try {
-      await navigator.clipboard.writeText(JSON.stringify(copiedData, null, 2));
-      setCopied(true);
-      setTimeout(() => {
-        setCopied(false);
-      }, 2000);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
+function LandingPage() {
   return (
-    <main className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto px-6 py-12">
-        {/* Header Section */}
-        <div className="mb-12">
-          <h1 className="text-5xl font-bold text-gray-900">ApplyCraft</h1>
-          <p className="mt-4 text-lg text-gray-700 leading-relaxed">
-            Paste your resume + job description. Get an ATS-optimized resume,
-            missing keywords, and a tailored cover letter in seconds.
-          </p>
-          <p className="mt-3 text-sm text-gray-500">
-            Free AI resume optimization tool
-          </p>
+    <div
+      className="min-h-screen bg-white text-gray-900"
+      style={{ fontFamily: "'Inter', sans-serif" }}
+    >
+      {/* Navbar */}
+      <header className="border-b border-gray-200 sticky top-0 bg-white/90 backdrop-blur-sm z-20">
+        <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="w-5 h-5 rounded bg-gray-900 inline-block" />
+            <span className="text-sm font-semibold tracking-tight">
+              ApplyCraft
+            </span>
+          </div>
+          <nav className="flex items-center gap-5 text-sm text-gray-500">
+            <a
+              href="#features"
+              className="hover:text-gray-900 transition-colors hidden sm:block"
+            >
+              Features
+            </a>
+            <a
+              href="#how"
+              className="hover:text-gray-900 transition-colors hidden sm:block"
+            >
+              How it works
+            </a>
+            <Link
+              href="/sign-in"
+              className="hover:text-gray-900 transition-colors"
+            >
+              Sign In
+            </Link>
+            <Link
+              href="/sign-up"
+              className="bg-gray-900 text-white px-3.5 py-1.5 rounded-lg text-sm font-medium hover:bg-gray-700 transition-colors"
+            >
+              Get Started →
+            </Link>
+          </nav>
+        </div>
+      </header>
+
+      {/* Hero */}
+      <section className="max-w-5xl mx-auto px-6 pt-28 pb-24 text-center">
+        <div className="inline-flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-full px-3.5 py-1.5 text-xs text-gray-500 mb-8">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+          Free to get started · No credit card required
         </div>
 
-        {/* Input Section */}
-        <div className="space-y-4 mb-8">
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Resume
-            </label>
-            <textarea
-              className="w-full h-48 p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none text-black"
-              placeholder="Paste your resume here"
-              value={resume}
-              onChange={(e) => setResume(e.target.value)}
-            />
-          </div>
+        <h1 className="text-5xl sm:text-6xl font-semibold tracking-tighter leading-[1.1] text-gray-900 max-w-3xl mx-auto">
+          Build a job-ready
+          <br />
+          <span className="text-gray-400">resume in minutes.</span>
+        </h1>
 
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Job Description
-            </label>
-            <textarea
-              className="w-full h-48 p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none text-black"
-              placeholder="Paste the job description here"
-              value={jobDescription}
-              onChange={(e) => setJobDescription(e.target.value)}
-            />
-          </div>
+        <p className="mt-6 text-lg text-gray-500 max-w-lg mx-auto leading-relaxed">
+          ApplyCraft generates ATS-optimized resumes tailored to your experience
+          — structured, clean, and built to get you interviews.
+        </p>
 
-          <button
-            onClick={generate}
-            disabled={loading}
-            className="w-full bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
-          >
-            {loading ? "Generating..." : "Generate"}
-          </button>
+        <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <SignUpButton>
+            <button className="bg-gray-900 text-white px-6 py-3 rounded-xl text-sm font-medium hover:bg-gray-700 transition-all hover:scale-[1.02] active:scale-[0.98]">
+              Start for free →
+            </button>
+          </SignUpButton>
+          <SignInButton>
+            <button className="text-gray-500 px-6 py-3 rounded-xl text-sm font-medium border border-gray-200 hover:border-gray-400 hover:text-gray-900 transition-colors">
+              Sign In
+            </button>
+          </SignInButton>
         </div>
 
-        {/* Results Section */}
-        {result && (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 space-y-10">
-            {/* ATS Score */}
-            <div className="flex items-center gap-4 pb-8 border-b border-gray-200">
-              <div className="text-6xl font-bold text-blue-600">
-                {result?.atsScore}%
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">ATS Match Score</p>
+        {/* Resume mockup */}
+        <div className="mt-20 relative max-w-2xl mx-auto">
+          <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent z-10 pointer-events-none rounded-b-2xl" />
+          <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-8 text-left">
+            {/* Mock resume header */}
+            <div className="border-b border-gray-100 pb-5 mb-5">
+              <div className="h-5 w-36 bg-gray-900 rounded-sm mb-2" />
+              <div className="flex gap-4">
+                <div className="h-3 w-28 bg-gray-200 rounded-full" />
+                <div className="h-3 w-24 bg-gray-200 rounded-full" />
+                <div className="h-3 w-32 bg-gray-200 rounded-full" />
               </div>
             </div>
-
-            {/* Optimized Resume */}
-            <ResultSection title="Optimized Resume">
-              <div className="flex flex-col gap-2">
-                <div className="flex gap-2 self-end">
-                  <button
-                    className=" text-white bg-blue-600 p-2"
-                    onClick={() => handleCopy(result.optimizedResume)}
-                  >
-                    {copied ? "Copied✓" : "Copy JSON"}
-                  </button>
-                  <button
-                    className="text-white bg-blue-600 p-2"
-                    onClick={() => handleDownload(result.optimizedResume)}
-                  >
-                    Download Plain Text
-                  </button>
-                  {/* <button
-                    className="text-white bg-blue-600 p-2"
-                    onClick={() => downloadPDF(result.optimizedResume)}
-                  >
-                    Export PDF
-                  </button> */}
-                </div>
-                <div className="bg-gray-50 rounded-lg p-6 border border-gray-200 overflow-auto max-h-96">
-                  <ResumePreview responseData={result.optimizedResume} />
-                </div>
+            {/* Experience section */}
+            <div className="mb-5">
+              <div className="h-3 w-20 bg-gray-300 rounded-full mb-3" />
+              <div className="flex justify-between mb-1.5">
+                <div className="h-3.5 w-40 bg-gray-200 rounded-full" />
+                <div className="h-3 w-24 bg-gray-100 rounded-full" />
               </div>
-            </ResultSection>
-
-            {/* Missing Keywords */}
-            <ResultSection title="Missing Keywords">
-              <ul className="grid grid-cols-2 gap-3">
-                {result?.missingKeywords?.map((keyword: string, i: number) => (
-                  <li key={i} className="flex items-center gap-2 text-gray-700">
-                    <span className="text-blue-500 font-semibold">•</span>
-                    <span>{keyword}</span>
-                  </li>
-                ))}
-              </ul>
-            </ResultSection>
-
-            {/* Cover Letter */}
-            <ResultSection title="Cover Letter">
-              <div className="bg-gray-50 rounded-lg p-6 border border-gray-200 overflow-auto max-h-96">
-                <pre className="whitespace-pre-wrap text-sm text-gray-800 leading-relaxed">
-                  {result?.coverLetter}
-                </pre>
+              <div className="space-y-2 ml-1">
+                <div className="h-2.5 w-full bg-gray-100 rounded-full" />
+                <div className="h-2.5 w-5/6 bg-gray-100 rounded-full" />
+                <div className="h-2.5 w-4/6 bg-gray-100 rounded-full" />
               </div>
-            </ResultSection>
-
-            {/* Continue Prompt */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mt-10">
-              <p className="font-semibold text-gray-900">
-                Want another resume?
-              </p>
-              <p className="text-sm text-gray-600 mt-1">
-                Just paste a new job description above and generate again.
-              </p>
+            </div>
+            {/* Skills section */}
+            <div>
+              <div className="h-3 w-16 bg-gray-300 rounded-full mb-3" />
+              <div className="flex flex-wrap gap-2">
+                {["TypeScript", "React", "Node.js", "PostgreSQL", "AWS"].map(
+                  (s) => (
+                    <span
+                      key={s}
+                      className="px-2.5 py-1 text-xs border border-gray-200 rounded-md text-gray-400"
+                    >
+                      {s}
+                    </span>
+                  ),
+                )}
+              </div>
             </div>
           </div>
-        )}
+        </div>
+      </section>
+
+      {/* Social proof bar */}
+      <div className="border-y border-gray-100 bg-gray-50">
+        <div className="max-w-5xl mx-auto px-6 py-5 flex items-center justify-center gap-2 text-xs text-gray-400">
+          <span>Trusted by job seekers applying to</span>
+          <span className="font-medium text-gray-500">
+            Google · Stripe · Airbnb · Shopify · Notion
+          </span>
+        </div>
       </div>
-    </main>
+
+      {/* Features */}
+      <section id="features" className="max-w-5xl mx-auto px-6 py-24">
+        <div className="mb-12">
+          <p className="text-xs font-medium text-gray-400 uppercase tracking-widest mb-3">
+            Features
+          </p>
+          <h2 className="text-3xl font-semibold tracking-tight text-gray-900">
+            Everything you need to land the job
+          </h2>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {features.map((f) => (
+            <div
+              key={f.title}
+              className="group border border-gray-200 rounded-xl p-6 hover:border-gray-400 hover:bg-gray-50 transition-all cursor-default"
+            >
+              <div className="text-2xl mb-4 text-gray-300 group-hover:text-gray-600 transition-colors">
+                {f.icon}
+              </div>
+              <h3 className="text-sm font-semibold text-gray-900 mb-1.5">
+                {f.title}
+              </h3>
+              <p className="text-sm text-gray-500 leading-relaxed">{f.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* How it works */}
+      <section id="how" className="border-t border-gray-100 bg-gray-50">
+        <div className="max-w-5xl mx-auto px-6 py-24">
+          <div className="mb-12">
+            <p className="text-xs font-medium text-gray-400 uppercase tracking-widest mb-3">
+              How it works
+            </p>
+            <h2 className="text-3xl font-semibold tracking-tight text-gray-900">
+              Three steps. One great resume.
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-gray-200 rounded-xl overflow-hidden">
+            {steps.map((s) => (
+              <div key={s.num} className="bg-gray-50 px-7 py-8">
+                <span className="text-3xl font-semibold text-gray-200 block mb-4">
+                  {s.num}
+                </span>
+                <h3 className="text-sm font-semibold text-gray-900 mb-1.5">
+                  {s.title}
+                </h3>
+                <p className="text-sm text-gray-500 leading-relaxed">
+                  {s.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="max-w-5xl mx-auto px-6 py-28 text-center">
+        <p className="text-xs font-medium text-gray-400 uppercase tracking-widest mb-4">
+          Get started
+        </p>
+        <h2 className="text-4xl sm:text-5xl font-semibold tracking-tight text-gray-900 mb-6">
+          Your next job starts
+          <br />
+          with a great resume.
+        </h2>
+        <p className="text-gray-500 mb-10 max-w-sm mx-auto text-base leading-relaxed">
+          Join thousands of job seekers who use ApplyCraft to build resumes that
+          actually get read.
+        </p>
+        <Link
+          href="/sign-up"
+          className="inline-flex items-center bg-gray-900 text-white px-7 py-3.5 rounded-xl text-sm font-medium hover:bg-gray-700 transition-all hover:scale-[1.02] active:scale-[0.98]"
+        >
+          Create your resume for free →
+        </Link>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-gray-100">
+        <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="w-4 h-4 rounded bg-gray-900 inline-block" />
+            <span className="text-xs font-medium text-gray-500">
+              ApplyCraft
+            </span>
+          </div>
+          <p className="text-xs text-gray-400">
+            © {new Date().getFullYear()} ApplyCraft. All rights reserved.
+          </p>
+        </div>
+      </footer>
+    </div>
   );
 }

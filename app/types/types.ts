@@ -41,7 +41,7 @@ interface ResumeData {
 }
 
 interface ResponseData {
-  jobType: string;
+  jobType?: string;
   atsScore: number;
   optimizedResume: ResumeData;
   missingKeywords: string[];

@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Resume" ADD COLUMN     "atsScore" INTEGER NOT NULL DEFAULT 0;

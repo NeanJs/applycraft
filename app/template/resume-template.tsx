@@ -1,19 +1,8 @@
-// ResumeTemplate.tsx
-// ATS-friendly resume template for Next.js
-// All content lives in the `resumeData` object — edit it to match your details.
-
-import { SampleResumeData } from "../constant/data";
 import { ResumeData } from "../types/types";
-
-// ─── DATA TYPES ─────────────────────────────────────────────────────────────
-
-// ─── HELPERS ─────────────────────────────────────────────────────────────────
 
 function toHref(url: string): string {
   return url.startsWith("http") ? url : `https://${url}`;
 }
-
-// ─── SUB-COMPONENTS ──────────────────────────────────────────────────────────
 
 function SectionHeading({ title }: { title: string }) {
   return (
@@ -64,24 +53,16 @@ export default function ResumeTemplate({
   const d = resumeData;
 
   return (
-    // Screen: centered on a gray background for preview.
-    // Print: wrapper becomes white/padless; all chrome removed via print: variants.
     <div className="min-h-screen bg-gray-100 p-8 print:bg-white print:p-0">
-      <main
-        // max-w-[816px] = US Letter at 96 dpi. py-7 avoids double-stacking with @page margin.
-        className="mx-auto w-full max-w-204 bg-white px-12 py-7 shadow-md print:p-0 print:shadow-none"
-      >
-        {/* ── HEADER ── */}
+      <main className="mx-auto w-full max-w-204 bg-white px-12 py-7 shadow-md print:p-0 print:shadow-none">
         <header className="mb-3">
           <h1 className="text-[24px] font-bold leading-tight tracking-tight text-gray-900">
             {d?.name}
           </h1>
-          {/* Semibold + gray-700 keeps title visible and distinct from name without competing */}
           <p className="mb-1.5 text-[13px] font-semibold text-gray-700">
             {d?.title}
           </p>
 
-          {/* Contact row — plain "Label: value" text for maximum ATS parse accuracy */}
           <div className="flex flex-wrap gap-x-4 gap-y-0.5">
             <ContactItem
               label="Email"
@@ -125,11 +106,6 @@ export default function ResumeTemplate({
           </p>
         </section>
 
-        {/* ── SKILLS ──
-            Single-column stacked layout: more ATS-safe than grid (no column reorder risk),
-            and more predictable in print than responsive breakpoint-based grids.
-            w-28 shrink-0 pins the label width so long categories like "DevOps & Cloud"
-            never wrap and create ragged second-line alignment. */}
         <section className="break-inside-avoid-page" aria-label="Skills">
           <SectionHeading title="Technical Skills" />
           <div className="space-y-0.5">

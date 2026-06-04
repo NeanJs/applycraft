@@ -1,4 +1,4 @@
-import ResumeTemplate from "@/app/template/resume-template";
+import ResumeTemplate from "@/app/(protected)/template/resume-template";
 import { ResumeData } from "@/app/types/types";
 
 import puppeteer from "puppeteer";

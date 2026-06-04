@@ -1,5 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
-
+import { syncUser } from "@/app/lib/sync-user";
+import { prisma } from "@/app/lib/prisma";
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY!,
 });
@@ -136,7 +137,6 @@ ${jobDescription.slice(0, 1500)}
     .replace(/```json/g, "")
     .replace(/```/g, "")
     .trim();
-
   let parsed;
 
   try {
@@ -148,5 +148,31 @@ ${jobDescription.slice(0, 1500)}
     });
   }
 
-  return Response.json(parsed);
+  const user = await syncUser();
+
+  if (!user) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const savedResume = await prisma.resume.create({
+    data: {
+      userId: user.id,
+
+      title:
+        parsed.optimizedResume.title ||
+        parsed.optimizedResume.name ||
+        "Untitled Resume",
+
+      data: parsed.optimizedResume,
+
+      coverLetter: parsed.coverLetter,
+      missingKeywords: parsed.missingKeywords,
+      jobDescription,
+    },
+  });
+
+  return Response.json({
+    ...parsed,
+    resumeId: savedResume.id,
+  });
 }

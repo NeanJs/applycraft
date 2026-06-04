@@ -1,4 +1,4 @@
-import ResumeTemplate from "@/app/template/resume-template";
+import ResumeTemplate from "@/app/(protected)/template/resume-template";
 
 export default async function PrintPage({
   searchParams,
