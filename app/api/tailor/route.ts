@@ -7,6 +7,11 @@ const anthropic = new Anthropic({
 
 export async function POST(req: Request) {
   const { resume, jobDescription } = await req.json();
+  const user = await syncUser();
+
+  if (!user) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   const message = await anthropic.messages.create({
     model: "claude-sonnet-4-6",
@@ -142,16 +147,12 @@ ${jobDescription.slice(0, 1500)}
   try {
     parsed = JSON.parse(cleaned);
   } catch (err) {
-    return Response.json({
-      error: "Invalid JSON from model" + err,
-      raw: text,
-    });
-  }
-
-  const user = await syncUser();
-
-  if (!user) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
+    return Response.json(
+      {
+        error: "Invalid JSON from model" + err,
+      },
+      { status: 500 },
+    );
   }
 
   const savedResume = await prisma.resume.create({

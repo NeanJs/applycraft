@@ -3,16 +3,16 @@
 import { useState } from "react";
 import Link from "next/link";
 
-import { ResponseData, ResumeData } from "@/app/types/types";
+import { ResponseData } from "@/app/types/types";
 
 import ResumeResults from "@/app/components/ResumeResults";
+import { UserButton } from "@clerk/nextjs";
 
 export default function Home() {
   const [resume, setResume] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [result, setResult] = useState<ResponseData>();
   const [loading, setLoading] = useState(false);
-  const [copied, setCopied] = useState(false);
 
   async function generate() {
     setLoading(true);
@@ -25,16 +25,6 @@ export default function Home() {
     setResult(data);
     setLoading(false);
   }
-
-  const handleCopy = async (copiedData: ResumeData) => {
-    try {
-      await navigator.clipboard.writeText(JSON.stringify(copiedData, null, 2));
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   const canGenerate = !loading && resume.trim() && jobDescription.trim();
 
@@ -56,6 +46,7 @@ export default function Home() {
             >
               ← Dashboard
             </Link>
+            <UserButton />
           </nav>
         </div>
       </header>
@@ -83,6 +74,7 @@ export default function Home() {
               Your Resume
             </label>
             <textarea
+              required
               className="w-full h-52 px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 bg-white placeholder-gray-300 resize-none focus:outline-none focus:border-gray-400 transition-colors leading-relaxed"
               placeholder="Paste your current resume here…"
               value={resume}
@@ -94,6 +86,7 @@ export default function Home() {
               Job Description
             </label>
             <textarea
+              required
               className="w-full h-52 px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 bg-white placeholder-gray-300 resize-none focus:outline-none focus:border-gray-400 transition-colors leading-relaxed"
               placeholder="Paste the job description here…"
               value={jobDescription}
@@ -122,7 +115,7 @@ export default function Home() {
         </button>
 
         {result && (
-          <ResumeResults result={result} copied={copied} onCopy={handleCopy} />
+          <ResumeResults resumeID={resume} result={result} copied={false} />
         )}
 
         {/* Post-result actions */}

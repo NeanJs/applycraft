@@ -1,18 +1,23 @@
 "use client";
-
-import ResumePreview from "@/app/components/ResumePreview";
 import MissingKeywords from "@/app/components/MissingKeywords";
 import CoverLetter from "@/app/components/CoverLetter";
-import { handleDownload } from "@/app/services/download";
+import {
+  handleDownload,
+  handlePDFExport,
+  
+} from "@/app/services/services";
 import { ResponseData, ResumeData } from "@/app/types/types";
 import { useState } from "react";
+import ResumeTemplate from "../template/resume-template";
 
 export default function ResumeResults({
   result,
   copied,
+  resumeID,
 }: {
   result: ResponseData;
   copied: boolean;
+  resumeID: string;
 }) {
   const [localCopied, setLocalCopied] = useState(false);
 
@@ -23,77 +28,84 @@ export default function ResumeResults({
   };
 
   const isCopied = copied || localCopied;
-
   const score = result.atsScore;
 
-  const scoreColor =
+  const scoreConfig =
     score >= 80
-      ? "text-emerald-600"
+      ? {
+          color: "text-emerald-600",
+          bar: "bg-emerald-500",
+          badge: "bg-emerald-50 border-emerald-200 text-emerald-700",
+          hint: "Strong match — ready to apply.",
+          label: "Excellent",
+          glow: "shadow-emerald-100",
+        }
       : score >= 60
-        ? "text-amber-500"
-        : "text-red-500";
-
-  const scoreBadgeBg =
-    score >= 80
-      ? "bg-emerald-50 border-emerald-200 text-emerald-700"
-      : score >= 60
-        ? "bg-amber-50 border-amber-200 text-amber-700"
-        : "bg-red-50 border-red-200 text-red-700";
-
-  const scoreBarColor =
-    score >= 80
-      ? "bg-emerald-500"
-      : score >= 60
-        ? "bg-amber-400"
-        : "bg-red-400";
-
-  const scoreHint =
-    score >= 80
-      ? "Strong match — ready to apply."
-      : score >= 60
-        ? "Decent match — consider adding missing keywords."
-        : "Low match — review keywords below.";
-
-  const scoreLabel = score >= 80 ? "Excellent" : score >= 60 ? "Fair" : "Low";
+        ? {
+            color: "text-amber-500",
+            bar: "bg-amber-400",
+            badge: "bg-amber-50 border-amber-200 text-amber-700",
+            hint: "Decent match — consider adding missing keywords.",
+            label: "Fair",
+            glow: "shadow-amber-100",
+          }
+        : {
+            color: "text-red-500",
+            bar: "bg-red-400",
+            badge: "bg-red-50 border-red-200 text-red-700",
+            hint: "Low match — review keywords below.",
+            label: "Low",
+            glow: "shadow-red-100",
+          };
 
   return (
-    <div className="mt-10 flex flex-col border border-gray-200 rounded-2xl overflow-hidden">
-      {/* ATS Score */}
-      <section className="px-8 py-7 border-b border-gray-200 bg-white">
-        <p className="text-xs font-medium text-gray-400 uppercase tracking-widest mb-5">
+    <div className="mt-10 rounded-2xl border border-gray-200 bg-white overflow-hidden shadow-sm">
+      <section className="px-8 py-8 border-b border-gray-100">
+        <p className="text-[10px] font-semibold tracking-[0.12em] uppercase text-gray-400 mb-6">
           ATS Match Score
         </p>
-        <div className="flex items-end gap-6">
-          <span
-            className={`text-6xl font-semibold leading-none tabular-nums ${scoreColor}`}
+        <div className="flex items-center gap-8">
+          {/* Score circle */}
+          <div
+            className={`relative flex items-center justify-center w-24 h-24 rounded-full border-2 ${scoreConfig.badge} shadow-lg ${scoreConfig.glow}`}
           >
-            {score}%
-          </span>
-          <div className="flex flex-col gap-2 flex-1 pb-1">
-            {/* Progress bar */}
-            <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+            <span
+              className={`text-3xl font-semibold tabular-nums ${scoreConfig.color}`}
+            >
+              {score}%
+            </span>
+          </div>
+
+          <div className="flex-1">
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-sm font-medium text-gray-800">
+                {scoreConfig.hint}
+              </p>
+              <span
+                className={`text-[11px] font-semibold px-3 py-1 rounded-full border ${scoreConfig.badge}`}
+              >
+                {scoreConfig.label}
+              </span>
+            </div>
+            <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
               <div
-                className={`h-full rounded-full transition-all duration-700 ${scoreBarColor}`}
+                className={`h-full rounded-full transition-all duration-700 ease-out ${scoreConfig.bar}`}
                 style={{ width: `${score}%` }}
               />
             </div>
-            <div className="flex items-center justify-between">
-              <p className="text-sm text-gray-500">{scoreHint}</p>
-              <span
-                className={`text-xs font-medium px-2.5 py-1 rounded-full border ${scoreBadgeBg}`}
-              >
-                {scoreLabel}
-              </span>
+            <div className="flex justify-between mt-1.5">
+              <span className="text-[11px] text-gray-400">0</span>
+              <span className="text-[11px] text-gray-400">100</span>
             </div>
           </div>
         </div>
       </section>
 
       {/* Optimized Resume */}
-      <section className="px-8 py-7 border-b border-gray-200">
-        <div className="flex items-center justify-between mb-4">
+      <section className="px-8 py-7 border-b border-gray-100 bg-gray-50/40">
+        <div className="flex items-start justify-between mb-5">
           <div>
-            <p className="text-xs font-medium text-gray-400 uppercase tracking-widest mb-0.5">
+            <p className="text-[10px] font-semibold tracking-[0.12em] uppercase text-gray-400 mb-1">
               Output
             </p>
             <h2 className="text-sm font-semibold text-gray-900">
@@ -101,46 +113,177 @@ export default function ResumeResults({
             </h2>
           </div>
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => handleCopy(result.optimizedResume)}
-              className="text-xs font-medium text-gray-600 border border-gray-200 px-3 py-1.5 rounded-lg hover:border-gray-400 hover:text-gray-900 transition-colors"
-            >
-              {isCopied ? "Copied ✓" : "Copy JSON"}
-            </button>
-            <button
+            <ActionButton onClick={() => handleCopy(result.optimizedResume)}>
+              {isCopied ? (
+                <>
+                  <CheckIcon /> Copied
+                </>
+              ) : (
+                <>
+                  <CopyIcon /> Copy JSON
+                </>
+              )}
+            </ActionButton>
+            <ActionButton
               onClick={() => handleDownload(result.optimizedResume)}
-              className="text-xs font-medium text-gray-600 border border-gray-200 px-3 py-1.5 rounded-lg hover:border-gray-400 hover:text-gray-900 transition-colors"
             >
-              Download .txt
-            </button>
+              <DownloadIcon /> .txt
+            </ActionButton>
+            <ActionButton onClick={() => handlePDFExport(resumeID)} primary>
+              <PDFIcon /> Export PDF
+            </ActionButton>
           </div>
         </div>
-        <div className="border border-gray-200 rounded-xl bg-gray-50 overflow-hidden">
-          <ResumePreview responseData={result.optimizedResume} />
+        <div className="rounded-xl border border-gray-200 bg-white overflow-hidden shadow-sm">
+          <ResumeTemplate resumeData={result.optimizedResume} />
         </div>
       </section>
 
       {/* Missing Keywords */}
-      <section className="px-8 py-7 border-b border-gray-200">
-        <p className="text-xs font-medium text-gray-400 uppercase tracking-widest mb-0.5">
+      <section className="px-8 py-7 border-b border-gray-100">
+        <p className="text-[10px] font-semibold tracking-[0.12em] uppercase text-gray-400 mb-1">
           Gaps
         </p>
-        <h2 className="text-sm font-semibold text-gray-900 mb-4">
+        <h2 className="text-sm font-semibold text-gray-900 mb-5">
           Missing Keywords
         </h2>
         <MissingKeywords list={result.missingKeywords} />
       </section>
 
       {/* Cover Letter */}
-      <section className="px-8 py-7 bg-gray-50/50">
-        <p className="text-xs font-medium text-gray-400 uppercase tracking-widest mb-0.5">
+      <section className="px-8 py-7">
+        <p className="text-[10px] font-semibold tracking-[0.12em] uppercase text-gray-400 mb-1">
           Generated
         </p>
-        <h2 className="text-sm font-semibold text-gray-900 mb-4">
+        <h2 className="text-sm font-semibold text-gray-900 mb-5">
           Cover Letter
         </h2>
         <CoverLetter text={result.coverLetter} />
       </section>
     </div>
+  );
+}
+
+// ── Small internal primitives ──────────────────────────────────────────────
+
+function ActionButton({
+  onClick,
+  children,
+  primary = false,
+}: {
+  onClick: () => void;
+  children: React.ReactNode;
+  primary?: boolean;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg border transition-all duration-150
+        ${
+          primary
+            ? "bg-gray-900 text-white border-gray-900 hover:bg-gray-700"
+            : "bg-white text-gray-600 border-gray-200 hover:border-gray-400 hover:text-gray-900"
+        }`}
+    >
+      {children}
+    </button>
+  );
+}
+
+function CopyIcon() {
+  return (
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 16 16"
+      fill="none"
+      className="shrink-0"
+    >
+      <rect
+        x="5"
+        y="5"
+        width="9"
+        height="9"
+        rx="1.5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+      <path
+        d="M3 11H2a1 1 0 01-1-1V2a1 1 0 011-1h8a1 1 0 011 1v1"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+    </svg>
+  );
+}
+
+function CheckIcon() {
+  return (
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 16 16"
+      fill="none"
+      className="shrink-0"
+    >
+      <path
+        d="M2.5 8.5l3.5 3.5 7-7"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function DownloadIcon() {
+  return (
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 16 16"
+      fill="none"
+      className="shrink-0"
+    >
+      <path
+        d="M8 2v8m0 0l-3-3m3 3l3-3"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M2 12h12"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function PDFIcon() {
+  return (
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 16 16"
+      fill="none"
+      className="shrink-0"
+    >
+      <path
+        d="M9 1H3a1 1 0 00-1 1v12a1 1 0 001 1h10a1 1 0 001-1V6L9 1z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M9 1v5h5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 }

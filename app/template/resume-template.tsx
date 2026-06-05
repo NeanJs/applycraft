@@ -256,5 +256,3 @@ export default function ResumeTemplate({
     </div>
   );
 }
-
-export { SampleResumeData };

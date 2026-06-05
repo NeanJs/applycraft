@@ -1,39 +1,62 @@
-import ResumeTemplate from "@/app/(protected)/template/resume-template";
-import { ResumeData } from "@/app/types/types";
-
-import puppeteer from "puppeteer";
+import { auth } from "@clerk/nextjs/server";
 
 export async function POST(req: Request) {
   try {
-    const resumeData = await req.json();
+    const { userId } = await auth();
 
-    const browser = await puppeteer.launch({ headless: true });
-    const page = await browser.newPage();
+    if (!userId) {
+      return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
-    const url = `http://localhost:3000/resume/print?data=${encodeURIComponent(
-      JSON.stringify(resumeData),
-    )}`;
+    const { resumeId } = await req.json();
 
-    await page.goto(url, {
-      waitUntil: "networkidle0",
-    });
+    if (!resumeId) {
+      return Response.json({ error: "Missing resumeId" }, { status: 400 });
+    }
 
-    await page.waitForSelector("#resume-template");
+    const baseUrl =
+      process.env.NODE_ENV == "development"
+        ? "localhost:3000"
+        : process.env.BASE_URL;
+    const token = process.env.BROWSERLESS_TOKEN;
 
-    const pdf = await page.pdf({
-      format: "A4",
-      printBackground: true,
-    });
+    const url = `${baseUrl}/resume/${resumeId}/print`;
 
-    await browser.close();
+    const pdfRes = await fetch(
+      `https://chrome.browserless.io/pdf?token=${token}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          url,
+          options: {
+            printBackground: true,
+            format: "A4",
+          },
+        }),
+      },
+    );
 
-    return new Response(new Uint8Array(pdf), {
+    if (!pdfRes.ok) {
+      const text = await pdfRes.text();
+      console.error("Browserless error:", text);
+      throw new Error("PDF generation failed");
+    }
+
+    const pdfBuffer = await pdfRes.arrayBuffer();
+
+    return new Response(pdfBuffer, {
       headers: {
         "Content-Type": "application/pdf",
         "Content-Disposition": "attachment; filename=resume.pdf",
       },
     });
   } catch (err) {
-    return Response.json({ error: String(err) }, { status: 500 });
+    return Response.json(
+      { error: err instanceof Error ? err.message : String(err) },
+      { status: 500 },
+    );
   }
 }

@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { syncUser } from "@/app/lib/sync-user";
 
 import { UserButton } from "@clerk/nextjs";
 import { prisma } from "@/app/lib/prisma";
+import { currentUser } from "@clerk/nextjs/server";
+import ResumeList from "@/app/components/ResumeLists";
 
 async function getResumes(userId: string) {
   return prisma.resume.findMany({
@@ -19,17 +20,27 @@ function formatDate(date: Date) {
     year: "numeric",
   }).format(date);
 }
-
+export async function getDbUser(clerkId: string) {
+  return prisma.user.findUnique({
+    where: { clerkId },
+  });
+}
 export default async function DashboardPage() {
-  const user = await syncUser();
-  const resumes = user ? await getResumes(user.id) : [];
-  const firstName = user?.name?.split(" ")[0] ?? user?.email ?? "there";
+  const clerkUser = await currentUser();
+
+  if (!clerkUser) return null;
+
+  const dbUser = await getDbUser(clerkUser.id);
+
+  const resumes = dbUser ? await getResumes(dbUser.id) : [];
+
+  const firstName = clerkUser?.firstName ?? "there";
 
   return (
     <DashboardUI
       resumes={resumes}
       firstName={firstName}
-      email={user?.email ?? ""}
+      email={dbUser?.email ?? ""}
     />
   );
 }
@@ -58,11 +69,11 @@ function DashboardUI({
               ApplyCraft
             </span>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <UserButton />
             <span className="text-sm text-gray-400 hidden sm:block">
-              {email}
+              {firstName}
             </span>
-            <UserButton afterSignOutUrl="/" />
           </div>
         </div>
       </header>
@@ -94,80 +105,7 @@ function DashboardUI({
 
         {/* Resume list */}
         {resumes.length > 0 ? (
-          <div className="grid gap-3">
-            {resumes.map((resume) => (
-              <div
-                key={resume.id}
-                className="group border border-gray-200 rounded-xl px-6 py-5 flex items-center justify-between hover:border-gray-400 hover:bg-gray-50 transition-all"
-              >
-                <div className="flex items-center gap-4 min-w-0">
-                  <div className="w-9 h-9 rounded-lg border border-gray-200 bg-white flex items-center justify-center text-gray-300 group-hover:text-gray-500 group-hover:border-gray-300 transition-colors shrink-0">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <rect
-                        x="3"
-                        y="1"
-                        width="10"
-                        height="14"
-                        rx="1.5"
-                        stroke="currentColor"
-                        strokeWidth="1.2"
-                      />
-                      <line
-                        x1="5.5"
-                        y1="5"
-                        x2="10.5"
-                        y2="5"
-                        stroke="currentColor"
-                        strokeWidth="1"
-                        strokeLinecap="round"
-                      />
-                      <line
-                        x1="5.5"
-                        y1="7.5"
-                        x2="10.5"
-                        y2="7.5"
-                        stroke="currentColor"
-                        strokeWidth="1"
-                        strokeLinecap="round"
-                      />
-                      <line
-                        x1="5.5"
-                        y1="10"
-                        x2="8.5"
-                        y2="10"
-                        stroke="currentColor"
-                        strokeWidth="1"
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-sm font-medium text-gray-900 truncate">
-                      {resume.title || "Untitled Resume"}
-                    </p>
-                    <p className="text-xs text-gray-400 mt-0.5">
-                      Updated {formatDate(resume.updatedAt)}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 ml-4 shrink-0">
-                  <Link
-                    href={`/resume/${resume.id}`}
-                    className="text-xs font-medium text-gray-600 border border-gray-200 px-3 py-1.5 rounded-lg hover:border-gray-400 hover:text-gray-900 transition-colors"
-                  >
-                    Open →
-                  </Link>
-                  <button
-                    type="button"
-                    className="text-xs font-medium text-red-400 border border-gray-200 px-3 py-1.5 rounded-lg hover:border-red-200 hover:bg-red-50 hover:text-red-600 transition-colors"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+          <ResumeList resumes={resumes} />
         ) : (
           /* Empty state */
           <div className="border border-dashed border-gray-200 rounded-2xl py-20 flex flex-col items-center justify-center text-center">

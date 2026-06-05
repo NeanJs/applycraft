@@ -9,7 +9,7 @@ export default async function ProtectedLayout({
   const { userId } = await auth();
 
   if (!userId) {
-    redirect("/dashboard");
+    redirect("/");
   }
 
   return <>{children}</>;
