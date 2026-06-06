@@ -16,6 +16,7 @@
     "@sparticuz/chromium": "^147.0.0",
     "@supabase/ssr": "^0.10.3",
     "@supabase/supabase-js": "^2.106.2",
+    "@vercel/analytics": "^2.0.1",
     "date-fns": "^4.4.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^4.2.1",
