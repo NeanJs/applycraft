@@ -31,7 +31,14 @@ export async function POST(req: Request) {
           options: {
             printBackground: true,
             format: "A4",
+            margin: {
+              top: "0",
+              bottom: "0",
+              left: "0",
+              right: "0",
+            },
           },
+          waitFor: 1500, // ms — gives fonts and styles time to load
         }),
       },
     );

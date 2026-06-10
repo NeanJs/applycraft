@@ -4,6 +4,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
 import Navbar from "./components/Navbar";
+import { headers } from "next/headers";
 
 const geist = Geist({
   variable: "--font-geist-sans",
@@ -26,9 +27,7 @@ export const metadata: Metadata = {
     "job application tool",
     "ApplyCraft",
   ],
-  metadataBase: new URL(
-    process.env.BASE_URL ?? "https://applycraft.xyz",
-  ),
+  metadataBase: new URL(process.env.BASE_URL ?? "https://applycraft.xyz"),
   openGraph: {
     title: "ApplyCraft — AI Resume Optimizer",
     description:
@@ -54,11 +53,14 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const headersList = headers();
+  const pathname = headersList.get("x-invoke-path") || "";
+  const isPrint = pathname.includes("/print");
   return (
     <ClerkProvider>
       <html lang="en" className={geist.variable} suppressHydrationWarning>
         <body className="min-h-screen bg-white text-gray-900 antialiased flex flex-col">
-          <Navbar />
+          {!isPrint && <Navbar />}
           <main className="flex-1">{children}</main>
           <Analytics />
         </body>
