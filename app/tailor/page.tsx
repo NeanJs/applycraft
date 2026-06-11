@@ -233,7 +233,7 @@ export default function TailorPage() {
         body: formData,
       });
       const data = await res.json();
-      console.log("parse response:", data); // see what's coming back
+
       if (data.text) {
         setResume(data.text);
       } else {
