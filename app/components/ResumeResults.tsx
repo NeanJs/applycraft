@@ -218,15 +218,15 @@ export default function ResumeResults({
             </div>
             <div className="flex gap-2">
               <ActionButton onClick={() => handleCopy(result.optimizedResume)}>
-                {isCopied ? "Copied" : "Copy"}
+                {isCopied ? "Copied" : "Copy Json{}"}
               </ActionButton>
               <ActionButton
                 onClick={() => handleDownload(result.optimizedResume)}
               >
-                Export
+                Download .txt
               </ActionButton>
               <ActionButton primary onClick={() => handlePDFExport(resumeID)}>
-                PDF
+                Export PDF
               </ActionButton>
             </div>
           </div>
