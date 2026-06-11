@@ -34,11 +34,11 @@ const BREAKDOWN_META: Record<
     label: "Keyword match",
     description: "Required skills and terms found in your resume",
   },
-  structureScore: {
+  structure: {
     label: "Structure",
     description: "Section order, formatting, and parsability",
   },
-  readabilityScore: {
+  readability: {
     label: "Readability",
     description: "Clarity and conciseness of your bullet points",
   },
@@ -59,7 +59,6 @@ function BreakdownRow({
   description: string;
   value: number;
 }) {
-  console.log(value)
   const pct = Math.round(value);
   const color =
     pct >= 75 ? "bg-emerald-500" : pct >= 50 ? "bg-amber-400" : "bg-red-400";

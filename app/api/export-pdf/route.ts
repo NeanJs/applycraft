@@ -31,6 +31,12 @@ export async function POST(req: Request) {
           options: {
             printBackground: true,
             format: "A4",
+            margin: {
+              top: "0.5in",
+              bottom: "0.5in",
+              left: "0.5in",
+              right: "0.5in",
+            },
           },
         }),
       },

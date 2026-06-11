@@ -49,8 +49,8 @@ export type JobType = "corporate" | "startup" | "leadership";
 //
 export interface ATSBreakdown {
   keywordMatch: number; // %
-  structureScore: number; // %
-  readabilityScore: number; // %
+  structure: number; // %
+  readability: number; // %
   roleMatch: number; // %
 }
 
@@ -132,8 +132,8 @@ export function parseATSBreakdown(
 
   return {
     keywordMatch: r.keywordMatch,
-    structureScore: r.structure,
-    readabilityScore: r.readability,
+    structure: r.structure,
+    readability: r.readability,
     roleMatch: r.roleMatch,
   };
 }

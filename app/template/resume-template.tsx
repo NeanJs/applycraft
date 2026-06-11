@@ -8,7 +8,7 @@ function SectionHeading({ title }: { title: string }) {
   return (
     // break-after-avoid: prevents an orphaned heading at the bottom of a printed page.
     <div className="mb-2 mt-5 break-after-avoid first:mt-0">
-      <h2 className="text-[10.5px] font-bold uppercase tracking-[0.14em] text-gray-800">
+      <h2 className="text-[10.5px] font-bold uppercase tracking-[0.06em] text-gray-800">
         {title}
       </h2>
       <div className="mt-0.5 h-px bg-gray-400" />
@@ -53,7 +53,7 @@ export default function ResumeTemplate({
   const d = resumeData;
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8 print:bg-white print:p-0">
+    <div className="bg-gray-100 p-8 print:bg-white print:p-0">
       <main className="mx-auto w-full max-w-204 bg-white px-12 py-7 shadow-md print:p-0 print:shadow-none">
         <header className="mb-3">
           <h1 className="text-[24px] font-bold leading-tight tracking-tight text-gray-900">

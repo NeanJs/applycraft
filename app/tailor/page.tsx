@@ -220,7 +220,29 @@ export default function TailorPage() {
       setLoadingStep(0);
     }
   }
+  async function handlePdfUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("/api/parse-resume", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await res.json();
+      console.log("parse response:", data); // see what's coming back
+      if (data.text) {
+        setResume(data.text);
+      } else {
+        console.error("No text in response:", data);
+      }
+    } catch (err) {
+      console.error("Failed to parse PDF:", err);
+    }
+  }
   // Derive step indicator state
   const step1: StepStatus = hasResume ? "done" : "active";
   const step2: StepStatus =
@@ -293,20 +315,26 @@ export default function TailorPage() {
                 </span>
               )
             }
-            // footer={
-            //   <span className="text-[11px] text-gray-400 flex items-center gap-1">
-            //     <svg width="10" height="10" viewBox="0 0 16 16" fill="none">
-            //       <path
-            //         d="M8 2v8m0 0l-3-3m3 3l3-3M2 13h12"
-            //         stroke="currentColor"
-            //         strokeWidth="1.5"
-            //         strokeLinecap="round"
-            //         strokeLinejoin="round"
-            //       />
-            //     </svg>
-            //     Upload PDF instead
-            //   </span>
-            // }
+            footer={
+              <label className="text-[11px] text-gray-400 flex items-center gap-1 cursor-pointer hover:text-gray-600 transition-colors">
+                <svg width="10" height="10" viewBox="0 0 16 16" fill="none">
+                  <path
+                    d="M8 2v8m0 0l-3-3m3 3l3-3M2 13h12"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                Upload PDF instead
+                <input
+                  type="file"
+                  accept=".pdf"
+                  className="hidden"
+                  onChange={handlePdfUpload}
+                />
+              </label>
+            }
           />
           <InputPanel
             title="Job description"
@@ -344,26 +372,6 @@ export default function TailorPage() {
                 <span className="text-[11px] text-gray-300">0 / 2500</span>
               )
             }
-            // footer={
-            //   <span className="text-[11px] text-gray-400 flex items-center gap-1">
-            //     <svg width="10" height="10" viewBox="0 0 16 16" fill="none">
-            //       <path
-            //         d="M6.5 3.5h-3a1 1 0 00-1 1v8a1 1 0 001 1h8a1 1 0 001-1v-3"
-            //         stroke="currentColor"
-            //         strokeWidth="1.25"
-            //         strokeLinecap="round"
-            //       />
-            //       <path
-            //         d="M9 1h5.5v5.5M14.5 1L8 7.5"
-            //         stroke="currentColor"
-            //         strokeWidth="1.25"
-            //         strokeLinecap="round"
-            //         strokeLinejoin="round"
-            //       />
-            //     </svg>
-            //     Paste a URL instead
-            //   </span>
-            // }
           />
         </div>
 
@@ -453,7 +461,11 @@ export default function TailorPage() {
 
         {/* Results */}
         {result && (
-          <ResumeResults resumeID={resume} result={result} copied={false} />
+          <ResumeResults
+            resumeID={result.resumeId as string}
+            result={result}
+            copied={false}
+          />
         )}
 
         {/* Post-result footer */}

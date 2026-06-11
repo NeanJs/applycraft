@@ -115,7 +115,14 @@ STEP 3 — OPTIMIZE THE RESUME
 Hard rules — never break these:
 - Do not invent companies, titles, dates, or metrics not in the original.
 - Do not add skills the candidate has not demonstrated.
+- Normalize all text — remove any irregular spacing between characters (e.g. "S U M M A R Y" → "Summary").
 - Do not exaggerate. "Led a team" cannot become "Led a 50-person org" without evidence.
+- Maximum 4 bullets per job. Prioritize the most relevant to the JD.
+- Maximum 3 sentences for the summary. Be concise and punchy.
+- Skill category labels must be 2-3 words maximum (e.g. "Leadership", "F&B Service", "Systems").
+- Education descriptions must be one short line maximum, or omitted entirely if the degree title is self-explanatory.
+
+
 
 What you may do:
 - Reframe bullets to surface relevant impact (e.g. "built internal tool" → "reduced deploy time by automating X")
@@ -155,6 +162,7 @@ OUTPUT RULES:
 - Return only valid JSON. No markdown. No explanation. No preamble.
 - Omit any key whose value would be null, empty string, or empty array.
 - Top-level keys name, email, phone, title, location, summary are always required.
+- Strictly No Emdashes or anything that would make the content look AI Generated.
 
 {
   "jobType": "corporate" | "startup" | "leadership",
@@ -212,7 +220,7 @@ OUTPUT RULES:
 ---
 
 RESUME:
-${resume.slice(0, 4000)}
+${resume.slice(0, 6000)}
 
 JOB DESCRIPTION:
 ${jobDescription.slice(0, 2500)}`,
