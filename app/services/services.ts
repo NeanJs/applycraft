@@ -76,38 +76,20 @@ const handleDownload = (optimizedResume: ResumeData) => {
 };
 
 // NEW METHOD
-const handlePDFExport = async (resumeId: string) => {
+const handlePDFExport = async (resumeId: string, name: string) => {
   const res = await fetch("/api/export-pdf", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ resumeId: resumeId }),
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ resumeId }),
   });
 
   const blob = await res.blob();
-
   const url = URL.createObjectURL(blob);
-
   const a = document.createElement("a");
   a.href = url;
-  a.download = "resume.pdf";
+  a.download = `${name}` + ".pdf";
   a.click();
-
   URL.revokeObjectURL(url);
 };
-const handleDelete = async (resumeID: string) => {
-  const res = await fetch("/api/resume/delete", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ resumeId: resumeID }),
-  });
 
-  if (res.ok) {
-    window.location.reload();
-  }
-};
-
-export { handleDownload, handlePDFExport, handleDelete };
+export { handleDownload, handlePDFExport };

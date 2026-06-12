@@ -1,31 +1,44 @@
 import { auth } from "@clerk/nextjs/server";
+import { prisma } from "@/app/lib/prisma";
+import { syncUser } from "@/app/lib/sync-user";
+import jwt from "jsonwebtoken";
 
 export async function POST(req: Request) {
   try {
     const { userId } = await auth();
-
     if (!userId) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const { resumeId } = await req.json();
-
     if (!resumeId) {
       return Response.json({ error: "Missing resumeId" }, { status: 400 });
     }
 
-    const baseUrl = process.env.BASE_URL;
-    const token = process.env.BROWSERLESS_TOKEN;
+    // Ownership check — ensure this resume belongs to the requesting user
+    const user = await syncUser();
+    if (!user) {
+      return Response.json({ error: "User not found" }, { status: 404 });
+    }
 
-    const url = `${baseUrl}/resume/${resumeId}/print`;
+    const resume = await prisma.resume.findUnique({ where: { id: resumeId } });
+    if (!resume || resume.userId !== user.id) {
+      return Response.json({ error: "Not found" }, { status: 404 });
+    }
+
+    // Short-lived signed token for the print page
+    const token = jwt.sign({ resumeId }, process.env.PRINT_TOKEN_SECRET!, {
+      expiresIn: "2m",
+    });
+
+    const url = `${process.env.BASE_URL}/resume/${resumeId}/print?token=${token}`;
+    const browserlessToken = process.env.BROWSERLESS_TOKEN;
 
     const pdfRes = await fetch(
-      `https://chrome.browserless.io/pdf?token=${token}`,
+      `https://chrome.browserless.io/pdf?token=${browserlessToken}`,
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           url,
           options: {
@@ -58,7 +71,7 @@ export async function POST(req: Request) {
     });
   } catch (err) {
     return Response.json(
-      { error: err instanceof Error ? err.message : String(err) },
+      { error: err instanceof Error ? err.message : "Something went wrong" },
       { status: 500 },
     );
   }

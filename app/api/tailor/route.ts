@@ -5,51 +5,52 @@ import { prisma } from "@/app/lib/prisma";
 
 import { removeNullChars } from "@/app/lib/helper";
 import { Prisma } from "@prisma/client";
-import { ATSBreakdown } from "@/app/types/types";
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY!,
 });
 
-// ── Rate limiting for anonymous users ─────────────────────────────────────
-//
-// Simple in-memory store keyed by IP. Resets on server restart.
-// For production, swap this out for Redis (Upstash is a good fit with Vercel).
-
 function getClientIP(req: Request): string {
-  return (
-    req.headers.get("x-forwarded-for")?.split(",")[0].trim() ??
-    req.headers.get("x-real-ip") ??
-    "unknown"
-  );
+  const forwarded = req.headers.get("x-forwarded-for");
+  if (forwarded) {
+    const ips = forwarded.split(",").map((ip) => ip.trim());
+    return ips[ips.length - 1];
+  }
+  return req.headers.get("x-real-ip") ?? "unknown";
 }
+
 async function checkAnonRateLimit(ip: string): Promise<boolean> {
   const now = new Date();
 
-  const entry = await prisma.anonUsage.upsert({
-    where: { ip },
-    update: {
-      count: { increment: 1 },
-    },
-    create: {
-      ip,
-      count: 1,
-      resetAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
-    },
-  });
+  return prisma.$transaction(async (tx) => {
+    const existing = await tx.anonUsage.findUnique({ where: { ip } });
 
-  // If the window has expired, reset and allow
-  if (entry.resetAt < now) {
-    await prisma.anonUsage.update({
+    // Window expired — reset and allow
+    if (existing && existing.resetAt < now) {
+      await tx.anonUsage.update({
+        where: { ip },
+        data: {
+          count: 1,
+          resetAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        },
+      });
+      return true;
+    }
+
+    // Create or increment atomically
+    const entry = await tx.anonUsage.upsert({
       where: { ip },
-      data: { count: 1, resetAt: new Date(Date.now() + 24 * 60 * 60 * 1000) },
+      update: { count: { increment: 1 } },
+      create: {
+        ip,
+        count: 1,
+        resetAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      },
     });
-    return true;
-  }
 
-  return entry.count <= 1;
+    return entry.count <= 1;
+  });
 }
-
 // ── Route ─────────────────────────────────────────────────────────────────
 
 export async function POST(req: Request) {
@@ -68,8 +69,8 @@ export async function POST(req: Request) {
 
   // Anonymous users: enforce rate limit
   if (!isAuthed) {
-    const ip = getClientIP(req);
-    const allowed = checkAnonRateLimit(ip);
+    const ip = await getClientIP(req);
+    const allowed = await checkAnonRateLimit(ip);
 
     if (!allowed) {
       return Response.json(
@@ -145,13 +146,38 @@ Do not list keywords you successfully incorporated in Step 3.
 ---
 
 STEP 5 — WRITE THE COVER LETTER
-- Must be highly specific to the job description.
-- Must reference real experience ONLY from the resume.
-- Avoid generic phrases like "I am excited to apply" unless contextually justified.
-- Must include:
-  - 1 opening hook tied to role/company type
-  - 1–2 paragraphs mapping experience to role requirements
-  - 1 closing paragraph with intent and value
+
+Rules — never break these:
+- Write conversationally in first person — the way a confident professional speaks 
+  in an interview, not a formal application.
+- Every claim must trace back to the resume. No fabrication.
+- Must include at least one grounded operational detail: a specific event size, 
+  cover count, shift type, or concrete scenario drawn directly from the resume.
+- Avoid metaphors, corporate phrasing, and sentences that could apply to any 
+  candidate in any role. If a sentence still makes sense with a different name 
+  and a different resume, rewrite it.
+- Avoid generic openers like "I am excited to apply" or "I am writing to express 
+  my interest."
+- Never open a body paragraph with a sentence that references the job posting 
+  directly (e.g. "The duties in your posting map closely to..."). 
+  Start with the candidate's experience instead.
+- Closing paragraph must be confident and direct. Avoid tentative phrasing like 
+  "I would welcome" or "I hope to". State intent plainly.
+- If the job description mentions a specific requirement the candidate genuinely 
+  cannot claim — a certification they lack, a service style they have no experience 
+  in, or a responsibility outside their background — acknowledge it briefly and 
+  honestly rather than omitting it.
+- Do not flag specific tools or software as gaps if the candidate has demonstrated 
+  experience with the broader skill category they fall under (e.g. Micros POS 
+  falls under POS systems, Salesforce falls under CRM).
+
+Structure:
+- 1 opening hook — must reference something specific from the candidate's 
+  background, not a general statement about the industry or role.
+- 1–2 paragraphs mapping real experience to the specific requirements in the 
+  job description.
+- 1 closing paragraph stating intent and concrete value — what they bring, 
+  not what they hope to achieve.
 
 Tone matches jobType (same rules as Step 3).
 Every claim must trace back to the resume. No fabrication.
@@ -175,7 +201,6 @@ OUTPUT RULES:
     "readability": 0,
     "roleMatch": 0
   },
-  "missingKeywords": [],
   "changesMade": [],
   "confidenceScore": 0.0,
   "missingKeywords": string[],
@@ -262,6 +287,12 @@ ${jobDescription.slice(0, 2500)}`,
       const cleanJobDescription = removeNullChars(jobDescription);
       const cleanOptimizedResume = removeNullChars(parsed.optimizedResume);
       const cleanCoverLetter = removeNullChars(parsed.coverLetter);
+      const atsBefore = Math.min(100, Math.max(0, parsed.atsBefore ?? 0));
+      const atsAfter = Math.min(100, Math.max(0, parsed.atsAfter ?? 0));
+      const confidenceScore = Math.min(
+        1,
+        Math.max(0, parsed.confidenceScore ?? 0),
+      );
       const savedResume = await prisma.resume.create({
         data: {
           userId: user.id,
@@ -272,14 +303,14 @@ ${jobDescription.slice(0, 2500)}`,
           jobType: parsed.jobType,
           originalResume: cleanResume as Prisma.InputJsonValue,
           jobDescription: cleanJobDescription as string,
-          atsBefore: parsed.atsBefore,
-          atsAfter: parsed.atsAfter,
+          atsBefore: atsBefore,
+          atsAfter: atsAfter,
           atsBreakdown: parsed.atsBreakdown,
           optimizedResume: cleanOptimizedResume as Prisma.InputJsonValue,
           coverLetter: (cleanCoverLetter as string) ?? "",
           missingKeywords: parsed.missingKeywords ?? [],
           changesMade: parsed.changesMade ?? [],
-          confidenceScore: parsed.confidenceScore ?? 0,
+          confidenceScore: confidenceScore,
         },
       });
 
@@ -301,6 +332,9 @@ ${jobDescription.slice(0, 2500)}`,
     jobType: parsed.jobType,
     atsBefore: parsed.atsBefore,
     atsAfter: parsed.atsAfter,
+    atsBreakdown: parsed.atsBreakdown,
+    optimizedResume: parsed.optimizedResume,
+    coverLetter: parsed.coverLetter,
     missingKeywords: parsed.missingKeywords ?? [],
     changesMade: parsed.changesMade ?? [],
     confidenceScore: parsed.confidenceScore ?? 0,

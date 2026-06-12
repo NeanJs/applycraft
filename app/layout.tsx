@@ -3,6 +3,7 @@ import { Geist } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
+import { Toaster } from "react-hot-toast";
 
 const geist = Geist({
   variable: "--font-geist-sans",
@@ -56,6 +57,7 @@ export default function RootLayout({
       <html lang="en" className={geist.variable} suppressHydrationWarning>
         <body className="min-h-screen bg-white text-gray-900 antialiased flex flex-col">
           <main className="flex-1">{children}</main>
+          <Toaster position="top-right" />
           <Analytics />
         </body>
       </html>

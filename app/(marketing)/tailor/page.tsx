@@ -4,6 +4,10 @@ import { useState } from "react";
 import { ResponseData } from "@/app/types/types";
 import ResumeResults from "@/app/components/ResumeResults";
 import Link from "next/link";
+import toast from "react-hot-toast";
+import { handleError } from "@/app/lib/helper";
+import { useUser } from "@clerk/nextjs";
+import { track } from "@vercel/analytics/react";
 
 type StepStatus = "done" | "active" | "pending";
 
@@ -191,16 +195,24 @@ export default function TailorPage() {
   const [result, setResult] = useState<ResponseData>();
   const [loading, setLoading] = useState(false);
   const [loadingStep, setLoadingStep] = useState(0);
+  const [showSignupCTA, setShowSignupCTA] = useState(false);
+  const [uploadingPdf, setUploadingPdf] = useState(false);
+  // Anon Usage CTA
+  const [dismissedCTA, setDismissedCTA] = useState(false);
+  const isAnon = !result?.saved;
+  const showStickyCTA = !!result && isAnon && !dismissedCTA;
 
   const hasResume = resume.trim().length > 0;
   const hasJD = jobDescription.trim().length > 0;
-  const canGenerate = !loading && hasResume && hasJD;
-
+  const canGenerate = !loading && !uploadingPdf && hasResume && hasJD;
+  const { isSignedIn } = useUser();
   // Simulate step progression during loading so the UI isn't static
   async function generate() {
     setLoading(true);
     setLoadingStep(0);
     setResult(undefined);
+    setShowSignupCTA(false);
+    setDismissedCTA(false);
 
     const interval = setInterval(() => {
       setLoadingStep((s) => Math.min(s + 1, LOADING_STEPS.length - 1));
@@ -212,8 +224,24 @@ export default function TailorPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ resume, jobDescription }),
       });
+
       const data = await res.json();
+
+      if (!res.ok) {
+        if (data.error === "free_limit_reached") {
+          toast.error(data.message);
+          setShowSignupCTA(true);
+          return;
+        }
+
+        toast.error(data.message || "Something went wrong.");
+        return;
+      }
+
+      toast.success("Your resume is ready.");
       setResult(data);
+    } catch (error) {
+      handleError(error, "Something went wrong. Please try again later.");
     } finally {
       clearInterval(interval);
       setLoading(false);
@@ -223,6 +251,8 @@ export default function TailorPage() {
   async function handlePdfUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    setUploadingPdf(true);
 
     const formData = new FormData();
     formData.append("file", file);
@@ -236,11 +266,14 @@ export default function TailorPage() {
 
       if (data.text) {
         setResume(data.text);
+        toast.success("Resume uploaded.");
       } else {
-        console.error("No text in response:", data);
+        toast.error("Could not read the PDF. Try pasting your resume instead.");
       }
     } catch (err) {
-      console.error("Failed to parse PDF:", err);
+      handleError(err, "Failed to parse PDF");
+    } finally {
+      setUploadingPdf(false);
     }
   }
   // Derive step indicator state
@@ -256,7 +289,9 @@ export default function TailorPage() {
     >
       {/* Navbar slot */}
 
-      <main className="max-w-5xl mx-auto px-6 py-12">
+      <main
+        className={`max-w-5xl mx-auto px-6 py-12 ${showStickyCTA ? "pb-20" : ""}`}
+      >
         {/* Header */}
         <div className="mb-8">
           <p className="text-[11px] font-medium text-gray-400 uppercase tracking-widest mb-2">
@@ -317,21 +352,31 @@ export default function TailorPage() {
             }
             footer={
               <label className="text-[11px] text-gray-400 flex items-center gap-1 cursor-pointer hover:text-gray-600 transition-colors">
-                <svg width="10" height="10" viewBox="0 0 16 16" fill="none">
-                  <path
-                    d="M8 2v8m0 0l-3-3m3 3l3-3M2 13h12"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                Upload PDF instead
+                {uploadingPdf ? (
+                  <>
+                    <span className="w-2.5 h-2.5 border border-gray-400 border-t-transparent rounded-full animate-spin" />
+                    Parsing PDF…
+                  </>
+                ) : (
+                  <>
+                    <svg width="10" height="10" viewBox="0 0 16 16" fill="none">
+                      <path
+                        d="M8 2v8m0 0l-3-3m3 3l3-3M2 13h12"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    Upload PDF instead
+                  </>
+                )}
                 <input
                   type="file"
                   accept=".pdf"
                   className="hidden"
                   onChange={handlePdfUpload}
+                  disabled={uploadingPdf}
                 />
               </label>
             }
@@ -418,28 +463,31 @@ export default function TailorPage() {
               }
               label="~30 seconds"
             />
-            <Tip
-              icon={
-                <svg width="10" height="10" viewBox="0 0 16 16" fill="none">
-                  <rect
-                    x="3"
-                    y="7"
-                    width="10"
-                    height="7"
-                    rx="1"
-                    stroke="currentColor"
-                    strokeWidth="1.25"
-                  />
-                  <path
-                    d="M5.5 7V5a2.5 2.5 0 015 0v2"
-                    stroke="currentColor"
-                    strokeWidth="1.25"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              }
-              label="Your data isn't stored"
-            />
+            {!isSignedIn && (
+              <Tip
+                icon={
+                  <svg width="10" height="10" viewBox="0 0 16 16" fill="none">
+                    <rect
+                      x="3"
+                      y="7"
+                      width="10"
+                      height="7"
+                      rx="1"
+                      stroke="currentColor"
+                      strokeWidth="1.25"
+                    />
+                    <path
+                      d="M5.5 7V5a2.5 2.5 0 015 0v2"
+                      stroke="currentColor"
+                      strokeWidth="1.25"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                }
+                label="Your data isn't stored"
+              />
+            )}
+
             <Tip
               icon={
                 <svg width="10" height="10" viewBox="0 0 16 16" fill="none">
@@ -451,7 +499,7 @@ export default function TailorPage() {
                   />
                 </svg>
               }
-              label="First one is free"
+              label="First result is free"
             />
           </div>
         )}
@@ -462,7 +510,7 @@ export default function TailorPage() {
         {/* Results */}
         {result && (
           <ResumeResults
-            resumeID={result.resumeId as string}
+            resumeID={result.resumeId ?? undefined}
             result={result}
             copied={false}
           />
@@ -480,6 +528,87 @@ export default function TailorPage() {
             >
               ← Back to dashboard
             </Link>
+          </div>
+        )}
+        {showSignupCTA && (
+          <div className="mt-6 bg-white border border-gray-200 rounded-2xl px-5 py-4 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-full bg-gray-50 border border-gray-200 flex items-center justify-center flex-shrink-0">
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+                  <rect
+                    x="3"
+                    y="7"
+                    width="10"
+                    height="7"
+                    rx="1"
+                    stroke="currentColor"
+                    strokeWidth="1.25"
+                  />
+                  <path
+                    d="M5.5 7V5a2.5 2.5 0 015 0v2"
+                    stroke="currentColor"
+                    strokeWidth="1.25"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-900">
+                  You've used your free optimization
+                </p>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  Sign up to save results, view your cover letter, and optimize
+                  again.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <button
+                onClick={() => setShowSignupCTA(false)}
+                className="text-xs text-gray-400 border border-gray-200 rounded-lg px-3 py-2 hover:border-gray-300 hover:text-gray-600 transition-colors"
+              >
+                Maybe later
+              </button>
+              <Link
+                href="/sign-up"
+                onClick={() =>
+                  track("anon_cta_clicked", { source: "sticky_bar" })
+                }
+                className="text-xs font-medium text-white bg-gray-900 rounded-lg px-4 py-2 hover:bg-gray-700 transition-colors whitespace-nowrap"
+              >
+                Create free account →
+              </Link>
+            </div>
+          </div>
+        )}
+        {showStickyCTA && (
+          <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 px-6 py-3 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2.5">
+              <div className="w-1.5 h-1.5 rounded-full bg-emerald-600 flex-shrink-0" />
+              <p className="text-sm text-gray-500">
+                <span className="font-medium text-gray-900">
+                  Like what you see?
+                </span>{" "}
+                Sign up free to save this and optimize again.
+              </p>
+            </div>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <button
+                onClick={() => setDismissedCTA(true)}
+                className="hidden sm:block text-xs t text-gray-400 border border-gray-200 rounded-lg px-3 py-2 hover:border-gray-300 transition-colors"
+              >
+                Dismiss
+              </button>
+              <Link
+                href="/sign-up"
+                onClick={() =>
+                  track("anon_cta_clicked", { source: "sticky_bar" })
+                }
+                className="text-xs font-medium text-white bg-gray-900 rounded-lg px-4 py-2 hover:bg-gray-700 transition-colors whitespace-nowrap"
+              >
+                Create free account →
+              </Link>
+            </div>
           </div>
         )}
       </main>

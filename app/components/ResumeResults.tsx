@@ -7,6 +7,7 @@ import { ATSBreakdown, ResponseData, ResumeData } from "@/app/types/types";
 import { useState } from "react";
 import ResumeTemplate from "../template/resume-template";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 // ── Constants ─────────────────────────────────────────────────────────────
 
@@ -99,13 +100,14 @@ export default function ResumeResults({
 }: {
   result: ResponseData;
   copied: boolean;
-  resumeID: string;
+  resumeID?: string;
 }) {
   const [localCopied, setLocalCopied] = useState(false);
 
   const handleCopy = (data: ResumeData) => {
     navigator.clipboard.writeText(JSON.stringify(data, null, 2));
     setLocalCopied(true);
+    toast.success("Copied to clipboard!!");
     setTimeout(() => setLocalCopied(false), 2000);
   };
 
@@ -115,7 +117,7 @@ export default function ResumeResults({
   const atsAfter = result.atsAfter ?? 0;
   const improvement = atsAfter - atsBefore;
   const confidenceScore = result.confidenceScore ?? 0;
-  const isPreview = result.promptSignup ?? false;
+  const isPreview = false;
   const changesMade = result.changesMade ?? [];
   const breakdown = result.atsBreakdown;
 
@@ -225,9 +227,46 @@ export default function ResumeResults({
               >
                 Download .txt
               </ActionButton>
-              <ActionButton primary onClick={() => handlePDFExport(resumeID)}>
-                Export PDF
-              </ActionButton>
+
+              <div className="relative group/export">
+                <ActionButton
+                  primary
+                  disabled={!resumeID}
+                  onClick={() =>
+                    handlePDFExport(
+                      resumeID as string,
+                      result.optimizedResume.name,
+                    )
+                  }
+                >
+                  {!resumeID && (
+                    <svg width="10" height="10" viewBox="0 0 16 16" fill="none">
+                      <rect
+                        x="3"
+                        y="7"
+                        width="10"
+                        height="7"
+                        rx="1"
+                        stroke="currentColor"
+                        strokeWidth="1.25"
+                      />
+                      <path
+                        d="M5.5 7V5a2.5 2.5 0 015 0v2"
+                        stroke="currentColor"
+                        strokeWidth="1.25"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  )}
+                  Export PDF
+                </ActionButton>
+                {!resumeID && (
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1.5 bg-gray-900 text-white text-[11px] rounded-lg whitespace-nowrap opacity-0 group-hover/export:opacity-100 transition-opacity pointer-events-none">
+                    Sign up to export
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900" />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
           <div className="border rounded-xl bg-white overflow-hidden">
@@ -295,14 +334,17 @@ function ActionButton({
   onClick,
   children,
   primary = false,
+  disabled,
 }: {
   onClick: () => void;
   children: React.ReactNode;
   primary?: boolean;
+  disabled?: boolean;
 }) {
   return (
     <button
       onClick={onClick}
+      disabled={disabled}
       className={`inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg border transition-all duration-150
         ${
           primary
