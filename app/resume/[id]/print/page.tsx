@@ -31,7 +31,7 @@ export default async function PrintPage({
 
   return (
     <>
-      <div className="w-[210mm] min-h-[297mm] bg-white px-10 py-10 text-sm">
+      <div className="w-[210mm] min-h-[297mm] bg-white px-10 pb-10 text-sm">
         <ResumeTemplate
           resumeData={resume.optimizedResume as unknown as ResumeData}
         />
