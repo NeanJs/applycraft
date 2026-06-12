@@ -26,20 +26,32 @@ export const metadata: Metadata = {
     "job application tool",
     "ApplyCraft",
   ],
-  metadataBase: new URL(process.env.BASE_URL ?? "https://applycraft.xyz"),
+  metadataBase: new URL(process.env.BASE_URL ?? "https://www.applycraft.xyz"),
+  alternates: {
+    canonical: "https://www.applycraft.xyz",
+  },
   openGraph: {
     title: "ApplyCraft — AI Resume Optimizer",
     description:
       "Rewrite your resume for any job in 30 seconds. ATS score, missing keywords, tailored bullets, cover letter.",
-    url: "/",
+    url: "https://www.applycraft.xyz",
     siteName: "ApplyCraft",
     type: "website",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "ApplyCraft — AI Resume Optimizer",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "ApplyCraft — AI Resume Optimizer",
     description:
       "Rewrite your resume for any job in 30 seconds. ATS score, missing keywords, tailored bullets, cover letter.",
+    images: ["/og-image.png"],
   },
   robots: {
     index: true,
