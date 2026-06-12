@@ -18,7 +18,7 @@ export default async function ResumePage({ params }: ResumePageProps) {
 
   return (
     <div className="bg-gray-50 min-h-screen">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
         <Link
           href="/dashboard"
           className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-700 mb-8 transition-colors"

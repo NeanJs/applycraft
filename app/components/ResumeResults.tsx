@@ -129,7 +129,7 @@ export default function ResumeResults({
   return (
     <div className="mt-10 rounded-2xl border border-gray-200 bg-white overflow-hidden shadow-sm">
       {/* ── Role type + ATS scores ── */}
-      <section className="px-8 py-8 border-b border-gray-100">
+      <section className="px-8 py-8 border-b border-gray-100 bg-white">
         {/* Job type pill */}
         <div className="flex items-center gap-2 mb-6">
           <span className="text-[10px] font-semibold uppercase text-gray-400 tracking-wider">
@@ -207,13 +207,15 @@ export default function ResumeResults({
 
       {/* ── Optimized resume ── */}
       {!isPreview && (
-        <section className="px-8 py-7 border-b bg-gray-50/40">
+        <section className="px-8 py-7 border-b border-gray-100 bg-gray-50/60">
           <div className="flex justify-between items-start mb-5">
             <div>
               <p className="text-[10px] uppercase text-gray-400">
                 Optimized output
               </p>
-              <h2 className="text-sm font-semibold">Improved Resume</h2>
+              <h2 className="text-sm font-semibold text-gray-700">
+                Improved Resume
+              </h2>
               <p className="text-xs text-gray-400 mt-0.5">
                 Tailored for {jobTypeInfo.label.toLowerCase()} roles
               </p>
@@ -279,17 +281,17 @@ export default function ResumeResults({
       )}
 
       {/* ── Missing keywords ── */}
-      <section className="px-8 py-7 border-b">
+      <section className="px-8 py-7 border-b border-gray-100 bg-white">
         <p className="text-[10px] uppercase text-gray-400">Skill gaps</p>
-        <h2 className="text-sm font-semibold mb-4">Missing Keywords</h2>
+        <h2 className="text-sm font-semibold mb-4 text-gray-600">Missing Keywords</h2>
         <MissingKeywords list={result.missingKeywords} />
       </section>
 
       {/* ── What was improved ── */}
       {changesMade.length > 0 && (
-        <section className="px-8 py-7 border-b">
+        <section className="px-8 py-7 border-b border-gray-100 bg-gray-50/60">
           <p className="text-[10px] uppercase text-gray-400">Improvements</p>
-          <h2 className="text-sm font-semibold mb-3">What was improved</h2>
+          <h2 className="text-sm font-semibold mb-3 text-gray-600">What was improved</h2>
           <ul className="text-xs text-gray-600 space-y-1">
             {changesMade.map((change, i) => (
               <li key={i}>• {change}</li>
@@ -300,9 +302,9 @@ export default function ResumeResults({
 
       {/* ── Cover letter ── */}
       {!isPreview && (
-        <section className="px-8 py-7">
+        <section className="px-8 py-7 bg-white">
           <p className="text-[10px] uppercase text-gray-400">Generated</p>
-          <h2 className="text-sm font-semibold mb-4">Cover Letter</h2>
+          <h2 className="text-sm font-semibold mb-4 text-gray-600">Cover Letter</h2>
           <CoverLetter text={result.coverLetter} />
         </section>
       )}
