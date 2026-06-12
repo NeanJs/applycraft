@@ -23,6 +23,8 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
 /*
@@ -31,6 +33,11 @@ body {
   It works with both window.print() and headless tools (Puppeteer / Playwright).
 ────────────────────────────────────────────────────────────────────────────
 */
+* {
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
 @media print {
   @page {
     size: A4;

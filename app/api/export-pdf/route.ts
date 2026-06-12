@@ -35,20 +35,21 @@ export async function POST(req: Request) {
     const browserlessToken = process.env.BROWSERLESS_TOKEN;
 
     const pdfRes = await fetch(
-      `https://chrome.browserless.io/pdf?token=${browserlessToken}`,
+      `https://production-sfo.browserless.io/pdf?token=${browserlessToken}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           url,
+          gotoOptions: { waitUntil: "networkidle0" },
           options: {
             printBackground: true,
             format: "A4",
             margin: {
-              top: "0.5in",
-              bottom: "0.5in",
-              left: "0.5in",
-              right: "0.5in",
+              top: "10mm",
+              bottom: "10mm",
+              left: "0",
+              right: "0",
             },
           },
         }),
