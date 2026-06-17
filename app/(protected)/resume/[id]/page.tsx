@@ -4,8 +4,8 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 
-import ResumeResultsSkeleton from "@/app/components/ResumeResultsSkeleton";
-import ResumeResultsLoader from "@/app/components/ResumeResultsLoader";
+import ResumeResultsSkeleton from "@/app/components/dashboard/ResumeResultsSkeleton";
+import ResumeResultsLoader from "@/app/components/dashboard/ResumeResultsLoader";
 
 interface ResumePageProps {
   params: { id: string };

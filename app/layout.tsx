@@ -26,15 +26,15 @@ export const metadata: Metadata = {
     "job application tool",
     "ApplyCraft",
   ],
-  metadataBase: new URL(process.env.BASE_URL ?? "https://www.applycraft.xyz"),
+  metadataBase: new URL(process.env.BASE_URL ?? "https://applycraft.xyz"),
   alternates: {
-    canonical: "https://www.applycraft.xyz",
+    canonical: "https://applycraft.xyz",
   },
   openGraph: {
     title: "ApplyCraft — AI Resume Optimizer",
     description:
       "Rewrite your resume for any job in 30 seconds. ATS score, missing keywords, tailored bullets, cover letter.",
-    url: "https://www.applycraft.xyz",
+    url: "https://applycraft.xyz",
     siteName: "ApplyCraft",
     type: "website",
     images: [

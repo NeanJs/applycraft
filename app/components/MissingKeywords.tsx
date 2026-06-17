@@ -40,6 +40,7 @@ export default function MissingKeywords({ list }: { list: string[] }) {
   return (
     <div className="space-y-5">
       {/* Legend */}
+
       <div className="flex items-center gap-5">
         {(["high", "medium", "low"] as Priority[]).map((p) => (
           <span

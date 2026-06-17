@@ -5,7 +5,7 @@ import CoverLetter from "@/app/components/CoverLetter";
 import { handleDownload, handlePDFExport } from "@/app/services/services";
 import { ATSBreakdown, ResponseData, ResumeData } from "@/app/types/types";
 import { useState } from "react";
-import ResumeTemplate from "../template/resume-template";
+import ResumeTemplate from "@/app/template/resume-template";
 import Link from "next/link";
 import toast from "react-hot-toast";
 
@@ -283,7 +283,9 @@ export default function ResumeResults({
       {/* ── Missing keywords ── */}
       <section className="px-8 py-7 border-b border-gray-100 bg-white">
         <p className="text-[10px] uppercase text-gray-400">Skill gaps</p>
-        <h2 className="text-sm font-semibold mb-4 text-gray-600">Missing Keywords</h2>
+        <h2 className="text-sm font-semibold mb-4 text-gray-600">
+          Missing Keywords
+        </h2>
         <MissingKeywords list={result.missingKeywords} />
       </section>
 
@@ -291,7 +293,9 @@ export default function ResumeResults({
       {changesMade.length > 0 && (
         <section className="px-8 py-7 border-b border-gray-100 bg-gray-50/60">
           <p className="text-[10px] uppercase text-gray-400">Improvements</p>
-          <h2 className="text-sm font-semibold mb-3 text-gray-600">What was improved</h2>
+          <h2 className="text-sm font-semibold mb-3 text-gray-600">
+            What was improved
+          </h2>
           <ul className="text-xs text-gray-600 space-y-1">
             {changesMade.map((change, i) => (
               <li key={i}>• {change}</li>
@@ -304,7 +308,9 @@ export default function ResumeResults({
       {!isPreview && (
         <section className="px-8 py-7 bg-white">
           <p className="text-[10px] uppercase text-gray-400">Generated</p>
-          <h2 className="text-sm font-semibold mb-4 text-gray-600">Cover Letter</h2>
+          <h2 className="text-sm font-semibold mb-4 text-gray-600">
+            Cover Letter
+          </h2>
           <CoverLetter text={result.coverLetter} />
         </section>
       )}

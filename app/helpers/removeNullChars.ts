@@ -1,5 +1,3 @@
-import toast from "react-hot-toast";
-
 export function removeNullChars(value: unknown): unknown {
   if (typeof value === "string") {
     return value.replace(/\u0000/g, "");
@@ -16,9 +14,4 @@ export function removeNullChars(value: unknown): unknown {
   }
 
   return value;
-}
-
-export function handleError(error: unknown, message: string) {
-  console.error(error);
-  toast.error(message ?? "Something went wrong. Please try again.");
 }

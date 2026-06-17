@@ -8,6 +8,14 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+enum GenerationType {
+  ATS_ANALYSIS
+  COVER_LETTER
+  RESUME_SUMMARY
+  IMPROVED_BULLETS
+  RESUME_TAILOR
+}
+
 model User {
   id      String @id @default(cuid())
   clerkId String @unique
@@ -16,7 +24,8 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  resumes Resume[]
+  resumes     Resume[]
+  generations Generation[]
 }
 
 //
@@ -51,8 +60,9 @@ model Resume {
   // OPTIONAL QUALITY CONTROL
   confidenceScore Float?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  generations Generation[]
 
   @@index([userId])
   @@index([createdAt])
@@ -67,4 +77,28 @@ model AnonUsage {
   resetAt DateTime
 
   @@index([resetAt])
+}
+
+model Generation {
+  id String @id @default(cuid())
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
+
+  resumeId String?
+  resume   Resume? @relation(fields: [resumeId], references: [id])
+
+  type        GenerationType
+  jobTitle    String?
+  companyName String?
+
+  title String?
+
+  input  Json?
+  result Json
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([resumeId])
 }

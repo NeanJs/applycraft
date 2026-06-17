@@ -157,7 +157,7 @@ function LandingPage() {
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-3">
           <Link
-            href="/tailor"
+            href="/resume-tailor"
             className="bg-gray-900 text-white px-6 py-3 rounded-xl text-sm font-medium hover:bg-gray-700 transition-all hover:scale-[1.02] active:scale-[0.98]"
           >
             Tailor my resume — it&apos;s free →
@@ -244,7 +244,7 @@ function LandingPage() {
           First optimization is free. No card, no signup.
         </p>
         <Link
-          href="/tailor"
+          href="/resume-tailor"
           className="inline-flex items-center bg-gray-900 text-white px-7 py-3.5 rounded-xl text-sm font-medium hover:bg-gray-700 transition-all hover:scale-[1.02] active:scale-[0.98]"
         >
           Tailor my resume — it&apos;s free →

@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import { ResponseData } from "@/app/types/types";
-import ResumeResults from "@/app/components/ResumeResults";
+import ResumeResults from "@/app/components/dashboard/ResumeResults";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import { handleError } from "@/app/lib/helper";
+import { handleError } from "@/app/lib/errorHandler";
 import { useUser } from "@clerk/nextjs";
 import { track } from "@vercel/analytics/react";
+import { TAILOR_MODES } from "@/app/lib/ai/prompts/modes/modes";
 
 type StepStatus = "done" | "active" | "pending";
 
@@ -222,7 +223,11 @@ export default function TailorPage() {
       const res = await fetch("/api/tailor", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ resume, jobDescription }),
+        body: JSON.stringify({
+          resume,
+          jobDescription,
+          mode: TAILOR_MODES.FULL_OPTIMIZER,
+        }),
       });
 
       const data = await res.json();
