@@ -1,6 +1,5 @@
-import { GenerationType } from "@prisma/client";
+import { GenerationType, Prisma } from "@prisma/client";
 import { prisma } from "./prisma";
-import { Prisma } from "../generated/prisma/client";
 
 type SaveGenerationInput = {
   userId: string;
