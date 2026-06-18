@@ -241,7 +241,7 @@ export default function ResumeResults({
                     )
                   }
                 >
-                  {!resumeID && (
+                  {resumeID && (
                     <svg width="10" height="10" viewBox="0 0 16 16" fill="none">
                       <rect
                         x="3"
