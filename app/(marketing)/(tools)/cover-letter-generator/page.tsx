@@ -111,6 +111,7 @@ export default function CoverLetterPage() {
   const step3: StepStatus = result ? "done" : loading ? "active" : "pending";
 
   const isAnon = !result?.saved;
+
   const showStickyCTA = !!result && isAnon && !dismissedCTA;
 
   return (
