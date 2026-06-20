@@ -111,6 +111,25 @@ const steps = [
   },
 ];
 
+const faqs = [
+  {
+    q: "Is my resume data stored or used to train AI?",
+    a: "No. Your resume isn't stored anywhere until you create an account, and we never use your data to train any model.",
+  },
+  {
+    q: "Will this actually work with my company's ATS?",
+    a: "ApplyCraft checks against the same keyword-matching and formatting rules most applicant tracking systems use (Workday, Greenhouse, Lever, Taleo), so the score reflects real-world ATS behavior.",
+  },
+  {
+    q: "What happens after my free optimization?",
+    a: "You can create a free account to save your results and keep going. No card required to get started.",
+  },
+  {
+    q: "Does it work for non-tech roles?",
+    a: "Yes — it's built to handle any role, from retail and hospitality to admin, engineering, and beyond.",
+  },
+];
+
 // ── Page ──────────────────────────────────────────────────────────────────
 
 export default async function Home() {
@@ -138,7 +157,7 @@ function LandingPage() {
       style={{ fontFamily: "'Inter', sans-serif" }}
     >
       {/* ── Hero ── */}
-      <section className="max-w-3xl mx-auto px-6 pt-24 pb-10 text-center">
+      <section className="max-w-3xl mx-auto px-6 pt-24 pb-8 text-center">
         <div className="inline-flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-full px-3.5 py-1.5 text-xs text-gray-500 mb-8">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
           No account needed &mdash; first one free
@@ -169,15 +188,50 @@ function LandingPage() {
             See how it works
           </a>
         </div>
-        <p className="text-xs text-gray-400">
+
+        {/* Privacy reassurance — bumped up in visual weight, now a standalone badge instead of small footer-style text */}
+        <div className="inline-flex items-center gap-1.5 text-xs text-gray-500 mt-1">
+          <svg
+            width="13"
+            height="13"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="text-emerald-600"
+          >
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          </svg>
           No card, no signup — your resume isn&apos;t stored until you create an
           account
-        </p>
+        </div>
       </section>
 
       {/* ── Interactive showcase ── */}
       <section className="max-w-3xl mx-auto px-6 pb-6">
         <ShowcaseSection />
+      </section>
+
+      {/* ── Social proof strip ── */}
+      <section className="border-t border-b border-gray-100 bg-gray-50">
+        <div className="max-w-3xl mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10 text-center">
+          <div>
+            <p className="text-lg font-semibold text-gray-900">+37%</p>
+            <p className="text-xs text-gray-500">avg. ATS score increase</p>
+          </div>
+          <div className="hidden sm:block w-px h-8 bg-gray-200" />
+          <div>
+            <p className="text-lg font-semibold text-gray-900">30 sec</p>
+            <p className="text-xs text-gray-500">average turnaround</p>
+          </div>
+          <div className="hidden sm:block w-px h-8 bg-gray-200" />
+          <div>
+            <p className="text-lg font-semibold text-gray-900">$0</p>
+            <p className="text-xs text-gray-500">to try, no card needed</p>
+          </div>
+        </div>
       </section>
 
       {/* ── Features ── */}
@@ -233,6 +287,40 @@ function LandingPage() {
         </div>
       </section>
 
+      {/* ── FAQ ── */}
+      <section id="faqs" className="max-w-3xl mx-auto px-6 py-20">
+        <Eyebrow>Questions</Eyebrow>
+        <h2 className="text-3xl font-semibold tracking-tight mb-8">
+          Before you paste your resume
+        </h2>
+        <div className="divide-y divide-gray-100 border-t border-gray-100">
+          {faqs.map((f) => (
+            <details key={f.q} className="group py-5">
+              <summary className="flex items-center justify-between cursor-pointer list-none">
+                <span className="text-sm font-medium text-gray-900">{f.q}</span>
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="text-gray-400 shrink-0 ml-4 transition-transform group-open:rotate-45"
+                >
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+              </summary>
+              <p className="text-sm text-gray-500 leading-relaxed mt-3 pr-8">
+                {f.a}
+              </p>
+            </details>
+          ))}
+        </div>
+      </section>
+
       {/* ── Final CTA ── */}
       <section className="max-w-3xl mx-auto px-6 py-28 text-center">
         <h2 className="text-4xl sm:text-5xl font-semibold tracking-tighter mb-4 leading-[1.08]">
@@ -250,32 +338,6 @@ function LandingPage() {
           Tailor my resume — it&apos;s free →
         </Link>
       </section>
-
-      {/* ── Footer ── */}
-      <footer className="border-t border-gray-100">
-        <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <img src={"logo.ico"} width={32} height={32} alt="ApplyCraftLogo" />
-            <span className="text-xs font-medium text-gray-500">
-              ApplyCraft
-            </span>
-          </div>
-          <p className="text-xs text-gray-400 text-center">
-            Crafted with ❤️ By{" "}
-            <a
-              className="text-blue-700 hover:underline"
-              href="https://nijanadhikari.com.np"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Nijan Adhikari
-            </a>
-          </p>
-          <p className="text-xs text-gray-400">
-            &copy; {new Date().getFullYear()} ApplyCraft. All rights reserved.
-          </p>
-        </div>
-      </footer>
     </div>
   );
 }

@@ -23,7 +23,7 @@ import SingUpCTA from "@/app/components/SingUpCTA";
 import { TAILOR_MODES } from "@/app/lib/ai/prompts/modes/modes";
 import { ATSResults } from "@/app/components/ATSResults";
 import { ATSOnlyResult } from "@/app/types/tailor";
-import { generateToolMetadata } from "@/app/lib/seo/generateMetadata";
+import AnonStickyCTA from "@/app/components/misc/StickyCTA";
 
 const LOADING_STEPS: LoadingStep[] = [
   {
@@ -109,8 +109,7 @@ export default function AtsExtractorPage() {
     hasResume && hasJD ? "done" : hasResume ? "active" : "pending";
   const step3: StepStatus = result ? "done" : loading ? "active" : "pending";
 
-  const isAnon = !result?.saved;
-  const showStickyCTA = !!result && isAnon && !dismissedCTA;
+  const showStickyCTA = !!result && result.promptSignUp && !dismissedCTA;
 
   return (
     <ToolPageShell
@@ -124,34 +123,10 @@ export default function AtsExtractorPage() {
       ]}
       stickyCTA={
         showStickyCTA ? (
-          <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 px-6 py-3 flex items-center justify-between gap-4">
-            <div className="flex items-center gap-2.5">
-              <div className="w-1.5 h-1.5 rounded-full bg-emerald-600 flex-shrink-0" />
-              <p className="text-sm text-gray-500">
-                <span className="font-medium text-gray-900">
-                  Like what you see?
-                </span>{" "}
-                Sign up free to save this and run more analyses.
-              </p>
-            </div>
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <button
-                onClick={() => setDismissedCTA(true)}
-                className="hidden sm:block text-xs text-gray-400 border border-gray-200 rounded-lg px-3 py-2 hover:border-gray-300 transition-colors"
-              >
-                Dismiss
-              </button>
-              <Link
-                href="/sign-up"
-                onClick={() =>
-                  track("anon_cta_clicked", { source: "ats_sticky_bar" })
-                }
-                className="text-xs font-medium text-white bg-gray-900 rounded-lg px-4 py-2 hover:bg-gray-700 transition-colors whitespace-nowrap"
-              >
-                Create free account →
-              </Link>
-            </div>
-          </div>
+          <AnonStickyCTA
+            source="ats_sticky_bar"
+            onDismiss={() => setDismissedCTA(true)}
+          />
         ) : undefined
       }
     >
@@ -274,7 +249,7 @@ export default function AtsExtractorPage() {
           ) : undefined
         }
       />
-
+      {/* When Free Tier Reached */}
       {showSignupCTA && <SingUpCTA setShowSignupCTA={setShowSignupCTA} />}
     </ToolPageShell>
   );

@@ -9,6 +9,12 @@ export function parseClaudeResponse(message: any) {
     .replace(/```json/g, "")
     .replace(/```/g, "")
     .trim();
+  try {
+    return JSON.parse(cleaned);
+  } catch (error) {
+    console.error("FAILED JSON:");
+    console.error(cleaned);
 
-  return JSON.parse(cleaned);
+    throw error;
+  }
 }

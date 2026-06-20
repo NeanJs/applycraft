@@ -52,7 +52,12 @@ export function NavPublic() {
         >
           How It Works
         </a>
-
+        <a
+          href="#faqs"
+          className="text-sm text-gray-500 hover:text-gray-900 transition"
+        >
+          FAQs
+        </a>
         <ToolsDropdown />
 
         <Link

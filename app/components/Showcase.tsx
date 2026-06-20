@@ -60,7 +60,7 @@ export default function ShowcaseSection() {
   const delta = j.after - j.before;
 
   return (
-    <section className="w-full py-16 px-4">
+    <section className="w-full py-8 px-4">
       {/* Switcher */}
       <div className="text-center mb-8">
         <p className="text-[11px] font-medium text-gray-400 uppercase tracking-widest mb-3">

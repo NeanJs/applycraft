@@ -9,6 +9,8 @@ import { handleError } from "@/app/lib/errorHandler";
 import { useUser } from "@clerk/nextjs";
 import { track } from "@vercel/analytics/react";
 import { TAILOR_MODES } from "@/app/lib/ai/prompts/modes/modes";
+import JobDescriptionInput from "@/app/components/tools/JobDescriptionInput";
+import ResumeInput from "@/app/components/tools/ResumeInput";
 
 type StepStatus = "done" | "active" | "pending";
 
@@ -141,52 +143,6 @@ function Tip({ icon, label }: { icon: React.ReactNode; label: string }) {
 }
 
 // ── Input panel ───────────────────────────────────────────────────────────
-
-function InputPanel({
-  title,
-  icon,
-  placeholder,
-  value,
-  onChange,
-  maxLength,
-  badge,
-  footer,
-}: {
-  title: string;
-  icon: React.ReactNode;
-  placeholder: string;
-  value: string;
-  onChange: (v: string) => void;
-  maxLength: number;
-  badge?: React.ReactNode;
-  footer?: React.ReactNode;
-}) {
-  return (
-    <div className="flex flex-col border border-gray-200 rounded-2xl overflow-hidden bg-white">
-      <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
-        <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
-          {icon}
-          {title}
-        </div>
-        {badge}
-      </div>
-      <textarea
-        className="flex-1 min-h-[200px] px-4 py-3 text-sm text-gray-900 bg-white placeholder-gray-300 resize-none focus:outline-none leading-relaxed"
-        placeholder={placeholder}
-        value={value}
-        onChange={(e) => onChange(e.target.value.slice(0, maxLength))}
-      />
-      {footer && (
-        <div className="px-4 py-2.5 border-t border-gray-100 flex items-center justify-between">
-          {footer}
-          <span className="text-[11px] text-gray-300">
-            {value.length.toLocaleString()} / {maxLength.toLocaleString()}
-          </span>
-        </div>
-      )}
-    </div>
-  );
-}
 
 // ── Page ──────────────────────────────────────────────────────────────────
 
@@ -322,7 +278,13 @@ export default function TailorPage() {
 
         {/* Input grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
-          <InputPanel
+          <ResumeInput
+            onChange={setResume}
+            value={resume}
+            onPdfUpload={handlePdfUpload}
+            uploadingPdf={uploadingPdf}
+          />
+          {/* <InputPanel
             title="Your resume"
             icon={
               <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
@@ -385,8 +347,12 @@ export default function TailorPage() {
                 />
               </label>
             }
+          /> */}
+          <JobDescriptionInput
+            onChange={setJobDescription}
+            value={jobDescription}
           />
-          <InputPanel
+          {/* <InputPanel
             title="Job description"
             icon={
               <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
@@ -422,7 +388,7 @@ export default function TailorPage() {
                 <span className="text-[11px] text-gray-300">0 / 2500</span>
               )
             }
-          />
+          /> */}
         </div>
 
         {/* CTA */}

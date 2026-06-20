@@ -46,7 +46,7 @@ ${jobDescription.slice(0, 3000)}`
       },
     ],
   });
-
+  console.log(response);
   const parsed = parseClaudeResponse(response);
 
   return {

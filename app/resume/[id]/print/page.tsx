@@ -13,30 +13,25 @@ export default async function PrintPage({
   searchParams: Promise<{ printToken?: string }>;
 }) {
   const { id } = await params;
-  // const { printToken } = await searchParams;
+  const { printToken } = await searchParams;
 
-  // if (!printToken) {
-  //   console.log("404: Missing print token");
+  if (!printToken) {
+    notFound();
+  }
 
-  //   notFound();
-  // }
-  console.log(params);
-  // try {
-  //   const payload = jwt.verify(printToken, process.env.PRINT_TOKEN_SECRET!) as {
-  //     resumeId: string;
-  //   };
+  try {
+    const payload = jwt.verify(printToken, process.env.PRINT_TOKEN_SECRET!) as {
+      resumeId: string;
+    };
 
-  //   if (payload.resumeId !== id) notFound();
-  // } catch {
-  //   notFound();
-  // }
+    if (payload.resumeId !== id) notFound();
+  } catch {
+    notFound();
+  }
 
-  console.log("PRINT PAGE RESUME ID:", id);
   const resume = await prisma.resume.findUnique({ where: { id } });
 
-  console.log("RESUME FOUND:", !!resume);
   if (!resume) {
-    console.log("missing resume");
     notFound();
   }
 

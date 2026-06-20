@@ -62,10 +62,11 @@ Return ONLY valid JSON.
 
 {
   ${JOB_METADATA_SCHEMA},
-  "bullets": [
+  experiences: [
     {
-      "original": string,
-      "improved": string
+      company: string,
+      role: string,
+      improvedBullets: string[]
     }
   ]
 }

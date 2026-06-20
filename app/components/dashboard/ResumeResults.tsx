@@ -112,7 +112,7 @@ export default function ResumeResults({
   };
 
   const isCopied = copied || localCopied;
-
+  console.log(resumeID);
   const atsBefore = result.atsBefore ?? 0;
   const atsAfter = result.atsAfter ?? 0;
   const improvement = atsAfter - atsBefore;
@@ -241,7 +241,7 @@ export default function ResumeResults({
                     )
                   }
                 >
-                  {resumeID && (
+                  {!resumeID && (
                     <svg width="10" height="10" viewBox="0 0 16 16" fill="none">
                       <rect
                         x="3"
@@ -262,6 +262,7 @@ export default function ResumeResults({
                   )}
                   Export PDF
                 </ActionButton>
+
                 {!resumeID && (
                   <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1.5 bg-gray-900 text-white text-[11px] rounded-lg whitespace-nowrap opacity-0 group-hover/export:opacity-100 transition-opacity pointer-events-none">
                     Sign up to export

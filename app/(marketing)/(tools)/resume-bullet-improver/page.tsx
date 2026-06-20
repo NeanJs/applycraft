@@ -22,7 +22,8 @@ import { useToolEngine } from "@/app/hooks/useToolEngine";
 import SignUpCTA from "@/app/components/SingUpCTA";
 
 import { TAILOR_MODES } from "@/app/lib/ai/prompts/modes/modes";
-import { ImprovedBullet, ImprovedBulletsResult } from "@/app/types/tailor";
+import { ExperienceOptimizerResults } from "@/app/types/tailor";
+import AnonStickyCTA from "@/app/components/misc/StickyCTA";
 
 // ── Types ─────────────────────────────────────────────────────────────────
 
@@ -30,7 +31,7 @@ import { ImprovedBullet, ImprovedBulletsResult } from "@/app/types/tailor";
 
 const LOADING_STEPS: LoadingStep[] = [
   {
-    label: "Extracting existing bullets",
+    label: "Extracting existing experience",
     doneLabel: "extracted",
     doneVariant: "text",
   },
@@ -41,22 +42,67 @@ const LOADING_STEPS: LoadingStep[] = [
 
 // ── Bullet card ───────────────────────────────────────────────────────────
 
-function BulletCard({ bullets }: { bullets: ImprovedBullet[] }) {
-  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+function CopyIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+      <rect
+        x="5"
+        y="5"
+        width="8"
+        height="8"
+        rx="1"
+        stroke="currentColor"
+        strokeWidth="1.25"
+      />
+      <path
+        d="M3 11V3.75C3 3.336 3.336 3 3.75 3H11"
+        stroke="currentColor"
+        strokeWidth="1.25"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function CheckIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+      <path
+        d="M3.5 8.5l3 3 6-7"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function ExperienceOptimizer({ experiences }: ExperienceOptimizerResults) {
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [copiedAll, setCopiedAll] = useState(false);
 
-  function copyOne(text: string, i: number) {
+  const totalBullets = experiences.reduce(
+    (total, experience) => total + experience.improvedBullets.length,
+    0,
+  );
+
+  function copyOne(text: string, key: string) {
     navigator.clipboard.writeText(text).then(() => {
-      setCopiedIndex(i);
+      setCopiedKey(key);
 
       setTimeout(() => {
-        setCopiedIndex(null);
+        setCopiedKey(null);
       }, 2000);
     });
   }
 
   function copyAll() {
-    const text = bullets.map((bullet) => bullet.improved).join("\n");
+    const text = experiences
+      .flatMap((experience) =>
+        experience.improvedBullets.map((bullet) => `• ${bullet}`),
+      )
+      .join("\n");
 
     navigator.clipboard.writeText(text).then(() => {
       setCopiedAll(true);
@@ -72,17 +118,16 @@ function BulletCard({ bullets }: { bullets: ImprovedBullet[] }) {
       {/* Header */}
       <div className="px-5 py-3 border-b border-gray-100 flex items-center justify-between">
         <span className="text-xs font-medium text-gray-500 uppercase tracking-widest">
-          Improved Bullets
+          Optimized Experience
         </span>
 
         <button
           onClick={copyAll}
-          className={`flex items-center gap-1.5 text-[11px] font-medium px-3 py-1.5 rounded-lg border transition-all
-            ${
-              copiedAll
-                ? "bg-emerald-50 border-emerald-200 text-emerald-700"
-                : "bg-gray-50 border-gray-200 text-gray-500 hover:border-gray-300 hover:text-gray-700"
-            }`}
+          className={`flex items-center gap-1.5 text-[11px] font-medium px-3 py-1.5 rounded-lg border transition-all ${
+            copiedAll
+              ? "bg-emerald-50 border-emerald-200 text-emerald-700"
+              : "bg-gray-50 border-gray-200 text-gray-500 hover:border-gray-300 hover:text-gray-700"
+          }`}
         >
           {copiedAll ? (
             <>
@@ -98,102 +143,77 @@ function BulletCard({ bullets }: { bullets: ImprovedBullet[] }) {
         </button>
       </div>
 
-      {/* Bullet list */}
-      <ul className="divide-y divide-gray-100">
-        {bullets.map((bullet, i) => (
-          <li
-            key={i}
-            className="group px-5 py-4 hover:bg-gray-50 transition-colors"
+      {/* Experiences */}
+      <div>
+        {experiences.map((experience, index) => (
+          <section
+            key={index}
+            className="border-b border-gray-100 last:border-none"
           >
-            {/* Original */}
-            <div className="mb-3">
-              <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-1">
-                Original
-              </p>
+            {/* Experience heading */}
+            <div className="px-5 py-3 bg-gray-50">
+              <h3 className="text-sm font-medium text-gray-900">
+                {experience.role}
+              </h3>
 
-              <p className="text-sm text-gray-500 leading-relaxed">
-                {bullet.original}
+              <p className="text-xs text-gray-500 mt-0.5">
+                {experience.company}
               </p>
             </div>
 
-            {/* Improved */}
-            <div className="flex items-start gap-3">
-              <span className="mt-[6px] w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0" />
+            {/* Bullets */}
+            <ul className="divide-y divide-gray-100">
+              {experience.improvedBullets.map((bullet, bulletIndex) => {
+                const key = `${index}-${bulletIndex}`;
 
-              <p className="flex-1 text-sm text-gray-900 leading-relaxed">
-                {bullet.improved}
-              </p>
+                return (
+                  <li
+                    key={key}
+                    className="group px-5 py-4 flex items-start gap-3 hover:bg-gray-50 transition-colors"
+                  >
+                    <span className="mt-[6px] w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0" />
 
-              <button
-                onClick={() => copyOne(bullet.improved, i)}
-                className={`flex-shrink-0 flex items-center gap-1 text-[11px] font-medium px-2.5 py-1 rounded-lg border transition-all opacity-0 group-hover:opacity-100
-                  ${
-                    copiedIndex === i
-                      ? "bg-emerald-50 border-emerald-200 text-emerald-700 opacity-100"
-                      : "bg-white border-gray-200 text-gray-400 hover:text-gray-600 hover:border-gray-300"
-                  }`}
-              >
-                {copiedIndex === i ? (
-                  <>
-                    <CheckIcon />
-                    Copied
-                  </>
-                ) : (
-                  <>
-                    <CopyIcon />
-                    Copy
-                  </>
-                )}
-              </button>
-            </div>
-          </li>
+                    <p className="flex-1 text-sm text-gray-900 leading-relaxed">
+                      {bullet}
+                    </p>
+
+                    <button
+                      onClick={() => copyOne(bullet, key)}
+                      className={`flex-shrink-0 flex items-center gap-1 text-[11px] font-medium px-2.5 py-1 rounded-lg border transition-all opacity-0 group-hover:opacity-100 ${
+                        copiedKey === key
+                          ? "bg-emerald-50 border-emerald-200 text-emerald-700 opacity-100"
+                          : "bg-white border-gray-200 text-gray-400 hover:text-gray-600 hover:border-gray-300"
+                      }`}
+                    >
+                      {copiedKey === key ? (
+                        <>
+                          <CheckIcon />
+                          Copied
+                        </>
+                      ) : (
+                        <>
+                          <CopyIcon />
+                          Copy
+                        </>
+                      )}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
         ))}
-      </ul>
+      </div>
 
-      {/* Footer count */}
+      {/* Footer */}
       <div className="px-5 py-2.5 border-t border-gray-100">
         <p className="text-[11px] text-gray-400">
-          {bullets.length} bullet{bullets.length !== 1 ? "s" : ""} rewritten
+          {totalBullets} bullet{totalBullets !== 1 ? "s" : ""} optimized across{" "}
+          {experiences.length} experience
+          {experiences.length !== 1 ? "s" : ""}
         </p>
       </div>
     </div>
-  );
-}
-
-function CopyIcon() {
-  return (
-    <svg width="10" height="10" viewBox="0 0 16 16" fill="none">
-      <rect
-        x="5"
-        y="5"
-        width="9"
-        height="9"
-        rx="1.5"
-        stroke="currentColor"
-        strokeWidth="1.25"
-      />
-
-      <path
-        d="M11 5V3.5A1.5 1.5 0 009.5 2h-6A1.5 1.5 0 002 3.5v6A1.5 1.5 0 003.5 11H5"
-        stroke="currentColor"
-        strokeWidth="1.25"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
-function CheckIcon() {
-  return (
-    <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-      <path
-        d="M1.5 5l2.5 2.5 4.5-4.5"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
   );
 }
 
@@ -210,7 +230,7 @@ export default function ImprovedBulletsPage() {
   const { isSignedIn } = useUser();
 
   const { result, loading, loadingStep, generate } =
-    useToolEngine<ImprovedBulletsResult>({
+    useToolEngine<ExperienceOptimizerResults>({
       apiRoute: "/api/tailor",
       buildBody: () => ({
         resume,
@@ -264,8 +284,7 @@ export default function ImprovedBulletsPage() {
   const step1: StepStatus = hasResume ? "done" : "active";
   const step2: StepStatus = result ? "done" : loading ? "active" : "pending";
 
-  const isAnon = !result?.saved;
-  const showStickyCTA = !!result && isAnon && !dismissedCTA;
+  const showStickyCTA = !!result && result.promptSignUp && !dismissedCTA;
 
   return (
     <ToolPageShell
@@ -278,34 +297,10 @@ export default function ImprovedBulletsPage() {
       ]}
       stickyCTA={
         showStickyCTA ? (
-          <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 px-6 py-3 flex items-center justify-between gap-4">
-            <div className="flex items-center gap-2.5">
-              <div className="w-1.5 h-1.5 rounded-full bg-emerald-600 flex-shrink-0" />
-              <p className="text-sm text-gray-500">
-                <span className="font-medium text-gray-900">
-                  Like what you see?
-                </span>{" "}
-                Sign up free to save this and improve more.
-              </p>
-            </div>
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <button
-                onClick={() => setDismissedCTA(true)}
-                className="hidden sm:block text-xs text-gray-400 border border-gray-200 rounded-lg px-3 py-2 hover:border-gray-300 transition-colors"
-              >
-                Dismiss
-              </button>
-              <Link
-                href="/sign-up"
-                onClick={() =>
-                  track("anon_cta_clicked", { source: "bullets_sticky_bar" })
-                }
-                className="text-xs font-medium text-white bg-gray-900 rounded-lg px-4 py-2 hover:bg-gray-700 transition-colors whitespace-nowrap"
-              >
-                Create free account →
-              </Link>
-            </div>
-          </div>
+          <AnonStickyCTA
+            source="bullets_improver"
+            onDismiss={() => setDismissedCTA(true)}
+          />
         ) : undefined
       }
     >
@@ -453,7 +448,7 @@ export default function ImprovedBulletsPage() {
         result={
           result ? (
             <ResultPanel
-              job={result.job}
+              job={result.job ?? undefined}
               footer={
                 <>
                   <p className="text-xs text-gray-400">
@@ -468,7 +463,7 @@ export default function ImprovedBulletsPage() {
                 </>
               }
             >
-              <BulletCard bullets={result.bullets} />
+              <ExperienceOptimizer experiences={result.experiences} />
             </ResultPanel>
           ) : undefined
         }

@@ -7,7 +7,8 @@ export interface JobMetadata {
   companyName: string;
 }
 interface GenerationMetadata {
-  saved: boolean;
+  saved?: boolean;
+  promptSignUp?: boolean;
 }
 export interface ATSOnlyBreakdown {
   structure: number;
@@ -44,6 +45,7 @@ export interface ATSOnlyResult extends GenerationMetadata {
 
   mode: "ats_only";
 }
+
 export interface SummaryVersions {
   conservative: string;
   balanced: string;
@@ -60,14 +62,15 @@ export interface CoverLetterResult extends GenerationMetadata {
   coverLetter: string;
 }
 
-export interface ImprovedBullet {
-  original: string;
-  improved: string;
+interface Experience {
+  company: string;
+  role: string;
+  improvedBullets: string[];
 }
 
-export interface ImprovedBulletsResult extends GenerationMetadata {
-  bullets: ImprovedBullet[];
-  job: JobMetadata;
+export interface ExperienceOptimizerResults extends GenerationMetadata {
+  experiences: Experience[];
+  job?: JobMetadata;
 }
 
 export interface FullOptimizerResult extends GenerationMetadata {
@@ -87,7 +90,7 @@ export type TailorResultMap = {
   ats_only: ATSResult;
   summary_only: SummaryResult;
   cover_letter_only: CoverLetterResult;
-  bullet_improver: ImprovedBulletsResult;
+  bullet_improver: ExperienceOptimizerResults;
 };
 export const JOB_METADATA_SCHEMA = `
 "job":{

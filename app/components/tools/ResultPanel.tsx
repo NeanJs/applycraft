@@ -7,10 +7,12 @@ interface ResultPanelProps {
   children: React.ReactNode;
   /** Optional footer shown below the result (e.g. "Optimize again" hint + back link) */
   footer?: React.ReactNode;
-  job?: {
-    jobTitle?: string;
-    companyName?: string;
-  };
+  job?:
+    | {
+        jobTitle?: string;
+        companyName?: string;
+      }
+    | undefined;
 }
 
 /**

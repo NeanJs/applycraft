@@ -27,7 +27,6 @@ const BREAKDOWN_META: Record<
   },
 };
 function ATSBreakdownCard({ breakdown }: ATSBreakdownCardProps) {
-  console.log(breakdown);
   return (
     breakdown && (
       <>
