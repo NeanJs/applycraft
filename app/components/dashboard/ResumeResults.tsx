@@ -112,7 +112,7 @@ export default function ResumeResults({
   };
 
   const isCopied = copied || localCopied;
-  console.log(resumeID);
+
   const atsBefore = result.atsBefore ?? 0;
   const atsAfter = result.atsAfter ?? 0;
   const improvement = atsAfter - atsBefore;
