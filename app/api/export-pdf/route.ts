@@ -31,7 +31,8 @@ export async function POST(req: Request) {
       expiresIn: "2m",
     });
 
-    const url = `${process.env.BASE_URL}/resume/${resumeId}/print?token=${token}`;
+    // const url = `${process.env.BASE_URL}/resume/${resumeId}/print?printToken=${encodeURIComponent(token)}`;
+    const url = `${process.env.BASE_URL}/resume/${resumeId}/print`;
     const browserlessToken = process.env.BROWSERLESS_TOKEN;
 
     const pdfRes = await fetch(
@@ -41,7 +42,8 @@ export async function POST(req: Request) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           url,
-          gotoOptions: { waitUntil: "networkidle0" },
+          gotoOptions: { waitUntil: "domcontentloaded" },
+
           options: {
             printBackground: true,
             format: "A4",
@@ -55,7 +57,7 @@ export async function POST(req: Request) {
         }),
       },
     );
-
+    console.log("PDF URL:", url);
     if (!pdfRes.ok) {
       const text = await pdfRes.text();
       console.error("Browserless error:", text);

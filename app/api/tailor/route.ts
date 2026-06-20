@@ -55,11 +55,35 @@ export async function POST(req: Request) {
     jobDescription,
     mode: mode ?? "full_optimizer",
   });
-  let saved = false;
   const generationMeta = getGenerationMeta(result.mode);
-  if (dbUser) {
-    await saveGeneration({
+
+  let saved = false;
+  let resumeData = null;
+  let generationData = null;
+
+  if (dbUser && result.mode === "full_optimizer") {
+    resumeData = await prisma.resume.create({
+      data: {
+        user: {
+          connect: {
+            id: dbUser.id,
+          },
+        },
+        originalResume: resume,
+        jobDescription,
+        title: generationMeta.title,
+        atsBefore: result.data.atsBefore,
+        atsAfter: result.data.atsAfter,
+        optimizedResume: result.data.optimizedResume,
+        coverLetter: result.data.coverLetter,
+        missingKeywords: result.data.missingKeywords ?? [],
+        changesMade: result.data.changesMade ?? [],
+      },
+    });
+
+    generationData = await saveGeneration({
       userId: dbUser.id,
+      resumeId: resumeData.id,
       type: generationMeta.type,
       title: generationMeta.title,
       result: result.data,
@@ -68,11 +92,15 @@ export async function POST(req: Request) {
         jobDescription,
       },
     });
+
     saved = true;
   }
   return Response.json({
     ...result.data,
     mode: result.mode,
     saved,
+    promptSignUp: !dbUser,
+    resumeId: resumeData?.id ?? null,
+    generationId: generationData?.id ?? null,
   });
 }

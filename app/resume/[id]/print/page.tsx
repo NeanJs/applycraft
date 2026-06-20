@@ -1,3 +1,4 @@
+import { SampleResumeData } from "@/app/constant/data";
 import { prisma } from "@/app/lib/prisma";
 import ResumeTemplate from "@/app/template/resume-template";
 import { ResumeData } from "@/app/types/types";
@@ -9,25 +10,35 @@ export default async function PrintPage({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ token?: string }>;
+  searchParams: Promise<{ printToken?: string }>;
 }) {
   const { id } = await params;
-  const { token } = await searchParams;
+  // const { printToken } = await searchParams;
 
-  if (!token) notFound();
+  // if (!printToken) {
+  //   console.log("404: Missing print token");
 
-  try {
-    const payload = jwt.verify(token, process.env.PRINT_TOKEN_SECRET!) as {
-      resumeId: string;
-    };
+  //   notFound();
+  // }
+  console.log(params);
+  // try {
+  //   const payload = jwt.verify(printToken, process.env.PRINT_TOKEN_SECRET!) as {
+  //     resumeId: string;
+  //   };
 
-    if (payload.resumeId !== id) notFound();
-  } catch {
+  //   if (payload.resumeId !== id) notFound();
+  // } catch {
+  //   notFound();
+  // }
+
+  console.log("PRINT PAGE RESUME ID:", id);
+  const resume = await prisma.resume.findUnique({ where: { id } });
+
+  console.log("RESUME FOUND:", !!resume);
+  if (!resume) {
+    console.log("missing resume");
     notFound();
   }
-
-  const resume = await prisma.resume.findUnique({ where: { id } });
-  if (!resume) notFound();
 
   return (
     <>

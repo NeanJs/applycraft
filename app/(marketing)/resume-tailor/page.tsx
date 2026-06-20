@@ -343,7 +343,7 @@ export default function TailorPage() {
             placeholder="Paste your current resume here…"
             value={resume}
             onChange={setResume}
-            maxLength={4000}
+            maxLength={5000}
             badge={
               hasResume ? (
                 <span className="text-[11px] px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700">
@@ -351,7 +351,7 @@ export default function TailorPage() {
                 </span>
               ) : (
                 <span className="text-[11px] text-gray-300">
-                  {resume.length} / 4000
+                  {resume.length} / 5000
                 </span>
               )
             }
@@ -412,7 +412,7 @@ export default function TailorPage() {
             }
             value={jobDescription}
             onChange={setJobDescription}
-            maxLength={2500}
+            maxLength={3000}
             badge={
               hasJD ? (
                 <span className="text-[11px] px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700">

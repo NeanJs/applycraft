@@ -33,13 +33,13 @@ ${modePrompt}
         role: "user",
         content: `
 RESUME:
-${resume.slice(0, 6000)}
+${resume.slice(0, 5000)}
 
 JOB DESCRIPTION:
 ${
   jobDescription?.trim()
     ? `JOB DESCRIPTION:
-${jobDescription.slice(0, 2500)}`
+${jobDescription.slice(0, 3000)}`
     : ""
 }
         `,
