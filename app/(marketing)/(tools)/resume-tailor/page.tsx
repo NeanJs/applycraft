@@ -156,8 +156,8 @@ export default function TailorPage() {
   const [uploadingPdf, setUploadingPdf] = useState(false);
   // Anon Usage CTA
   const [dismissedCTA, setDismissedCTA] = useState(false);
-  const isAnon = !result?.saved;
-  const showStickyCTA = !!result && isAnon && !dismissedCTA;
+
+  const showStickyCTA = !!result && result.promptSignup && !dismissedCTA;
 
   const hasResume = resume.trim().length > 0;
   const hasJD = jobDescription.trim().length > 0;
@@ -284,111 +284,11 @@ export default function TailorPage() {
             onPdfUpload={handlePdfUpload}
             uploadingPdf={uploadingPdf}
           />
-          {/* <InputPanel
-            title="Your resume"
-            icon={
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                <path
-                  d="M9 1H3a1 1 0 00-1 1v12a1 1 0 001 1h10a1 1 0 001-1V6L9 1z"
-                  stroke="currentColor"
-                  strokeWidth="1.25"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M9 1v5h5M5 9h6M5 11.5h4"
-                  stroke="currentColor"
-                  strokeWidth="1.25"
-                  strokeLinecap="round"
-                />
-              </svg>
-            }
-            placeholder="Paste your current resume here…"
-            value={resume}
-            onChange={setResume}
-            maxLength={5000}
-            badge={
-              hasResume ? (
-                <span className="text-[11px] px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700">
-                  ready
-                </span>
-              ) : (
-                <span className="text-[11px] text-gray-300">
-                  {resume.length} / 5000
-                </span>
-              )
-            }
-            footer={
-              <label className="text-[11px] text-gray-400 flex items-center gap-1 cursor-pointer hover:text-gray-600 transition-colors">
-                {uploadingPdf ? (
-                  <>
-                    <span className="w-2.5 h-2.5 border border-gray-400 border-t-transparent rounded-full animate-spin" />
-                    Parsing PDF…
-                  </>
-                ) : (
-                  <>
-                    <svg width="10" height="10" viewBox="0 0 16 16" fill="none">
-                      <path
-                        d="M8 2v8m0 0l-3-3m3 3l3-3M2 13h12"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    Upload PDF instead
-                  </>
-                )}
-                <input
-                  type="file"
-                  accept=".pdf"
-                  className="hidden"
-                  onChange={handlePdfUpload}
-                  disabled={uploadingPdf}
-                />
-              </label>
-            }
-          /> */}
+
           <JobDescriptionInput
             onChange={setJobDescription}
             value={jobDescription}
           />
-          {/* <InputPanel
-            title="Job description"
-            icon={
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                <rect
-                  x="1"
-                  y="3"
-                  width="14"
-                  height="11"
-                  rx="1.5"
-                  stroke="currentColor"
-                  strokeWidth="1.25"
-                />
-                <path
-                  d="M5 7h6M5 10h4"
-                  stroke="currentColor"
-                  strokeWidth="1.25"
-                  strokeLinecap="round"
-                />
-              </svg>
-            }
-            placeholder={
-              "Paste the full job description here…\n\nTip: include the complete posting for the best keyword match."
-            }
-            value={jobDescription}
-            onChange={setJobDescription}
-            maxLength={3000}
-            badge={
-              hasJD ? (
-                <span className="text-[11px] px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700">
-                  ready
-                </span>
-              ) : (
-                <span className="text-[11px] text-gray-300">0 / 2500</span>
-              )
-            }
-          /> */}
         </div>
 
         {/* CTA */}

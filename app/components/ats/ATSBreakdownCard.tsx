@@ -63,7 +63,6 @@ function BreakdownRow({
   description: string;
   value: number;
 }) {
-  console.log(value);
   const pct = Math.round(value);
   const color =
     pct >= 75 ? "bg-emerald-500" : pct >= 50 ? "bg-amber-400" : "bg-red-400";

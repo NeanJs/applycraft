@@ -1,4 +1,3 @@
-import { SampleResumeData } from "@/app/constant/data";
 import { prisma } from "@/app/lib/prisma";
 import ResumeTemplate from "@/app/template/resume-template";
 import { ResumeData } from "@/app/types/types";
