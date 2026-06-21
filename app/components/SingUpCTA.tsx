@@ -17,7 +17,7 @@ export default function SignUpCTA({
   return (
     <div className="mt-6 bg-white border border-gray-200 rounded-2xl px-5 py-4 flex items-center justify-between gap-4">
       <div className="flex items-center gap-3">
-        <div className="w-9 h-9 rounded-full bg-gray-50 border border-gray-200 flex items-center justify-center flex-shrink-0">
+        <div className="w-9 h-9 rounded-full bg-gray-50 border border-gray-200 flex items-center justify-center shrink-0">
           <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
             <rect
               x="3"
@@ -41,7 +41,7 @@ export default function SignUpCTA({
           <p className="text-xs text-gray-500 mt-0.5">{description}</p>
         </div>
       </div>
-      <div className="flex items-center gap-2 flex-shrink-0">
+      <div className="flex items-center gap-2 shrink-0">
         <button
           onClick={() => setShowSignupCTA(false)}
           className="text-xs text-gray-400 border border-gray-200 rounded-lg px-3 py-2 hover:border-gray-300 hover:text-gray-600 transition-colors"

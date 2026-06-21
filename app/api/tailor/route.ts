@@ -6,6 +6,7 @@ import {
 } from "@/app/helpers/checkAnonRateLimit";
 import { saveGeneration } from "@/app/lib/saveGeneration";
 import { prisma } from "@/app/lib/prisma";
+import { syncUser } from "@/app/lib/sync-user";
 
 import { getGenerationMeta } from "@/app/helpers/getGenerationMeta";
 import { TAILOR_MODES } from "@/app/lib/ai/prompts/modes/modes";
@@ -26,13 +27,7 @@ export async function POST(req: Request) {
   }
 
   const { userId } = await auth();
-  const dbUser = userId
-    ? await prisma.user.findUnique({
-        where: {
-          clerkId: userId,
-        },
-      })
-    : null;
+  const dbUser = userId ? await syncUser() : null;
   const isAuthed = !!userId;
 
   if (!isAuthed) {
@@ -53,15 +48,15 @@ export async function POST(req: Request) {
   const result = await runTailorEngine({
     resume,
     jobDescription,
-    mode: mode ?? "full_optimizer",
+    mode: mode,
   });
-  const generationMeta = getGenerationMeta(result.mode);
+  const generationMeta = getGenerationMeta(result.mode, result.data.job);
 
   let saved = false;
   let resumeData = null;
   let generationData = null;
 
-  if (dbUser && result.mode === "full_optimizer") {
+  if (dbUser && result.mode === TAILOR_MODES.FULL_OPTIMIZER) {
     resumeData = await prisma.resume.create({
       data: {
         user: {
@@ -74,6 +69,7 @@ export async function POST(req: Request) {
         title: generationMeta.title,
         atsBefore: result.data.atsBefore,
         atsAfter: result.data.atsAfter,
+        atsBreakdown: result.data.atsBreakdown,
         optimizedResume: result.data.optimizedResume,
         coverLetter: result.data.coverLetter,
         missingKeywords: result.data.missingKeywords ?? [],
@@ -95,6 +91,7 @@ export async function POST(req: Request) {
 
     saved = true;
   }
+
   return Response.json({
     ...result.data,
     mode: result.mode,

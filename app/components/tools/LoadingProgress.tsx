@@ -32,7 +32,7 @@ export default function LoadingProgress({
           return (
             <div key={s.label} className="flex items-center gap-3 text-sm">
               <div
-                className={`w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 border
+                className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 border
                   ${
                     done
                       ? "bg-emerald-50 border-emerald-200"

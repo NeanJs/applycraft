@@ -72,7 +72,7 @@ function BreakdownRow({
 
   return (
     <div className="flex items-center gap-4">
-      <div className="w-32 flex-shrink-0">
+      <div className="w-32 shrink-0">
         <p className="text-xs font-medium text-gray-700">{label}</p>
         <p className="text-[11px] text-gray-400 leading-tight">{description}</p>
       </div>
@@ -110,7 +110,7 @@ export default function ResumeResults({
     toast.success("Copied to clipboard!!");
     setTimeout(() => setLocalCopied(false), 2000);
   };
-
+  console.log(result);
   const isCopied = copied || localCopied;
 
   const atsBefore = result.atsBefore ?? 0;

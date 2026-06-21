@@ -3,6 +3,7 @@ import Link from "next/link";
 import { prisma } from "@/app/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
 import ResumeList from "@/app/components/dashboard/ResumeLists";
+import { auth } from "@clerk/nextjs/server";
 
 async function getResumes(userId: string) {
   return prisma.resume.findMany({
@@ -44,7 +45,7 @@ export default async function DashboardPage() {
   );
 }
 
-function DashboardUI({
+async function DashboardUI({
   resumes,
   firstName,
 }: {

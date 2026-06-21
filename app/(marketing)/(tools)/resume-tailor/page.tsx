@@ -26,7 +26,7 @@ function Step({
   return (
     <div className="flex items-center gap-2">
       <div
-        className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-medium flex-shrink-0 border transition-colors
+        className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-medium shrink-0 border transition-colors
           ${
             status === "done"
               ? "bg-emerald-50 border-emerald-200 text-emerald-700"
@@ -87,7 +87,7 @@ function LoadingProgress({ step }: { step: number }) {
           return (
             <div key={s.label} className="flex items-center gap-3 text-sm">
               <div
-                className={`w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 border
+                className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 border
                   ${
                     done
                       ? "bg-emerald-50 border-emerald-200"
@@ -200,6 +200,7 @@ export default function TailorPage() {
       }
 
       toast.success("Your resume is ready.");
+
       setResult(data);
     } catch (error) {
       handleError(error, "Something went wrong. Please try again later.");
@@ -404,7 +405,7 @@ export default function TailorPage() {
         {showSignupCTA && (
           <div className="mt-6 bg-white border border-gray-200 rounded-2xl px-5 py-4 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-full bg-gray-50 border border-gray-200 flex items-center justify-center flex-shrink-0">
+              <div className="w-9 h-9 rounded-full bg-gray-50 border border-gray-200 flex items-center justify-center shrink-0">
                 <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
                   <rect
                     x="3"
@@ -433,7 +434,7 @@ export default function TailorPage() {
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="flex items-center gap-2 shrink-0">
               <button
                 onClick={() => setShowSignupCTA(false)}
                 className="text-xs text-gray-400 border border-gray-200 rounded-lg px-3 py-2 hover:border-gray-300 hover:text-gray-600 transition-colors"
@@ -455,7 +456,7 @@ export default function TailorPage() {
         {showStickyCTA && (
           <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 px-6 py-3 flex items-center justify-between gap-4">
             <div className="flex items-center gap-2.5">
-              <div className="w-1.5 h-1.5 rounded-full bg-emerald-600 flex-shrink-0" />
+              <div className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0" />
               <p className="text-sm text-gray-500">
                 <span className="font-medium text-gray-900">
                   Like what you see?
@@ -463,7 +464,7 @@ export default function TailorPage() {
                 Sign up free to save this and optimize again.
               </p>
             </div>
-            <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="flex items-center gap-2 shrink-0">
               <button
                 onClick={() => setDismissedCTA(true)}
                 className="hidden sm:block text-xs t text-gray-400 border border-gray-200 rounded-lg px-3 py-2 hover:border-gray-300 transition-colors"

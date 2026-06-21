@@ -5,15 +5,12 @@ export function generateToolMetadata(slug: keyof typeof toolSEO): Metadata {
   const seo = toolSEO[slug];
 
   return {
-    title: seo.title,
+    title: { absolute: seo.title },
     description: seo.description,
-
     keywords: seo.keywords,
-
     alternates: {
       canonical: `https://applycraft.xyz/${slug}`,
     },
-
     openGraph: {
       title: seo.title,
       description: seo.description,
@@ -21,7 +18,6 @@ export function generateToolMetadata(slug: keyof typeof toolSEO): Metadata {
       siteName: "ApplyCraft",
       type: "website",
     },
-
     twitter: {
       card: "summary_large_image",
       title: seo.title,

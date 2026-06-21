@@ -34,6 +34,7 @@
     "react-dom": "19.2.4",
     "react-hot-toast": "^2.6.0",
     "stripe": "^22.2.0",
+    "svix": "^1.96.0",
     "unpdf": "^1.6.2"
   },
   "devDependencies": {

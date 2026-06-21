@@ -198,7 +198,7 @@ export default function ShowcaseSection() {
               { label: "Role match", val: j.bd[3] },
             ].map((row) => (
               <div key={row.label} className="flex items-center gap-2 mb-1.5">
-                <span className="text-[10px] text-gray-400 w-16 flex-shrink-0">
+                <span className="text-[10px] text-gray-400 w-16 shrink-0">
                   {row.label}
                 </span>
                 <div className="flex-1 h-1 bg-gray-100 rounded-full overflow-hidden">

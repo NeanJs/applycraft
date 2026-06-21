@@ -23,7 +23,7 @@ function Step({
   return (
     <div className="flex items-center gap-2">
       <div
-        className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-medium flex-shrink-0 border transition-colors
+        className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-medium shrink-0 border transition-colors
           ${
             status === "done"
               ? "bg-emerald-50 border-emerald-200 text-emerald-700"

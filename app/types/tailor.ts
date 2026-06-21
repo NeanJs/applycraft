@@ -23,6 +23,7 @@ export interface ATSResult {
   confidenceScore: number;
   atsBreakdown: ATSBreakdown;
   missingKeywords: string[];
+  job?: JobMetadata;
 }
 
 export interface ATSOnlyResult extends GenerationMetadata {
@@ -82,6 +83,7 @@ export interface FullOptimizerResult extends GenerationMetadata {
   missingKeywords: string[];
   changesMade: string[];
   coverLetter: string;
+  job?: JobMetadata;
   optimizedResume: ResumeData;
 }
 

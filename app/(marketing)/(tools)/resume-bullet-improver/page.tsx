@@ -171,7 +171,7 @@ function ExperienceOptimizer({ experiences }: ExperienceOptimizerResults) {
                     key={key}
                     className="group px-5 py-4 flex items-start gap-3 hover:bg-gray-50 transition-colors"
                   >
-                    <span className="mt-[6px] w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0" />
+                    <span className="mt-[6px] w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
 
                     <p className="flex-1 text-sm text-gray-900 leading-relaxed">
                       {bullet}
@@ -179,7 +179,7 @@ function ExperienceOptimizer({ experiences }: ExperienceOptimizerResults) {
 
                     <button
                       onClick={() => copyOne(bullet, key)}
-                      className={`flex-shrink-0 flex items-center gap-1 text-[11px] font-medium px-2.5 py-1 rounded-lg border transition-all opacity-0 group-hover:opacity-100 ${
+                      className={`shrink-0 flex items-center gap-1 text-[11px] font-medium px-2.5 py-1 rounded-lg border transition-all opacity-0 group-hover:opacity-100 ${
                         copiedKey === key
                           ? "bg-emerald-50 border-emerald-200 text-emerald-700 opacity-100"
                           : "bg-white border-gray-200 text-gray-400 hover:text-gray-600 hover:border-gray-300"
