@@ -74,6 +74,9 @@ export async function POST(req: Request) {
         coverLetter: result.data.coverLetter,
         missingKeywords: result.data.missingKeywords ?? [],
         changesMade: result.data.changesMade ?? [],
+        confidenceScore: result.data.confidenceScore,
+        jobType: result.data.JobType,
+        generations: result.data.generations,
       },
     });
 

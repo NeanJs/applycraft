@@ -110,7 +110,7 @@ export default function ResumeResults({
     toast.success("Copied to clipboard!!");
     setTimeout(() => setLocalCopied(false), 2000);
   };
-  console.log(result);
+
   const isCopied = copied || localCopied;
 
   const atsBefore = result.atsBefore ?? 0;
