@@ -27,7 +27,7 @@
 ![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript\&logoColor=white)
 ![Prisma](https://img.shields.io/badge/Prisma-2D3748?logo=prisma)
-![OpenAI](https://img.shields.io/badge/OpenAI-GPT--4o-green)
+![Anthropic AI](https://img.shields.io/badge/Anthropic-000000?logo=Anthropic&logoColor=white)
 ![Clerk](https://img.shields.io/badge/Auth-Clerk-purple)
 
 </div>
