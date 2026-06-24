@@ -1,36 +1,134 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<div align="center">
 
-## Getting Started
+# 🚀 ApplyCraft
 
-First, run the development server:
+### AI-Powered Resume Tailoring for Every Job Application
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+<p>
+  <strong>Stop rewriting your resume. Start landing interviews.</strong>
+</p>
+
+<br/>
+
+<a href="https://applycraft.xyz">
+  <img src="https://img.shields.io/badge/🌐_Live_App-Try_ApplyCraft-black?style=for-the-badge" />
+</a>
+
+<a href="https://github.com/neanjs/applycraft">
+  <img src="https://img.shields.io/badge/⭐_Star_Repo-Support_Project-blue?style=for-the-badge" />
+</a>
+
+<a href="#getting-started">
+  <img src="https://img.shields.io/badge/⚡_Quick_Start-Setup_Guide-success?style=for-the-badge" />
+</a>
+
+<br/><br/>
+
+![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript\&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-2D3748?logo=prisma)
+![OpenAI](https://img.shields.io/badge/OpenAI-GPT--4o-green)
+![Clerk](https://img.shields.io/badge/Auth-Clerk-purple)
+
+</div>
+
+---
+
+## 🎯 What is ApplyCraft?
+
+ApplyCraft helps job seekers customize resumes for specific job postings using AI.
+
+Paste your resume. Add a job description. Get:
+
+* ATS Match Analysis
+* Keyword Suggestions
+* Resume Improvements
+* Cover Letter Generation
+* PDF Export
+
+---
+
+## ⚡ Quick Demo
+
+<details>
+<summary><strong>Click to see a sample workflow</strong></summary>
+
+<br/>
+
+```text
+Resume Uploaded ✓
+
+Job Description Added ✓
+
+Running Analysis...
+
+ATS Score: 87%
+
+Missing Keywords:
+• TypeScript
+• REST APIs
+• Next.js
+
+Generating Improvements...
+
+✓ Resume Enhanced
+✓ Cover Letter Generated
+✓ Ready to Apply
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+</details>
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🛠 Features
 
-## Learn More
+| Feature                | Included |
+| ---------------------- | -------- |
+| ATS Analysis           | ✅        |
+| Resume Tailoring       | ✅        |
+| AI Bullet Improvements | ✅        |
+| Cover Letters          | ✅        |
+| PDF Export             | ✅        |
+| Application Tracking   | 🚧       |
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🗺 Roadmap
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+* [x] Resume Analysis
+* [x] AI Improvements
+* [x] Cover Letter Generation
+* [x] PDF Export
+* [ ] LinkedIn Optimization
+* [ ] Interview Preparation
+* [ ] Job Board Integrations
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🚀 Getting Started
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+git clone https://github.com/yourusername/applycraft.git
+
+cd applycraft
+
+npm install
+
+npm run dev
+```
+
+Open:
+
+```text
+http://localhost:3000
+```
+
+---
+
+<div align="center">
+
+### Built for job seekers who are tired of tailoring resumes manually.
+
+⭐ Star the repo if you found it useful.
+
+</div>
