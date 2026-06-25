@@ -61,7 +61,6 @@ export default function ShowcaseSection() {
 
   return (
     <section className="w-full py-8 px-4">
-      {/* Switcher */}
       <div className="text-center mb-8">
         <p className="text-[11px] font-medium text-gray-400 uppercase tracking-widest mb-3">
           See it work for your role
@@ -83,9 +82,7 @@ export default function ShowcaseSection() {
         </div>
       </div>
 
-      {/* Cards */}
       <div className="relative max-w-3xl mx-auto rounded-2xl bg-gray-50 p-6 overflow-hidden">
-        {/* Resume texture background */}
         <div className="absolute inset-0 p-8 opacity-[0.08] pointer-events-none flex flex-col gap-2">
           <div className="h-3 w-[35%] bg-gray-900 rounded mb-1" />
           <div className="h-2 w-[22%] bg-gray-600 rounded mb-4" />
@@ -99,7 +96,6 @@ export default function ShowcaseSection() {
         </div>
 
         <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {/* Before card */}
           <div className="bg-white rounded-xl border border-gray-100 p-4">
             <div className="flex items-center gap-1.5 mb-3">
               <div className="w-1.5 h-1.5 rounded-full bg-red-400" />
@@ -109,7 +105,7 @@ export default function ShowcaseSection() {
             </div>
 
             <div className="mb-1">
-              <span className="text-4xl font-semibold tracking-tight text-red-500">
+              <span className="text-4xl font-semibold text-red-500">
                 {j.before}%
               </span>
             </div>
@@ -154,7 +150,6 @@ export default function ShowcaseSection() {
             </div>
           </div>
 
-          {/* After card */}
           <div className="bg-white rounded-xl border border-gray-100 p-4">
             <div className="flex items-center gap-1.5 mb-3 flex-wrap">
               <div className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
@@ -167,7 +162,7 @@ export default function ShowcaseSection() {
             </div>
 
             <div className="mb-1">
-              <span className="text-4xl font-semibold tracking-tight text-emerald-700">
+              <span className="text-4xl font-semibold text-emerald-700">
                 {j.after}%
               </span>
             </div>
@@ -190,7 +185,6 @@ export default function ShowcaseSection() {
 
             <div className="h-px bg-gray-100 mb-3" />
 
-            {/* Breakdown */}
             {[
               { label: "Keyword", val: j.bd[0] },
               { label: "Structure", val: j.bd[1] },

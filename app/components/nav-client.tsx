@@ -197,7 +197,7 @@ function ToolsDropdown() {
       </button>
 
       {open && (
-        <div className="absolute top-full left-0 mt-2 w-72 rounded-xl border border-gray-200 bg-white shadow-lg p-2 z-50">
+        <div className="absolute top-full left-0 mt-5 w-72 rounded-xl border border-gray-200 bg-white shadow-lg p-2 z-50">
           {tools.map((tool) => (
             <DropdownItem key={tool.href} {...tool} />
           ))}

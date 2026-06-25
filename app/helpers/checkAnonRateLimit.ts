@@ -15,7 +15,7 @@ export async function checkAnonRateLimit(ip: string): Promise<boolean> {
   return prisma.$transaction(async (tx) => {
     const existing = await tx.anonUsage.findUnique({ where: { ip } });
 
-    // Window expired — reset and allow
+    // Window expired, reset and allow
     if (existing && existing.resetAt < now) {
       await tx.anonUsage.update({
         where: { ip },

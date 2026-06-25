@@ -8,7 +8,7 @@ export interface ToolEngineOptions<TResult> {
   apiRoute: string;
   /** Build the request body from the current field values */
   buildBody: () => Record<string, unknown>;
-  /** Validate inputs before submitting — return error string or null */
+  /** Validate inputs before submitting, return error string or null */
   validate?: () => string | null;
   /** Number of loading steps to cycle through while waiting */
   stepCount?: number;

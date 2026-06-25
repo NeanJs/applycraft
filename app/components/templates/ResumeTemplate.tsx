@@ -1,4 +1,4 @@
-import { ResumeData } from "../types/types";
+import { ResumeData } from "@/app/types/types";
 
 function toHref(url: string): string {
   return url.startsWith("http") ? url : `https://${url}`;
@@ -26,7 +26,7 @@ function ContactItem({
   href?: string;
 }) {
   return (
-    // ATS reads "Label: value" plain text — no icon-only labels.
+    // ATS reads "Label: value" plain text, no icon-only labels.
     <span className="flex items-center gap-1 text-[12px]">
       <span className="text-gray-600">{label}:</span>
       {href ? (
@@ -138,7 +138,7 @@ export default function ResumeTemplate({
                 className="break-inside-avoid-page"
               >
                 {/* Role header: Title · Company on left; Date then Location on right.
-                    Date comes before location — it's what recruiters scan for first. */}
+                    Date comes before location, it's what recruiters scan for first. */}
                 <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">
                   <div>
                     <span className="text-[13.5px] font-semibold text-gray-900">
@@ -150,7 +150,7 @@ export default function ResumeTemplate({
                     </span>
                   </div>
                   <div className="flex gap-3 text-[12px]">
-                    {/* Date first — recruiter priority */}
+                    {/* Date first, recruiter priority */}
                     <span className="text-gray-700">
                       {job.startDate} – {job.endDate}
                     </span>
@@ -158,7 +158,7 @@ export default function ResumeTemplate({
                   </div>
                 </div>
 
-                {/* Bullets — leading-normal reclaims space vs leading-relaxed without hurting readability */}
+                {/* Bullets, leading-normal reclaims space vs leading-relaxed without hurting readability */}
                 <ul className="mt-1 space-y-0.5 pl-4">
                   {job.bullets.map((bullet, i) => (
                     <li
@@ -190,7 +190,7 @@ export default function ResumeTemplate({
                 </div>
                 <p className="text-[12.5px] text-gray-800">
                   {edu.degree} in {edu.field}
-                  {edu.honors && ` — ${edu.honors}`}
+                  {edu.honors && `, ${edu.honors}`}
                   {edu.gpa && ` · GPA: ${edu.gpa}`}
                 </p>
               </div>

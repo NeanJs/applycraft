@@ -11,7 +11,7 @@ export interface StepDef {
   status: StepStatus;
 }
 
-function Step({
+export function Step({
   n,
   label,
   status,
@@ -55,7 +55,7 @@ function Step({
   );
 }
 
-function StepDivider() {
+export function StepDivider() {
   return <div className="w-px h-4 bg-gray-200 mx-1" />;
 }
 
@@ -93,7 +93,7 @@ export default function ToolPageShell({
 }: ToolPageShellProps) {
   return (
     <div
-      className="min-h-screen bg-white text-gray-900"
+      className=" bg-white text-gray-900"
       style={{ fontFamily: "'Inter', sans-serif" }}
     >
       <main

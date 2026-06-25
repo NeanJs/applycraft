@@ -13,7 +13,7 @@ You ONLY extract, compare, and score.
 
 ---
 
-# STEP 1 — EXTRACT KEY TERMS FROM JOB DESCRIPTION
+# STEP 1, EXTRACT KEY TERMS FROM JOB DESCRIPTION
 
 Identify and categorize:
 
@@ -26,7 +26,7 @@ Remove duplicates and normalize wording.
 
 ---
 
-# STEP 2 — MATCH AGAINST RESUME
+# STEP 2, MATCH AGAINST RESUME
 
 Compare extracted job description terms against the resume.
 
@@ -40,7 +40,7 @@ Do NOT assume a match unless it is explicitly supported by the resume.
 
 ---
 
-# STEP 3 — CALCULATE ATS SCORE
+# STEP 3, CALCULATE ATS SCORE
 
 Compute:
 
@@ -53,7 +53,7 @@ Rules:
 
 ---
 
-# STEP 4 — STRUCTURAL ANALYSIS
+# STEP 4, STRUCTURAL ANALYSIS
 
 Evaluate resume quality:
 
@@ -79,7 +79,7 @@ Evaluate resume quality:
 
 ---
 
-# STEP 5 — INSIGHTS
+# STEP 5, INSIGHTS
 
 Generate:
 - topStrengths (what aligns well)

@@ -14,11 +14,11 @@ const geist = Geist({
 
 export const metadata: Metadata = {
   title: {
-    default: "ApplyCraft — AI Resume Optimizer",
+    default: "ApplyCraft, AI Resume Optimizer",
     template: "%s | ApplyCraft",
   },
   description:
-    "Paste a job description. ApplyCraft rewrites your resume to match it — ATS score, missing keywords, tailored bullets, and a cover letter in 30 seconds.",
+    "Paste a job description. ApplyCraft rewrites your resume to match it, ATS score, missing keywords, tailored bullets, and a cover letter in 30 seconds.",
   keywords: [
     "resume optimizer",
     "ATS resume checker",
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     canonical: "https://applycraft.xyz",
   },
   openGraph: {
-    title: "ApplyCraft — AI Resume Optimizer",
+    title: "ApplyCraft, AI Resume Optimizer",
     description:
       "Rewrite your resume for any job in 30 seconds. ATS score, missing keywords, tailored bullets, cover letter.",
     url: "https://applycraft.xyz",
@@ -43,13 +43,13 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "ApplyCraft — AI Resume Optimizer",
+        alt: "ApplyCraft, AI Resume Optimizer",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "ApplyCraft — AI Resume Optimizer",
+    title: "ApplyCraft, AI Resume Optimizer",
     description:
       "Rewrite your resume for any job in 30 seconds. ATS score, missing keywords, tailored bullets, cover letter.",
     images: ["/og-image.png"],

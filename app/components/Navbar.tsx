@@ -22,8 +22,8 @@ export default async function Navbar() {
             width={100}
             height={100}
           />
-          <span className="text-sm font-semibold tracking-tight text-gray-700">
-            ApplyCraft
+          <span className="text-sm tracking-tight text-gray-700">
+            <strong>Apply</strong>Craft
           </span>
         </Link>
 

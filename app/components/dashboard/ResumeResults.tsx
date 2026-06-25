@@ -1,11 +1,11 @@
 "use client";
 
-import MissingKeywords from "@/app/components/MissingKeywords";
-import CoverLetter from "@/app/components/CoverLetter";
+import MissingKeywords from "@/app/components/ats/MissingKeywords";
+import CoverLetter from "@/app/components/tools/CoverLetter";
 import { handleDownload, handlePDFExport } from "@/app/services/services";
 import { ATSBreakdown, ResponseData, ResumeData } from "@/app/types/types";
 import { useState } from "react";
-import ResumeTemplate from "@/app/template/resume-template";
+import ResumeTemplate from "@/app/components/templates/ResumeTemplate";
 import Link from "next/link";
 import toast from "react-hot-toast";
 
@@ -180,7 +180,7 @@ export default function ResumeResults({
           />
         </div>
 
-        {/* ATS breakdown — only rendered when present */}
+        {/* ATS breakdown, only rendered when present */}
         {breakdown && (
           <>
             <div className="flex items-center gap-2 mb-3">

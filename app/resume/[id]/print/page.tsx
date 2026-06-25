@@ -1,5 +1,5 @@
 import { prisma } from "@/app/lib/prisma";
-import ResumeTemplate from "@/app/template/resume-template";
+import ResumeTemplate from "@/app/components/templates/ResumeTemplate";
 import { ResumeData } from "@/app/types/types";
 import jwt from "jsonwebtoken";
 import { notFound } from "next/navigation";

@@ -13,7 +13,7 @@ export async function callClaude({
   messages: any[];
   maxTokens: number;
 }) {
-  return anthropic.messages.create({
+  const response = await anthropic.messages.create({
     model: "claude-sonnet-4-6",
     max_tokens: maxTokens,
     system: [
@@ -25,4 +25,6 @@ export async function callClaude({
     ],
     messages,
   });
+
+  return response;
 }

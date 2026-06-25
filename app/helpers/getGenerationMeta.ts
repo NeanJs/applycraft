@@ -4,7 +4,7 @@ import { JobMetadata } from "../types/tailor";
 
 function buildTitle(fallback: string, job?: JobMetadata) {
   if (job?.jobTitle && job?.companyName) {
-    return `${job.jobTitle} — ${job.companyName}`;
+    return `${job.jobTitle}, ${job.companyName}`;
   }
   if (job?.jobTitle) {
     return `${job.jobTitle} Resume`;

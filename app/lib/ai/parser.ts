@@ -1,3 +1,5 @@
+import { handleError } from "../errorHandler";
+
 export function parseClaudeResponse(message: any) {
   const text = message.content
     .filter((b: any) => b.type === "text")
@@ -12,8 +14,7 @@ export function parseClaudeResponse(message: any) {
   try {
     return JSON.parse(cleaned);
   } catch (error) {
-    console.error("FAILED JSON:");
-    console.error(cleaned);
+    handleError(error, "Failed JSON:");
 
     throw error;
   }

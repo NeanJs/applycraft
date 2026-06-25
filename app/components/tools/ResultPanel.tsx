@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import JobMetadata from "../JobMeta";
+import JobMetadata from "./JobMeta";
 
 interface ResultPanelProps {
   children: React.ReactNode;

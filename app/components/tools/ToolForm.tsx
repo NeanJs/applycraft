@@ -29,7 +29,7 @@ export default function ToolForm({
 }: ToolFormProps) {
   return (
     <>
-      {/* Input grid — 1 col on mobile, 2 col on sm+ */}
+      {/* Input grid, 1 col on mobile, 2 col on sm+ */}
       <div
         className={`grid grid-cols-1 ${inputs.length > 1 ? "sm:grid-cols-2" : ""} gap-3 mb-3`}
       >
