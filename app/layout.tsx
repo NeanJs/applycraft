@@ -14,12 +14,12 @@ const geist = Geist({
 
 export const metadata: Metadata = {
   title: {
-    default: "ApplyCraft - AI Resume Optimizer",
+    default: "ApplyCraft | AI Resume Optimizer & ATS Resume Checker",
     template: "%s | ApplyCraft",
   },
 
   description:
-    "Optimize your resume with AI. Get ATS scores, keyword matches, tailored bullets, and cover letters for any job in seconds.",
+    "Optimize your resume with AI. Improve ATS scores, match job keywords, and create tailored resumes for every job.",
 
   keywords: [
     "AI resume optimizer",
@@ -29,24 +29,46 @@ export const metadata: Metadata = {
     "resume keyword matcher",
     "resume scanner",
     "AI cover letter generator",
-    "resume builder AI",
     "job application assistant",
     "resume improvement tool",
-    "job search AI",
     "ApplyCraft",
   ],
 
-  metadataBase: new URL(process.env.BASE_URL ?? "https://applycraft.xyz"),
+  metadataBase: new URL("https://applycraft.xyz"),
 
   alternates: {
-    canonical: "https://applycraft.xyz",
+    canonical: "/",
   },
 
+  icons: {
+    icon: [
+      {
+        url: "/favicon.ico",
+        type: "image/svg+xml",
+      },
+      {
+        url: "/favicon.ico",
+        sizes: "32x32",
+        type: "image/svg+xml",
+      },
+    ],
+
+    apple: [
+      {
+        url: "/favicon.ico",
+        sizes: "180x180",
+        type: "image/svg+xml",
+      },
+    ],
+  },
+
+  manifest: "/site.webmanifest",
+
   openGraph: {
-    title: "ApplyCraft - AI Resume Optimizer",
+    title: "ApplyCraft | AI Resume Optimizer & ATS Resume Checker",
 
     description:
-      "AI-powered resume optimization with ATS scoring, keyword matching, and tailored cover letters.",
+      "Improve your resume with AI-powered ATS scoring, keyword matching, and job-specific optimization.",
 
     url: "https://applycraft.xyz",
 
@@ -69,12 +91,19 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
 
-    title: "ApplyCraft - AI Resume Optimizer",
+    site: "@ApplyCraft",
+
+    title: "ApplyCraft | AI Resume Optimizer",
 
     description:
-      "Improve your resume with AI ATS scoring, keyword matching, and tailored cover letters.",
+      "Create ATS-friendly resumes with AI. Match job descriptions and improve your chances of landing interviews.",
 
-    images: ["/og-image.png"],
+    images: [
+      {
+        url: "/og-image.png",
+        alt: "ApplyCraft AI Resume Optimizer",
+      },
+    ],
   },
 
   robots: {
@@ -90,9 +119,12 @@ export const metadata: Metadata = {
     },
   },
 
+  themeColor: "#111827",
+
   category: "technology",
 
   creator: "ApplyCraft",
+
   publisher: "ApplyCraft",
 };
 export default function RootLayout({

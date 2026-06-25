@@ -1,0 +1,21 @@
+{
+  "name": "ApplyCraft",
+  "short_name": "ApplyCraft",
+  "description": "AI-powered resume optimization and ATS resume checker.",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#111827",
+  "background_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
