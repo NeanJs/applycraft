@@ -14,12 +14,12 @@ const geist = Geist({
 
 export const metadata: Metadata = {
   title: {
-    default: "ApplyCraft - AI Resume Optimizer & ATS Resume Checker",
+    default: "ApplyCraft - AI Resume Optimizer",
     template: "%s | ApplyCraft",
   },
 
   description:
-    "ApplyCraft helps job seekers optimize resumes with AI. Get ATS scores, missing keywords, tailored resume bullets, and personalized cover letters matched to any job description.",
+    "Optimize your resume with AI. Get ATS scores, keyword matches, tailored bullets, and cover letters for any job in seconds.",
 
   keywords: [
     "AI resume optimizer",
@@ -36,27 +36,17 @@ export const metadata: Metadata = {
     "ApplyCraft",
   ],
 
-  category: "Technology",
-
-  creator: "ApplyCraft",
-  publisher: "ApplyCraft",
-
   metadataBase: new URL(process.env.BASE_URL ?? "https://applycraft.xyz"),
 
   alternates: {
     canonical: "https://applycraft.xyz",
   },
 
-  icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
-  },
-
   openGraph: {
-    title: "ApplyCraft - AI Resume Optimizer & ATS Resume Checker",
+    title: "ApplyCraft - AI Resume Optimizer",
 
     description:
-      "Optimize your resume for any job with AI. Get ATS scores, keyword matches, tailored resume bullets, and personalized cover letters instantly.",
+      "AI-powered resume optimization with ATS scoring, keyword matching, and tailored cover letters.",
 
     url: "https://applycraft.xyz",
 
@@ -82,7 +72,7 @@ export const metadata: Metadata = {
     title: "ApplyCraft - AI Resume Optimizer",
 
     description:
-      "Turn your resume into a job-winning application with AI-powered ATS optimization.",
+      "Improve your resume with AI ATS scoring, keyword matching, and tailored cover letters.",
 
     images: ["/og-image.png"],
   },
@@ -99,8 +89,12 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
-};
 
+  category: "technology",
+
+  creator: "ApplyCraft",
+  publisher: "ApplyCraft",
+};
 export default function RootLayout({
   children,
 }: {
