@@ -108,7 +108,7 @@ Generating Improvements...
 ## 🚀 Getting Started
 
 ```bash
-git clone https://github.com/yourusername/applycraft.git
+git clone https://github.com/neancodes/applycraft.git
 
 cd applycraft
 
