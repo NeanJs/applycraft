@@ -1,9 +1,11 @@
 import { handleError } from "../errorHandler";
 
-export function parseClaudeResponse(message: any) {
-  const text = message.content
-    .filter((b: any) => b.type === "text")
-    .map((b: any) => b.text)
+export function parseClaudeResponse(message: { content: Array<{ type: string; text?: string }> }) {
+  const content = Array.isArray(message.content) ? message.content : [];
+
+  const text = content
+    .filter((b) => b.type === "text")
+    .map((b) => b.text ?? "")
     .join("")
     .trim();
 

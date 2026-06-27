@@ -3,7 +3,7 @@
 import { useState, useCallback, useRef } from "react";
 import toast from "react-hot-toast";
 
-export interface ToolEngineOptions<TResult> {
+export interface ToolEngineOptions {
   /** API route to POST to, e.g. "/api/tailor" or "/api/ats-score" */
   apiRoute: string;
   /** Build the request body from the current field values */
@@ -40,7 +40,7 @@ export function useToolEngine<TResult = unknown>({
   stepInterval = 7000,
   onKnownError,
   successMessage = "Done!",
-}: ToolEngineOptions<TResult>): ToolEngineState<TResult> {
+}: ToolEngineOptions): ToolEngineState<TResult> {
   const [result, setResult] = useState<TResult | undefined>(undefined);
   const [loading, setLoading] = useState(false);
   const [loadingStep, setLoadingStep] = useState(0);

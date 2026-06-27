@@ -1,4 +1,3 @@
-import { JOB_METADATA_SCHEMA } from "@/app/types/tailor";
 
 export const SUMMARY_SYSTEM_PROMPT = `
 You are a Resume Summary Generator.

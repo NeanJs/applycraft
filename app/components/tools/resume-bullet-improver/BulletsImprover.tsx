@@ -4,7 +4,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
-import { track } from "@vercel/analytics/react";
+import { parseResumeFile } from "@/app/lib/parseResume";
 
 import ToolPageShell, {
   StepStatus,
@@ -42,7 +42,6 @@ const LOADING_STEPS: LoadingStep[] = [
 
 // ── Bullet card ───────────────────────────────────────────────────────────
 
-import ExperienceOptimizer from "@/app/components/tools/resume-bullet-improver/ExperienceOptimizerCard";
 import ExperienceOptimizerCard from "@/app/components/tools/resume-bullet-improver/ExperienceOptimizerCard";
 
 // ── Page ──────────────────────────────────────────────────────────────────
@@ -85,22 +84,12 @@ export default function ImprovedBulletsPage() {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploadingPdf(true);
-    const formData = new FormData();
-    formData.append("file", file);
     try {
-      const res = await fetch("/api/parse-resume", {
-        method: "POST",
-        body: formData,
-      });
-      const data = await res.json();
-      if (data.text) {
-        setResume(data.text);
-        toast.success("Resume uploaded.");
-      } else {
-        toast.error("Could not read the PDF. Try pasting instead.");
-      }
-    } catch {
-      toast.error("Failed to parse PDF.");
+      const text = await parseResumeFile(file);
+      setResume(text);
+      toast.success("Resume uploaded.");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to parse PDF.");
     } finally {
       setUploadingPdf(false);
     }

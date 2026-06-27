@@ -489,7 +489,7 @@ function LandingPage() {
         <h1 className="text-5xl sm:text-6xl font-semibold tracking-tighter leading-[1.08] text-gray-900 max-w-2xl mx-auto mb-5">
           Find why your resume
           <br />
-          <span className="text-gray-400">isn't matching the job.</span>
+          <span className="text-gray-400">isn&apos;t matching the job.</span>
         </h1>
 
         <p className="text-base text-gray-500 max-w-sm mx-auto leading-relaxed mb-8">
@@ -503,7 +503,7 @@ function LandingPage() {
             href="/resume-tailor"
             className="bg-gray-900 text-white px-6 py-3 rounded-xl text-sm font-medium hover:bg-gray-700 transition-all hover:scale-[1.02] active:scale-[0.98]"
           >
-            Check my resume, it's free →
+            Check my resume, it&apos;s free →
           </Link>
 
           <a
@@ -528,7 +528,7 @@ function LandingPage() {
           >
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
           </svg>
-          No card required. Your resume isn't stored until you create an
+          No card required. Your resume isn&apos;t stored until you create an
           account.
         </div>
       </section>
@@ -608,7 +608,7 @@ function LandingPage() {
           </h2>
 
           <p className="text-sm text-gray-500 mb-10 max-w-md">
-            ApplyCraft doesn't just rewrite your resume. It shows what is
+            ApplyCraft doesn&apos;t just rewrite your resume. It shows what is
             missing, explains why it matters, and helps you fix it.
           </p>
 
@@ -675,7 +675,7 @@ function LandingPage() {
         <h2 className="text-4xl sm:text-5xl font-semibold tracking-tighter mb-4 leading-[1.08]">
           Stop guessing why your resume
           <br />
-          <span className="text-gray-400">isn't getting responses.</span>
+          <span className="text-gray-400">isn&apos;t getting responses.</span>
         </h2>
 
         <p className="text-sm text-gray-500 mb-10 max-w-xs mx-auto leading-relaxed">

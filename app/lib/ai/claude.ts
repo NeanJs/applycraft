@@ -10,7 +10,7 @@ export async function callClaude({
   maxTokens,
 }: {
   system: string;
-  messages: any[];
+  messages: unknown[];
   maxTokens: number;
 }) {
   const response = await anthropic.messages.create({
