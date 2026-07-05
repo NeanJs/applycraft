@@ -126,6 +126,7 @@ export default function ResumeSummaryPage() {
             loading={loading}
             label="Generate summary →"
             loadingLabel="Generating…"
+            hint={!hasResume ? "Paste your resume to unlock a summary." : undefined}
           />
         }
         tips={
@@ -204,6 +205,13 @@ export default function ResumeSummaryPage() {
         result={
           result ? (
             <ResultPanel
+              trackerProps={{
+                resumeId: (result as { resumeId?: string | null }).resumeId ?? null,
+                generationId: (result as { generationId?: string | null }).generationId ?? null,
+                title: "Resume summary",
+                company: result.job?.companyName,
+                role: result.job?.jobTitle,
+              }}
               footer={
                 <>
                   <p className="text-xs text-gray-400">

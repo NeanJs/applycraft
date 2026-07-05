@@ -16,6 +16,14 @@ enum GenerationType {
   RESUME_TAILOR
 }
 
+enum JobApplicationStatus {
+  SAVED
+  APPLIED
+  INTERVIEW
+  OFFER
+  REJECTED
+}
+
 model User {
   id      String @id @default(cuid())
   clerkId String @unique
@@ -24,8 +32,10 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  resumes     Resume[]
-  generations Generation[]
+  resumes          Resume[]
+  generations      Generation[]
+  jobApplications  JobApplication[]
+  anonGenerations  AnonGeneration[]
 }
 
 //
@@ -63,6 +73,7 @@ model Resume {
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   generations Generation[]
+  jobApplications JobApplication[]
 
   @@index([userId])
   @@index([createdAt])
@@ -77,6 +88,47 @@ model AnonUsage {
   resetAt DateTime
 
   @@index([resetAt])
+}
+
+model AnonGeneration {
+  id String @id @default(cuid())
+
+  sessionKey String
+  toolType   String
+  input      Json?
+  result     Json
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@index([sessionKey])
+  @@index([userId])
+}
+
+model JobApplication {
+  id String @id @default(cuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  company      String?
+  role         String?
+  jobUrl       String?
+  jobDescription String?
+  status       JobApplicationStatus @default(SAVED)
+
+  resumeVersionId String?
+  resumeVersion   Resume? @relation(fields: [resumeVersionId], references: [id])
+
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  appliedAt DateTime?
+
+  @@index([userId])
+  @@index([status])
 }
 
 model Generation {

@@ -161,7 +161,7 @@ export default function ImprovedBulletsPage() {
             <button
               key="add-jd"
               onClick={() => setShowJD(true)}
-              className="flex items-center justify-center gap-2 h-full min-h-[200px] border border-dashed border-gray-200 rounded-2xl text-sm text-gray-400 hover:border-gray-300 hover:text-gray-600 transition-colors bg-gray-50/50"
+              className="flex items-center justify-center gap-2 h-full min-h-50 border border-dashed border-gray-200 rounded-2xl text-sm text-gray-400 hover:border-gray-300 hover:text-gray-600 transition-colors bg-gray-50/50"
             >
               <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
                 <path
@@ -182,6 +182,7 @@ export default function ImprovedBulletsPage() {
             loading={loading}
             label="Improve bullets →"
             loadingLabel="Rewriting…"
+            hint={!hasResume ? "Paste your resume to unlock improved bullets." : undefined}
           />
         }
         tips={
@@ -277,6 +278,14 @@ export default function ImprovedBulletsPage() {
           result ? (
             <ResultPanel
               job={result.job ?? undefined}
+              trackerProps={{
+                resumeId: (result as { resumeId?: string | null }).resumeId ?? null,
+                generationId: (result as { generationId?: string | null }).generationId ?? null,
+                jobDescription: showJD ? jobDescription : undefined,
+                title: "Bullet improvement",
+                company: result.job?.companyName,
+                role: result.job?.jobTitle,
+              }}
               footer={
                 <>
                   <p className="text-xs text-gray-400">

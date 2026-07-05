@@ -154,6 +154,7 @@ export default function CoverLetterPage() {
             loading={loading}
             label="Write cover letter →"
             loadingLabel="Writing…"
+            hint={!hasResume || !hasJD ? "Paste your resume and a job description to unlock the letter." : undefined}
           />
         }
         tips={
@@ -232,6 +233,14 @@ export default function CoverLetterPage() {
           result ? (
             <ResultPanel
               job={result.job}
+              trackerProps={{
+                resumeId: (result as { resumeId?: string | null }).resumeId ?? null,
+                generationId: (result as { generationId?: string | null }).generationId ?? null,
+                jobDescription,
+                title: "Cover letter",
+                company: result.job?.companyName,
+                role: result.job?.jobTitle,
+              }}
               footer={
                 <>
                   <p className="text-xs text-gray-400">

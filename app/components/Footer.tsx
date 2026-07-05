@@ -33,6 +33,42 @@ export default function Footer() {
               Home
             </Link>
             <Link
+              href="/tracker"
+              className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              Tracker
+            </Link>
+            <Link
+              href="/resume-tailor"
+              className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              Resume Tailor
+            </Link>
+            <Link
+              href="/ats-resume-checker"
+              className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              ATS Checker
+            </Link>
+            <Link
+              href="/cover-letter-generator"
+              className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              Cover Letter
+            </Link>
+            <Link
+              href="/resume-bullet-improver"
+              className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              Bullet Improver
+            </Link>
+            <Link
+              href="/resume-summary-generator"
+              className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              Summary Generator
+            </Link>
+            <Link
               href="/#faq"
               className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
             >

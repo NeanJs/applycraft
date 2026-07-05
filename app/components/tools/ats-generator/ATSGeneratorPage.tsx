@@ -152,6 +152,7 @@ export default function AtsExtractorPage() {
             loading={loading}
             label="Analyze resume →"
             loadingLabel="Analyzing…"
+            hint={!hasResume || !hasJD ? "Paste your resume and a job description to unlock the analysis." : undefined}
           />
         }
         tips={
@@ -230,6 +231,14 @@ export default function AtsExtractorPage() {
           result ? (
             <ResultPanel
               job={result.job}
+              trackerProps={{
+                resumeId: (result as { resumeId?: string | null }).resumeId ?? null,
+                generationId: (result as { generationId?: string | null }).generationId ?? null,
+                jobDescription,
+                title: "ATS analysis",
+                company: result.job?.companyName,
+                role: result.job?.jobTitle,
+              }}
               footer={
                 <>
                   <p className="text-xs text-gray-400">

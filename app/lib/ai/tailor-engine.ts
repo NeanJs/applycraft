@@ -4,6 +4,7 @@ import { parseClaudeResponse } from "./parser";
 
 import { BASE_SYSTEM_PROMPT } from "./prompts/base";
 import { MODE_CONFIG, TailorMode } from "./prompts/modes/modes";
+import { removeNullChars } from "@/app/helpers/removeNullChars";
 
 export async function runTailorEngine({
   resume,
@@ -14,6 +15,9 @@ export async function runTailorEngine({
   jobDescription: string;
   mode?: TailorMode;
 }) {
+  const sanitizedResume = removeNullChars(resume) as string;
+  const sanitizedJobDescription = removeNullChars(jobDescription) as string;
+
   const config = MODE_CONFIG[mode];
 
   const modePrompt = config.prompt;
@@ -33,13 +37,13 @@ ${modePrompt}
         role: "user",
         content: `
 RESUME:
-${resume.slice(0, 5000)}
+${sanitizedResume.slice(0, 5000)}
 
 JOB DESCRIPTION:
 ${
-  jobDescription?.trim()
+  sanitizedJobDescription?.trim()
     ? `JOB DESCRIPTION:
-${jobDescription.slice(0, 3000)}`
+${sanitizedJobDescription.slice(0, 3000)}`
     : ""
 }
         `,

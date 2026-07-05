@@ -138,3 +138,29 @@ export function parseATSBreakdown(
 }
 
 export type Plan = "anonymous" | "free" | "pro";
+
+type Status = "SAVED" | "APPLIED" | "INTERVIEW" | "OFFER" | "REJECTED";
+
+export interface JobApplication {
+  id: string;
+
+  company?: string;
+  role?: string;
+
+  jobUrl?: string;
+  jobDescription?: string;
+
+  status: Status;
+
+  resumeVersionId?: string;
+  resumeVersion?: {
+    id: string;
+    title: string;
+  };
+
+  notes?: string;
+
+  createdAt: string;
+  updatedAt: string;
+  appliedAt?: string;
+}

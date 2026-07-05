@@ -34,7 +34,7 @@ export default function DashboardUI({
       year: "numeric",
     }).format(date);
   }
-
+  console.log("pageloaded");
   return (
     <div className="min-h-screen bg-zinc-50 text-zinc-900">
       <main className="max-w-5xl mx-auto px-6 py-12">

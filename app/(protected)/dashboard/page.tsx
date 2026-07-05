@@ -60,10 +60,12 @@ export default async function DashboardPage() {
   const firstName = clerkUser?.firstName ?? "there";
 
   return (
-    <DashboardUI
-      resumes={resumes}
-      generations={generations}
-      firstName={firstName ?? "there"}
-    />
+    <>
+      <DashboardUI
+        resumes={resumes}
+        generations={generations}
+        firstName={firstName ?? "there"}
+      />
+    </>
   );
 }

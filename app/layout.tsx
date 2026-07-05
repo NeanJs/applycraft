@@ -5,6 +5,7 @@ import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
 import { Toaster } from "react-hot-toast";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import UserSync from "./components/auth/UserSync";
 
 const geist = Geist({
   variable: "--font-geist-sans",
@@ -163,7 +164,10 @@ export default function RootLayout({
             }}
           />
 
-          <main className="flex-1">{children}</main>
+          <main className="flex-1">
+            <UserSync />
+            {children}
+          </main>
 
           <Toaster position="top-right" />
 

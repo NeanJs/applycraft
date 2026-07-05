@@ -30,12 +30,14 @@ export default function ToolForm({
   return (
     <>
       {/* Input grid, 1 col on mobile, 2 col on sm+ */}
-      <div
-        className={`grid grid-cols-1 ${inputs.length > 1 ? "sm:grid-cols-2" : ""} gap-3 mb-3`}
-      >
-        {inputs.map((input, i) => (
-          <React.Fragment key={i}>{input}</React.Fragment>
-        ))}
+      <div className="rounded-[28px] border border-gray-200 bg-white p-3 shadow-[0_1px_0_rgba(0,0,0,0.02)] sm:p-4">
+        <div
+          className={`grid grid-cols-1 ${inputs.length > 1 ? "sm:grid-cols-2" : ""} gap-3`}
+        >
+          {inputs.map((input, i) => (
+            <React.Fragment key={i}>{input}</React.Fragment>
+          ))}
+        </div>
       </div>
 
       {/* CTA button */}

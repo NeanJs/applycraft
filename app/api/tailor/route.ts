@@ -9,17 +9,29 @@ import { prisma } from "@/app/lib/prisma";
 import { syncUser } from "@/app/lib/sync-user";
 
 import { getGenerationMeta } from "@/app/helpers/getGenerationMeta";
+import { removeNullChars } from "@/app/helpers/removeNullChars";
 import { TAILOR_MODES } from "@/app/lib/ai/prompts/modes/modes";
 
 export async function POST(req: Request) {
-  const { resume, jobDescription, mode } = await req.json();
+  const body = await req.json();
+  const rawResume = typeof body?.resume === "string" ? body.resume : "";
+  const rawJobDescription =
+    typeof body?.jobDescription === "string" ? body.jobDescription : "";
+  const mode = body?.mode ?? TAILOR_MODES.FULL_OPTIMIZER;
+
+  const resume = removeNullChars(rawResume) as string;
+  const jobDescription = removeNullChars(rawJobDescription) as string;
+
   const requiresJobDescription =
     mode !== TAILOR_MODES.SUMMARY_ONLY && mode !== TAILOR_MODES.BULLET_IMPROVER;
-  if (!resume?.trim()) {
+  const cleanedResume = resume.trim();
+  const cleanedJobDescription = jobDescription.trim();
+
+  if (!cleanedResume) {
     return Response.json({ error: "Resume is required." }, { status: 400 });
   }
 
-  if (requiresJobDescription && !jobDescription?.trim()) {
+  if (requiresJobDescription && !cleanedJobDescription) {
     return Response.json(
       { error: "Resume and job description are required." },
       { status: 400 },
@@ -46,9 +58,9 @@ export async function POST(req: Request) {
   }
 
   const result = await runTailorEngine({
-    resume,
-    jobDescription,
-    mode: mode,
+    resume: cleanedResume,
+    jobDescription: cleanedJobDescription,
+    mode,
   });
   const generationMeta = getGenerationMeta(result.mode, result.data.job);
 
@@ -57,6 +69,8 @@ export async function POST(req: Request) {
   let generationData = null;
 
   if (dbUser && result.mode === TAILOR_MODES.FULL_OPTIMIZER) {
+    const safeResultData = removeNullChars(result.data) as typeof result.data;
+
     resumeData = await prisma.resume.create({
       data: {
         user: {
@@ -64,19 +78,19 @@ export async function POST(req: Request) {
             id: dbUser.id,
           },
         },
-        originalResume: resume,
-        jobDescription,
+        originalResume: cleanedResume,
+        jobDescription: cleanedJobDescription,
         title: generationMeta.title,
-        atsBefore: result.data.atsBefore,
-        atsAfter: result.data.atsAfter,
-        atsBreakdown: result.data.atsBreakdown,
-        optimizedResume: result.data.optimizedResume,
-        coverLetter: result.data.coverLetter,
-        missingKeywords: result.data.missingKeywords ?? [],
-        changesMade: result.data.changesMade ?? [],
-        confidenceScore: result.data.confidenceScore,
-        jobType: result.data.JobType,
-        generations: result.data.generations,
+        atsBefore: safeResultData.atsBefore,
+        atsAfter: safeResultData.atsAfter,
+        atsBreakdown: safeResultData.atsBreakdown,
+        optimizedResume: safeResultData.optimizedResume,
+        coverLetter: safeResultData.coverLetter,
+        missingKeywords: safeResultData.missingKeywords ?? [],
+        changesMade: safeResultData.changesMade ?? [],
+        confidenceScore: safeResultData.confidenceScore,
+        jobType: safeResultData.JobType,
+        generations: safeResultData.generations,
       },
     });
 
@@ -85,16 +99,16 @@ export async function POST(req: Request) {
       resumeId: resumeData.id,
       type: generationMeta.type,
       title: generationMeta.title,
-      result: result.data,
+      result: safeResultData,
       input: {
-        resume,
-        jobDescription,
+        resume: cleanedResume,
+        jobDescription: cleanedJobDescription,
       },
     });
 
     saved = true;
   }
-
+  console.log(Response);
   return Response.json({
     ...result.data,
     mode: result.mode,

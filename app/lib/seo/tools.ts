@@ -116,7 +116,7 @@ export const toolSEO = {
       {
         question: "How is this different from the resume tailor tool?",
         answer:
-          "The ATS checker focuses on scoring and diagnosing your resume against a job description. The resume tailor goes a step further and rewrites your resume to fix the gaps it finds.",
+          "The ATS checker focuses on scoring and diagnosing your resume against a job description. The <a href=\"/resume-tailor\">resume tailor</a> goes a step further and rewrites your resume to fix the gaps it finds.",
       },
     ],
   },
@@ -234,7 +234,7 @@ export const toolSEO = {
       {
         question: "Should I use this instead of the full resume tailor?",
         answer:
-          "Use the bullet improver if you just want stronger phrasing for specific lines. Use the full resume tailor if you want your entire resume optimized against a specific job description.",
+          "Use the <a href=\"/resume-bullet-improver\">bullet improver</a> if you just want stronger phrasing for specific lines. Use the <a href=\"/resume-tailor\">full resume tailor</a> if you want your entire resume optimized against a specific job description.",
       },
     ],
   },

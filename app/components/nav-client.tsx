@@ -39,6 +39,13 @@ export function NavPublic() {
     <>
       {/* Desktop */}
       <nav className="hidden sm:flex items-center gap-6">
+        <Link
+          href="/tracker"
+          className="text-sm text-gray-500 hover:text-gray-900 transition"
+        >
+          Tracker
+        </Link>
+
         <a
           href="#features"
           className="text-sm text-gray-500 hover:text-gray-900 transition"
@@ -123,6 +130,14 @@ export function NavPublic() {
           </div>
 
           <Link
+            href="/tracker"
+            onClick={() => setMenuOpen(false)}
+            className="text-sm text-gray-700"
+          >
+            Tracker
+          </Link>
+
+          <Link
             href="/sign-in"
             onClick={() => setMenuOpen(false)}
             className="text-sm text-gray-700"
@@ -152,7 +167,12 @@ export function NavAuth() {
       >
         Dashboard
       </Link>
-
+    <Link
+        href="/tracker"
+        className="text-sm text-gray-500 hover:text-gray-900 transition"
+      >
+        Job Tracker
+      </Link>
       <ToolsDropdown />
     </nav>
   );
@@ -196,13 +216,11 @@ function ToolsDropdown() {
         </svg>
       </button>
 
-      {open && (
-        <div className="absolute top-full left-0 mt-5 w-72 rounded-xl border border-gray-200 bg-white shadow-lg p-2 z-50">
-          {tools.map((tool) => (
-            <DropdownItem key={tool.href} {...tool} />
-          ))}
-        </div>
-      )}
+      <div className={`absolute top-full left-0 mt-5 w-72 rounded-xl border border-gray-200 bg-white shadow-lg p-2 z-50 ${open ? "block" : "hidden"}`}>
+        {tools.map((tool) => (
+          <DropdownItem key={tool.href} {...tool} />
+        ))}
+      </div>
     </div>
   );
 }
