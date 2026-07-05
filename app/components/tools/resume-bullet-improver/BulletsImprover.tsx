@@ -4,7 +4,6 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
-import { track } from "@vercel/analytics/react";
 
 import ToolPageShell, {
   StepStatus,
@@ -24,6 +23,11 @@ import SignUpCTA from "@/app/components/misc/SignUpCTA";
 import { TAILOR_MODES } from "@/app/lib/ai/prompts/modes/modes";
 import { ExperienceOptimizerResults } from "@/app/types/tailor";
 import AnonStickyCTA from "@/app/components/misc/StickyCTA";
+import QuickStartSamples from "@/app/components/tools/QuickStartSamples";
+import {
+  SAMPLE_JOB_DESCRIPTION_TEXT,
+  SAMPLE_RESUME_TEXT,
+} from "@/app/constant/toolSamples";
 
 // ── Types ─────────────────────────────────────────────────────────────────
 
@@ -42,7 +46,6 @@ const LOADING_STEPS: LoadingStep[] = [
 
 // ── Bullet card ───────────────────────────────────────────────────────────
 
-import ExperienceOptimizer from "@/app/components/tools/resume-bullet-improver/ExperienceOptimizerCard";
 import ExperienceOptimizerCard from "@/app/components/tools/resume-bullet-improver/ExperienceOptimizerCard";
 
 // ── Page ──────────────────────────────────────────────────────────────────
@@ -109,10 +112,27 @@ export default function ImprovedBulletsPage() {
   // Step indicator
   const hasResume = resume.trim().length > 0;
   const hasJD = jobDescription.trim().length > 0;
+  const hasAnyInput = hasResume || hasJD;
   const step1: StepStatus = hasResume ? "done" : "active";
   const step2: StepStatus = result ? "done" : loading ? "active" : "pending";
 
   const showStickyCTA = !!result && result.promptSignUp && !dismissedCTA;
+
+  function handleTrySampleData() {
+    setResume(SAMPLE_RESUME_TEXT);
+    setShowJD(true);
+    setJobDescription(SAMPLE_JOB_DESCRIPTION_TEXT);
+    setShowSignupCTA(false);
+    setDismissedCTA(false);
+  }
+
+  function handleClearInputs() {
+    setResume("");
+    setJobDescription("");
+    setShowJD(false);
+    setShowSignupCTA(false);
+    setDismissedCTA(false);
+  }
 
   return (
     <ToolPageShell
@@ -132,6 +152,15 @@ export default function ImprovedBulletsPage() {
         ) : undefined
       }
     >
+      {!loading && !result && (
+        <QuickStartSamples
+          onTrySample={handleTrySampleData}
+          onClear={handleClearInputs}
+          hasInput={hasAnyInput}
+          loading={uploadingPdf}
+        />
+      )}
+
       <ToolForm
         inputs={[
           <ResumeInput

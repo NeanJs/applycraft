@@ -1,339 +1,3 @@
-// import { auth } from "@clerk/nextjs/server";
-// import Link from "next/link";
-// import { redirect } from "next/navigation";
-// import type { Metadata } from "next";
-// import ShowcaseSection from "@/app/components/marketing/Showcase";
-// import Eyebrow from "@/app/components/marketing/Eyebrow";
-
-// export const metadata: Metadata = {
-//   title: "Tailor your resume to any job, free",
-//   description:
-//     "Paste a job description. ApplyCraft rewrites your resume to match it, ATS score, missing keywords, tailored bullets, and a cover letter in 30 seconds.",
-// };
-
-// // ── Static data ───────────────────────────────────────────────────────────
-
-// const features = [
-//   {
-//     icon: (
-//       <svg
-//         width="16"
-//         height="16"
-//         viewBox="0 0 24 24"
-//         fill="none"
-//         stroke="currentColor"
-//         strokeWidth="1.5"
-//         strokeLinecap="round"
-//         strokeLinejoin="round"
-//       >
-//         <circle cx="12" cy="12" r="10" />
-//         <circle cx="12" cy="12" r="3" />
-//       </svg>
-//     ),
-//     title: "ATS optimization",
-//     desc: "Scores your resume against the job, then rewrites it to rank higher in applicant tracking systems.",
-//   },
-//   {
-//     icon: (
-//       <svg
-//         width="16"
-//         height="16"
-//         viewBox="0 0 24 24"
-//         fill="none"
-//         stroke="currentColor"
-//         strokeWidth="1.5"
-//         strokeLinecap="round"
-//         strokeLinejoin="round"
-//       >
-//         <circle cx="11" cy="11" r="8" />
-//         <path d="m21 21-4.35-4.35" />
-//       </svg>
-//     ),
-//     title: "Keyword analysis",
-//     desc: "Finds every missing skill from the job description and adds them naturally to your resume.",
-//   },
-//   {
-//     icon: (
-//       <svg
-//         width="16"
-//         height="16"
-//         viewBox="0 0 24 24"
-//         fill="none"
-//         stroke="currentColor"
-//         strokeWidth="1.5"
-//         strokeLinecap="round"
-//         strokeLinejoin="round"
-//       >
-//         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-//         <polyline points="14 2 14 8 20 8" />
-//         <line x1="16" y1="13" x2="8" y2="13" />
-//         <line x1="16" y1="17" x2="8" y2="17" />
-//       </svg>
-//     ),
-//     title: "Tailored resume",
-//     desc: "Rewrites your bullet points to mirror the language and priorities of the specific role.",
-//   },
-//   {
-//     icon: (
-//       <svg
-//         width="16"
-//         height="16"
-//         viewBox="0 0 24 24"
-//         fill="none"
-//         stroke="currentColor"
-//         strokeWidth="1.5"
-//         strokeLinecap="round"
-//         strokeLinejoin="round"
-//       >
-//         <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-//         <polyline points="22,6 12,13 2,6" />
-//       </svg>
-//     ),
-//     title: "Cover letter",
-//     desc: "Generates a matching cover letter that sounds like you, not a generic template.",
-//   },
-// ];
-
-// const steps = [
-//   {
-//     n: "1",
-//     title: "Paste your resume",
-//     desc: "Plain text or PDF. No account needed.",
-//   },
-//   {
-//     n: "2",
-//     title: "Add the job description",
-//     desc: "Copy from LinkedIn, Greenhouse, Lever, anywhere.",
-//   },
-//   {
-//     n: "3",
-//     title: "Get your results",
-//     desc: "ATS score, rewritten resume, missing keywords, and a cover letter.",
-//   },
-// ];
-
-// const faqs = [
-//   {
-//     q: "Is my resume data stored or used to train AI?",
-//     a: "No. Your resume isn't stored anywhere until you create an account, and we never use your data to train any model.",
-//   },
-//   {
-//     q: "Will this actually work with my company's ATS?",
-//     a: "ApplyCraft checks against the same keyword-matching and formatting rules most applicant tracking systems use (Workday, Greenhouse, Lever, Taleo), so the score reflects real-world ATS behavior.",
-//   },
-//   {
-//     q: "What happens after my free optimization?",
-//     a: "You can create a free account to save your results and keep going. No card required to get started.",
-//   },
-//   {
-//     q: "Does it work for non-tech roles?",
-//     a: "Yes, it's built to handle any role, from retail and hospitality to admin, engineering, and beyond.",
-//   },
-// ];
-
-// // ── Page ──────────────────────────────────────────────────────────────────
-
-// export default async function Home() {
-//   const { userId } = await auth();
-//   if (userId) redirect("/dashboard");
-//   return <LandingPage />;
-// }
-
-// // ── Primitives ────────────────────────────────────────────────────────────
-
-// // ── Landing page ──────────────────────────────────────────────────────────
-
-// function LandingPage() {
-//   return (
-//     <div
-//       className="min-h-screen bg-white text-gray-900"
-//       style={{ fontFamily: "'Inter', sans-serif" }}
-//     >
-//       {/* ── Hero ── */}
-//       <section className="max-w-3xl mx-auto px-6 pt-24 pb-8 text-center">
-//         <div className="inline-flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-full px-3.5 py-1.5 text-xs text-gray-500 mb-8">
-//           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-//           No account needed &mdash; first one free
-//         </div>
-
-//         <h1 className="text-5xl sm:text-6xl font-semibold tracking-tighter leading-[1.08] text-gray-900 max-w-2xl mx-auto mb-5">
-//           Your resume, rewritten{" "}
-//           <span className="text-gray-400">for every job you want.</span>
-//         </h1>
-
-//         <p className="text-base text-gray-500 max-w-sm mx-auto leading-relaxed mb-8">
-//           Paste your resume and a job description. Get an ATS score, rewritten
-//           resume bullets, and a cover letter that actually sounds like you, in
-//           30 seconds.
-//         </p>
-
-//         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-3">
-//           <Link
-//             href="/resume-tailor"
-//             className="bg-gray-900 text-white px-6 py-3 rounded-xl text-sm font-medium hover:bg-gray-700 transition-all hover:scale-[1.02] active:scale-[0.98]"
-//           >
-//             Tailor my resume, it&apos;s free →
-//           </Link>
-//           <a
-//             href="#how-it-works"
-//             className="text-gray-500 px-6 py-3 rounded-xl text-sm font-medium border border-gray-200 hover:border-gray-400 hover:text-gray-900 transition-colors"
-//           >
-//             See how it works
-//           </a>
-//         </div>
-
-//         {/* Privacy reassurance, bumped up in visual weight, now a standalone badge instead of small footer-style text */}
-//         <div className="inline-flex items-center gap-1.5 text-xs text-gray-500 mt-1">
-//           <svg
-//             width="13"
-//             height="13"
-//             viewBox="0 0 24 24"
-//             fill="none"
-//             stroke="currentColor"
-//             strokeWidth="2"
-//             strokeLinecap="round"
-//             strokeLinejoin="round"
-//             className="text-emerald-600"
-//           >
-//             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-//           </svg>
-//           No card, no signup, your resume isn&apos;t stored until you create an
-//           account
-//         </div>
-//       </section>
-
-//       {/* ── Interactive showcase ── */}
-//       <section className="max-w-3xl mx-auto px-6 pb-6">
-//         <ShowcaseSection />
-//       </section>
-
-//       {/* ── Social proof strip ── */}
-//       <section className="border-t border-b border-gray-100 bg-gray-50">
-//         <div className="max-w-3xl mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10 text-center">
-//           <div>
-//             <p className="text-lg font-semibold text-gray-900">+37%</p>
-//             <p className="text-xs text-gray-500">avg. ATS score increase</p>
-//           </div>
-//           <div className="hidden sm:block w-px h-8 bg-gray-200" />
-//           <div>
-//             <p className="text-lg font-semibold text-gray-900">30 sec</p>
-//             <p className="text-xs text-gray-500">average turnaround</p>
-//           </div>
-//           <div className="hidden sm:block w-px h-8 bg-gray-200" />
-//           <div>
-//             <p className="text-lg font-semibold text-gray-900">$0</p>
-//             <p className="text-xs text-gray-500">to try, no card needed</p>
-//           </div>
-//         </div>
-//       </section>
-
-//       {/* ── Features ── */}
-//       <section id="features" className="max-w-3xl mx-auto px-6 py-20">
-//         <Eyebrow>What you get</Eyebrow>
-//         <h2 className="text-3xl font-semibold tracking-tight mb-2">
-//           Everything a recruiter wants to see
-//         </h2>
-//         <p className="text-sm text-gray-500 mb-8">Four outputs, one paste.</p>
-//         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-//           {features.map((f) => (
-//             <div
-//               key={f.title}
-//               className="group border border-gray-200 rounded-xl p-5 hover:border-gray-300 hover:bg-gray-50 transition-colors cursor-default"
-//             >
-//               <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500 mb-3 group-hover:bg-gray-200 transition-colors">
-//                 {f.icon}
-//               </div>
-//               <h3 className="text-sm font-semibold text-gray-900 mb-1">
-//                 {f.title}
-//               </h3>
-//               <p className="text-sm text-gray-500 leading-relaxed">{f.desc}</p>
-//             </div>
-//           ))}
-//         </div>
-//       </section>
-
-//       {/* ── How it works ── */}
-//       <section
-//         id="how-it-works"
-//         className="border-t border-gray-100 bg-gray-50"
-//       >
-//         <div className="max-w-3xl mx-auto px-6 py-20">
-//           <Eyebrow>How it works</Eyebrow>
-//           <h2 className="text-3xl font-semibold tracking-tight mb-10">
-//             Three steps, thirty seconds
-//           </h2>
-//           <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-gray-200 rounded-2xl overflow-hidden">
-//             {steps.map((s) => (
-//               <div key={s.n} className="bg-gray-50 px-7 py-8">
-//                 <span className="text-3xl font-semibold text-gray-200 block mb-4">
-//                   0{s.n}
-//                 </span>
-//                 <h3 className="text-sm font-semibold text-gray-900 mb-1.5">
-//                   {s.title}
-//                 </h3>
-//                 <p className="text-sm text-gray-500 leading-relaxed">
-//                   {s.desc}
-//                 </p>
-//               </div>
-//             ))}
-//           </div>
-//         </div>
-//       </section>
-
-//       {/* ── FAQ ── */}
-//       <section id="faqs" className="max-w-3xl mx-auto px-6 py-20">
-//         <Eyebrow>Questions</Eyebrow>
-//         <h2 className="text-3xl font-semibold tracking-tight mb-8">
-//           Before you paste your resume
-//         </h2>
-//         <div className="divide-y divide-gray-100 border-t border-gray-100">
-//           {faqs.map((f) => (
-//             <details key={f.q} className="group py-5">
-//               <summary className="flex items-center justify-between cursor-pointer list-none">
-//                 <span className="text-sm font-medium text-gray-900">{f.q}</span>
-//                 <svg
-//                   width="16"
-//                   height="16"
-//                   viewBox="0 0 24 24"
-//                   fill="none"
-//                   stroke="currentColor"
-//                   strokeWidth="1.5"
-//                   strokeLinecap="round"
-//                   strokeLinejoin="round"
-//                   className="text-gray-400 shrink-0 ml-4 transition-transform group-open:rotate-45"
-//                 >
-//                   <line x1="12" y1="5" x2="12" y2="19" />
-//                   <line x1="5" y1="12" x2="19" y2="12" />
-//                 </svg>
-//               </summary>
-//               <p className="text-sm text-gray-500 leading-relaxed mt-3 pr-8">
-//                 {f.a}
-//               </p>
-//             </details>
-//           ))}
-//         </div>
-//       </section>
-
-//       {/* ── Final CTA ── */}
-//       <section className="max-w-3xl mx-auto px-6 py-28 text-center">
-//         <h2 className="text-4xl sm:text-5xl font-semibold tracking-tighter mb-4 leading-[1.08]">
-//           Stop sending the same resume
-//           <br />
-//           <span className="text-gray-400">to every job.</span>
-//         </h2>
-//         <p className="text-sm text-gray-500 mb-10 max-w-xs mx-auto leading-relaxed">
-//           First optimization is free. No card, no signup.
-//         </p>
-//         <Link
-//           href="/resume-tailor"
-//           className="inline-flex items-center bg-gray-900 text-white px-7 py-3.5 rounded-xl text-sm font-medium hover:bg-gray-700 transition-all hover:scale-[1.02] active:scale-[0.98]"
-//         >
-//           Tailor my resume, it&apos;s free →
-//         </Link>
-//       </section>
-//     </div>
-//   );
-// }
 import { auth } from "@clerk/nextjs/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -342,288 +6,301 @@ import ShowcaseSection from "@/app/components/marketing/Showcase";
 import Eyebrow from "@/app/components/marketing/Eyebrow";
 
 export const metadata: Metadata = {
-  title: "AI Resume Tailor & ATS Resume Checker | ApplyCraft",
+  title: "ApplyCraft | Job Tracker, Resume Tailor and ATS Checker",
   description:
-    "Optimize your resume for any job. ApplyCraft analyzes ATS compatibility, finds missing keywords, improves bullet points, and creates a tailored resume from your job description.",
+    "ApplyCraft helps you track every job application, link each role to the right resume version, and improve ATS match as you go.",
+  alternates: {
+    canonical: "https://applycraft.xyz/",
+  },
+  openGraph: {
+    title: "ApplyCraft | Job Tracker, Resume Tailor and ATS Checker",
+    description:
+      "Tailor resumes faster, improve ATS alignment, and manage every application in one place.",
+    url: "https://applycraft.xyz/",
+    type: "website",
+    siteName: "ApplyCraft",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ApplyCraft | Job Tracker, Resume Tailor and ATS Checker",
+    description:
+      "Paste your resume and a job post. Get a tailored resume, ATS insights, and a cleaner application workflow.",
+  },
 };
 
 const features = [
   {
-    icon: (
-      <svg
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <circle cx="12" cy="12" r="10" />
-        <circle cx="12" cy="12" r="3" />
-      </svg>
-    ),
-    title: "ATS score & optimization",
-    desc: "Compare your resume against the job description and see exactly what improves your ATS match.",
+    title: "Job tracker first workflow",
+    desc: "Track every application from Saved to Offer with linked resume versions.",
   },
   {
-    icon: (
-      <svg
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <circle cx="11" cy="11" r="8" />
-        <path d="m21 21-4.35-4.35" />
-      </svg>
-    ),
-    title: "Resume keyword gap analysis",
-    desc: "Find missing skills and keywords from the job posting and add them naturally to your resume.",
+    title: "ATS gap diagnosis",
+    desc: "See missing keywords and weak alignment before you apply.",
   },
   {
-    icon: (
-      <svg
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-        <polyline points="14 2 14 8 20 8" />
-        <line x1="16" y1="13" x2="8" y2="13" />
-        <line x1="16" y1="17" x2="8" y2="17" />
-      </svg>
-    ),
-    title: "Job-specific resume tailoring",
-    desc: "Rewrite your experience bullets to match the responsibilities and language recruiters look for.",
+    title: "Role-specific rewrites",
+    desc: "Generate tailored bullets and resume sections for each role.",
   },
   {
-    icon: (
-      <svg
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-        <polyline points="22,6 12,13 2,6" />
-      </svg>
-    ),
-    title: "Personalized cover letter",
-    desc: "Generate a matching cover letter that reflects your experience instead of a generic template.",
+    title: "Resume-to-job linking",
+    desc: "Open the exact tailored version you submitted for each company and role.",
   },
 ];
 
 const steps = [
   {
     n: "1",
-    title: "Upload your resume",
-    desc: "ApplyCraft analyzes your experience, skills, and achievements.",
+    title: "Paste your resume",
+    desc: "Use your current version as the baseline.",
   },
   {
     n: "2",
-    title: "Paste the job posting",
-    desc: "We compare your resume against the role requirements and ATS keywords.",
+    title: "Add job description",
+    desc: "ApplyCraft compares requirements against your profile.",
   },
   {
     n: "3",
-    title: "Get your optimization report",
-    desc: "See your ATS score, missing keywords, improved bullets, and tailored resume.",
+    title: "Apply with confidence",
+    desc: "Use tailored output and keep each submission organized.",
   },
 ];
 
 const faqs = [
   {
-    q: "What is an ATS resume score?",
-    a: "An ATS resume score measures how closely your resume matches a job description based on keywords, skills, formatting, and role requirements.",
+    q: "Is ApplyCraft free to start?",
+    a: "Yes. You can start optimizing right away and create an account when you want to save results.",
   },
   {
-    q: "How does ApplyCraft optimize my resume?",
-    a: "ApplyCraft analyzes your resume against the job posting, identifies missing keywords, improves bullet points, and creates a tailored version for that role.",
+    q: "Will my resume be used for model training?",
+    a: "No. Your data is not used for model training.",
   },
   {
-    q: "Is my resume data stored or used to train AI?",
-    a: "No. Your resume is only stored when you create an account, and your data is never used to train AI models.",
+    q: "Can I use this for non-tech roles?",
+    a: "Yes. ApplyCraft is built for any job type, not just software roles.",
   },
   {
-    q: "Can I use ApplyCraft for non-tech jobs?",
-    a: "Yes. ApplyCraft works for any role, including engineering, marketing, healthcare, retail, hospitality, administration, and more.",
+    q: "What makes this different from a generic template writer?",
+    a: "ApplyCraft is optimized for job applications: ATS alignment, role-specific tailoring, and resume-to-application tracking in one flow.",
   },
 ];
 
-export default async function Home() {
+const HERO_VARIANTS = {
+  a: {
+    pill: "For job seekers who want better response rates",
+    headlinePrefix: "Stop applying with",
+    headlineHighlight: " one generic resume",
+    description:
+      "Track every application in one place, tailor each resume to the role, and keep your entire pipeline organized from Saved to Offer.",
+    primaryCta: "Tailor my resume now",
+    reassurance: "Free to start. No credit card required.",
+    socialProofTitle: "Why people switch",
+    socialProofItems: [
+      "They stop guessing what recruiters want",
+      "They move faster without low-quality copy",
+      "They keep every job and resume version linked",
+    ],
+    closingPrefix: "Ready to submit",
+    closingHighlight: " better applications",
+    closingDescription:
+      "Start with one job description and one resume, then scale your process with confidence.",
+    closingCta: "Start free in ApplyCraft",
+  },
+  b: {
+    pill: "Built for applicants sending 10 plus applications a week",
+    headlinePrefix: "Your resume should change",
+    headlineHighlight: " with every role",
+    description:
+      "ApplyCraft keeps your job pipeline organized, shows what to fix for each post, and helps you submit stronger, role-specific applications faster.",
+    primaryCta: "Optimize for this job",
+    reassurance: "Start instantly. Save progress when you create an account.",
+    socialProofTitle: "What improves first",
+    socialProofItems: [
+      "Clear ATS mismatch before you submit",
+      "Higher quality role-specific bullets",
+      "Less stress from application tracking",
+    ],
+    closingPrefix: "Want more interviews from",
+    closingHighlight: " the same effort",
+    closingDescription:
+      "Use one focused workflow from resume tailoring to application tracking and stop losing momentum between tools.",
+    closingCta: "Try ApplyCraft free",
+  },
+} as const;
+
+type HeroVariantKey = keyof typeof HERO_VARIANTS;
+
+export default async function Home({
+  searchParams,
+}: {
+  searchParams?: Promise<{ v?: string }>;
+}) {
   const { userId } = await auth();
 
   if (userId) redirect("/dashboard");
 
-  return <LandingPage />;
+  const params = (await searchParams) ?? {};
+  const variant: HeroVariantKey = params.v === "b" ? "b" : "a";
+
+  return <LandingPage variant={variant} />;
 }
 
-function LandingPage() {
+function LandingPage({ variant }: { variant: HeroVariantKey }) {
+  const heroCopy = HERO_VARIANTS[variant];
+
   return (
-    <div
-      className="min-h-screen bg-white text-gray-900"
-      style={{ fontFamily: "'Inter', sans-serif" }}
-    >
-      {/* Hero */}
-      <section className="max-w-3xl mx-auto px-6 pt-24 pb-8 text-center">
-        <div className="inline-flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-full px-3.5 py-1.5 text-xs text-gray-500 mb-8">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-          Free ATS resume analysis — no signup required
-        </div>
+    <div className="brand-shell min-h-screen text-gray-900">
+      <section className="mx-auto max-w-5xl px-6 pb-10 pt-20">
+        <div className="brand-card rounded-3xl px-7 py-10 md:px-12 md:py-12">
+          <div className="grid gap-8 md:grid-cols-[1.15fr_0.85fr] md:items-center">
+            <div>
+              <div className="brand-pill mb-5 inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-semibold">
+                <span className="h-1.5 w-1.5 rounded-full bg-[var(--mint)]" />
+                {heroCopy.pill}
+              </div>
 
-        <h1 className="text-5xl sm:text-6xl font-semibold tracking-tighter leading-[1.08] text-gray-900 max-w-2xl mx-auto mb-5">
-          Find why your resume
-          <br />
-          <span className="text-gray-400">isn't matching the job.</span>
-        </h1>
+              <h1 className="brand-heading text-4xl font-semibold leading-[1.05] md:text-6xl">
+                {heroCopy.headlinePrefix}
+                <span className="brand-highlight">{heroCopy.headlineHighlight}</span>.
+              </h1>
 
-        <p className="text-base text-gray-500 max-w-sm mx-auto leading-relaxed mb-8">
-          Upload your resume and paste a job description. ApplyCraft finds
-          missing keywords, improves your ATS score, and creates a tailored
-          resume for that role in seconds.
-        </p>
+              <p className="mt-5 max-w-2xl text-base leading-relaxed text-[var(--muted)]">
+                {heroCopy.description}
+              </p>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-3">
-          <Link
-            href="/resume-tailor"
-            className="bg-gray-900 text-white px-6 py-3 rounded-xl text-sm font-medium hover:bg-gray-700 transition-all hover:scale-[1.02] active:scale-[0.98]"
-          >
-            Check my resume, it's free →
-          </Link>
+              <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+                <Link
+                  href="/resume-tailor"
+                  className="brand-button-primary rounded-xl px-6 py-3 text-sm font-semibold transition-transform hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  {heroCopy.primaryCta}
+                </Link>
+                <a
+                  href="#how-it-works"
+                  className="brand-button-ghost rounded-xl px-6 py-3 text-sm font-semibold"
+                >
+                  See how it works
+                </a>
+              </div>
 
-          <a
-            href="#how-it-works"
-            className="text-gray-500 px-6 py-3 rounded-xl text-sm font-medium border border-gray-200 hover:border-gray-400 hover:text-gray-900 transition-colors"
-          >
-            See how it works
-          </a>
-        </div>
+              <p className="mt-4 text-xs text-[var(--muted)]">
+                {heroCopy.reassurance}
+              </p>
+            </div>
 
-        <div className="inline-flex items-center gap-1.5 text-xs text-gray-500 mt-1">
-          <svg
-            width="13"
-            height="13"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="text-emerald-600"
-          >
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-          </svg>
-          No card required. Your resume isn't stored until you create an
-          account.
-        </div>
-      </section>
-
-      {/* Showcase */}
-      <section className="max-w-3xl mx-auto px-6 pb-6">
-        <ShowcaseSection />
-      </section>
-
-      {/* Trust strip */}
-      <section className="border-t border-b border-gray-100 bg-gray-50">
-        <div className="max-w-3xl mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10 text-center">
-          <div>
-            <p className="text-lg font-semibold text-gray-900">ATS Analysis</p>
-            <p className="text-xs text-gray-500">Understand your resume gaps</p>
-          </div>
-
-          <div className="hidden sm:block w-px h-8 bg-gray-200" />
-
-          <div>
-            <p className="text-lg font-semibold text-gray-900">30 sec</p>
-            <p className="text-xs text-gray-500">Average optimization time</p>
-          </div>
-
-          <div className="hidden sm:block w-px h-8 bg-gray-200" />
-
-          <div>
-            <p className="text-lg font-semibold text-gray-900">Free</p>
-            <p className="text-xs text-gray-500">
-              Try before creating an account
-            </p>
+            <div className="rounded-2xl border border-[var(--line)] bg-white/90 p-5">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
+                {heroCopy.socialProofTitle}
+              </p>
+              <div className="mt-4 space-y-3">
+                {heroCopy.socialProofItems.map((item) => (
+                  <div
+                    key={item}
+                    className="flex items-start gap-2.5 rounded-xl border border-[var(--line)] bg-[#f8fbff] px-3 py-2.5"
+                  >
+                    <span className="mt-1 h-1.5 w-1.5 rounded-full bg-[var(--sky)]" />
+                    <p className="text-sm text-[var(--brand-navy)]">{item}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Features */}
-      <section id="features" className="max-w-3xl mx-auto px-6 py-20">
+      <section className="mx-auto max-w-5xl px-6 pb-8">
+        <div className="rounded-2xl border border-[var(--line)]/80 bg-white/85 p-3 shadow-sm">
+          <ShowcaseSection />
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-5xl px-6 pb-6">
+        <div className="brand-card rounded-3xl px-7 py-8 md:px-10 md:py-9">
+          <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+            <div className="max-w-2xl">
+              <Eyebrow>MVP</Eyebrow>
+              <h2 className="brand-heading mt-2 text-3xl font-semibold md:text-4xl">
+                Job Tracker is the core product
+              </h2>
+              <p className="mt-3 text-sm leading-relaxed text-[var(--muted)] md:text-base">
+                Keep every role, status, and resume version in one clear pipeline.
+                No more broken spreadsheets or losing track of what was sent where.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-3 sm:flex-row md:flex-col md:items-stretch">
+              <Link
+                href="/sign-up?redirect_url=/tracker"
+                className="brand-button-primary rounded-xl px-6 py-3 text-center text-sm font-semibold"
+              >
+                Start with Job Tracker
+              </Link>
+              <Link
+                href="/tracker"
+                className="brand-button-ghost rounded-xl px-6 py-3 text-center text-sm font-semibold"
+              >
+                Explore tracker
+              </Link>
+            </div>
+          </div>
+
+          <div className="mt-6 grid grid-cols-1 gap-3 md:grid-cols-3">
+            {[
+              "Link every application to the exact tailored resume",
+              "Move status from Saved to Offer without losing context",
+              "See your pipeline clearly before each follow-up",
+            ].map((point) => (
+              <div
+                key={point}
+                className="rounded-xl border border-[var(--line)] bg-white/85 px-4 py-3 text-sm text-[var(--brand-navy)]"
+              >
+                {point}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="features" className="mx-auto max-w-5xl px-6 py-12">
         <Eyebrow>What you get</Eyebrow>
-
-        <h2 className="text-3xl font-semibold tracking-tight mb-2">
-          Everything you need to improve your resume
+        <h2 className="brand-heading mt-2 text-3xl font-semibold md:text-4xl">
+          Everything needed to submit stronger applications
         </h2>
-
-        <p className="text-sm text-gray-500 mb-8">
-          Diagnose problems, fix gaps, and tailor your application.
-        </p>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="mt-7 grid grid-cols-1 gap-4 md:grid-cols-3">
           {features.map((f) => (
             <div
               key={f.title}
-              className="group border border-gray-200 rounded-xl p-5 hover:border-gray-300 hover:bg-gray-50 transition-colors"
+              className="rounded-2xl border border-[var(--line)] bg-white/90 p-5 shadow-sm"
             >
-              <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500 mb-3">
-                {f.icon}
-              </div>
-
-              <h3 className="text-sm font-semibold text-gray-900 mb-1">
-                {f.title}
-              </h3>
-
-              <p className="text-sm text-gray-500 leading-relaxed">{f.desc}</p>
+              <h3 className="text-sm font-semibold text-[var(--brand-navy)]">{f.title}</h3>
+              <p className="mt-1.5 text-sm leading-relaxed text-[var(--muted)]">{f.desc}</p>
             </div>
           ))}
         </div>
       </section>
-      {/* How it works */}
+
       <section
         id="how-it-works"
-        className="border-t border-gray-100 bg-gray-50"
+        className="border-y border-[var(--line)]/70 bg-white/70"
       >
-        <div className="max-w-3xl mx-auto px-6 py-20">
+        <div className="mx-auto max-w-5xl px-6 py-16">
           <Eyebrow>How it works</Eyebrow>
-
-          <h2 className="text-3xl font-semibold tracking-tight mb-3">
-            From resume gaps to a stronger application
+          <h2 className="brand-heading mt-2 text-3xl font-semibold md:text-4xl">
+            Three steps from resume draft to job-ready submission
           </h2>
 
-          <p className="text-sm text-gray-500 mb-10 max-w-md">
-            ApplyCraft doesn't just rewrite your resume. It shows what is
-            missing, explains why it matters, and helps you fix it.
-          </p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-gray-200 rounded-2xl overflow-hidden">
+          <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
             {steps.map((s) => (
-              <div key={s.n} className="bg-gray-50 px-7 py-8">
-                <span className="text-3xl font-semibold text-gray-200 block mb-4">
+              <div
+                key={s.n}
+                className="rounded-2xl border border-[var(--line)] bg-white p-6 shadow-sm"
+              >
+                <span className="brand-highlight block text-3xl font-semibold">
                   0{s.n}
                 </span>
-
-                <h3 className="text-sm font-semibold text-gray-900 mb-1.5">
+                <h3 className="mt-4 text-sm font-semibold text-[var(--brand-navy)]">
                   {s.title}
                 </h3>
-
-                <p className="text-sm text-gray-500 leading-relaxed">
+                <p className="mt-2 text-sm leading-relaxed text-[var(--muted)]">
                   {s.desc}
                 </p>
               </div>
@@ -632,19 +309,17 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* FAQ */}
-      <section id="faqs" className="max-w-3xl mx-auto px-6 py-20">
+      <section id="faqs" className="mx-auto max-w-5xl px-6 py-16">
         <Eyebrow>Questions</Eyebrow>
-
-        <h2 className="text-3xl font-semibold tracking-tight mb-8">
-          Before optimizing your resume
+        <h2 className="brand-heading mt-2 text-3xl font-semibold md:text-4xl">
+          Answers before you start
         </h2>
 
-        <div className="divide-y divide-gray-100 border-t border-gray-100">
+        <div className="mt-8 divide-y divide-[var(--line)] rounded-2xl border border-[var(--line)] bg-white/90 px-6">
           {faqs.map((f) => (
             <details key={f.q} className="group py-5">
-              <summary className="flex items-center justify-between cursor-pointer list-none">
-                <span className="text-sm font-medium text-gray-900">{f.q}</span>
+              <summary className="flex cursor-pointer list-none items-center justify-between">
+                <span className="text-sm font-semibold text-[var(--brand-navy)]">{f.q}</span>
 
                 <svg
                   width="16"
@@ -655,14 +330,14 @@ function LandingPage() {
                   strokeWidth="1.5"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  className="text-gray-400 shrink-0 ml-4 transition-transform group-open:rotate-45"
+                  className="ml-4 shrink-0 text-[var(--muted)] transition-transform group-open:rotate-45"
                 >
                   <line x1="12" y1="5" x2="12" y2="19" />
                   <line x1="5" y1="12" x2="19" y2="12" />
                 </svg>
               </summary>
 
-              <p className="text-sm text-gray-500 leading-relaxed mt-3 pr-8">
+              <p className="mt-3 pr-8 text-sm leading-relaxed text-[var(--muted)]">
                 {f.a}
               </p>
             </details>
@@ -670,25 +345,42 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* Final CTA */}
-      <section className="max-w-3xl mx-auto px-6 py-28 text-center">
-        <h2 className="text-4xl sm:text-5xl font-semibold tracking-tighter mb-4 leading-[1.08]">
-          Stop guessing why your resume
-          <br />
-          <span className="text-gray-400">isn't getting responses.</span>
-        </h2>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: faqs.map((item) => ({
+              "@type": "Question",
+              name: item.q,
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: item.a,
+              },
+            })),
+          }),
+        }}
+      />
 
-        <p className="text-sm text-gray-500 mb-10 max-w-xs mx-auto leading-relaxed">
-          Find missing keywords, improve your ATS score, and tailor your resume
-          for the jobs you want.
-        </p>
+      <section className="mx-auto max-w-5xl px-6 pb-24 pt-2 text-center">
+        <div className="brand-card rounded-3xl px-7 py-12 md:px-12">
+          <h2 className="brand-heading text-4xl font-semibold leading-[1.08] md:text-5xl">
+            {heroCopy.closingPrefix}
+            <span className="brand-highlight">{heroCopy.closingHighlight}</span>?
+          </h2>
 
-        <Link
-          href="/resume-tailor"
-          className="inline-flex items-center bg-gray-900 text-white px-7 py-3.5 rounded-xl text-sm font-medium hover:bg-gray-700 transition-all hover:scale-[1.02] active:scale-[0.98]"
-        >
-          Optimize my resume →
-        </Link>
+          <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-[var(--muted)]">
+            {heroCopy.closingDescription}
+          </p>
+
+          <Link
+            href="/resume-tailor"
+            className="brand-button-primary mt-8 inline-flex items-center rounded-xl px-7 py-3.5 text-sm font-semibold transition-transform hover:scale-[1.02] active:scale-[0.98]"
+          >
+            {heroCopy.closingCta}
+          </Link>
+        </div>
       </section>
     </div>
   );

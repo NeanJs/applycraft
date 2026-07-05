@@ -4,7 +4,6 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
-import { track } from "@vercel/analytics/react";
 
 import ToolPageShell, {
   StepStatus,
@@ -26,6 +25,11 @@ import CoverLetter from "@/app/components/tools/CoverLetter";
 
 import { CoverLetterResult } from "@/app/types/tailor";
 import AnonStickyCTA from "@/app/components/misc/StickyCTA";
+import QuickStartSamples from "@/app/components/tools/QuickStartSamples";
+import {
+  SAMPLE_JOB_DESCRIPTION_TEXT,
+  SAMPLE_RESUME_TEXT,
+} from "@/app/constant/toolSamples";
 
 // ── Types ─────────────────────────────────────────────────────────────────
 
@@ -106,12 +110,27 @@ export default function CoverLetterPage() {
   // Step indicator
   const hasResume = resume.trim().length > 0;
   const hasJD = jobDescription.trim().length > 0;
+  const hasAnyInput = hasResume || hasJD;
   const step1: StepStatus = hasResume ? "done" : "active";
   const step2: StepStatus =
     hasResume && hasJD ? "done" : hasResume ? "active" : "pending";
   const step3: StepStatus = result ? "done" : loading ? "active" : "pending";
 
   const showStickyCTA = !!result && result.promptSignUp && !dismissedCTA;
+
+  function handleTrySampleData() {
+    setResume(SAMPLE_RESUME_TEXT);
+    setJobDescription(SAMPLE_JOB_DESCRIPTION_TEXT);
+    setShowSignupCTA(false);
+    setDismissedCTA(false);
+  }
+
+  function handleClearInputs() {
+    setResume("");
+    setJobDescription("");
+    setShowSignupCTA(false);
+    setDismissedCTA(false);
+  }
 
   return (
     <ToolPageShell
@@ -132,6 +151,15 @@ export default function CoverLetterPage() {
         ) : undefined
       }
     >
+      {!loading && !result && (
+        <QuickStartSamples
+          onTrySample={handleTrySampleData}
+          onClear={handleClearInputs}
+          hasInput={hasAnyInput}
+          loading={uploadingPdf}
+        />
+      )}
+
       <ToolForm
         inputs={[
           <ResumeInput

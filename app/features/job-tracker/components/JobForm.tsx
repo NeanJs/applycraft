@@ -1,12 +1,18 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useJobTrackerStore } from "@/app/features/job-tracker/store/useJobTrackerStore";
 import type { CreateJobInput, JobApplication, JobStatus } from "@/app/features/job-tracker/types";
 
 interface JobFormProps {
   job?: JobApplication | null;
   onSubmit?: () => void;
+}
+
+interface ResumeOption {
+  id: string;
+  title: string | null;
+  updatedAt: string;
 }
 
 const DEFAULT_FORM: CreateJobInput = {
@@ -38,6 +44,30 @@ export function JobForm({ job, onSubmit }: JobFormProps) {
     };
   }, [job]);
   const [form, setForm] = useState<CreateJobInput>(initialForm);
+  const [resumes, setResumes] = useState<ResumeOption[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadResumes() {
+      try {
+        const res = await fetch("/api/resume");
+        const data = await res.json();
+        if (!res.ok || cancelled) return;
+        setResumes(data.resumes ?? []);
+      } catch {
+        if (!cancelled) {
+          setResumes([]);
+        }
+      }
+    }
+
+    void loadResumes();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const handleFormReset = () => setForm(initialForm);
 
@@ -71,17 +101,17 @@ export function JobForm({ job, onSubmit }: JobFormProps) {
       <div className="grid gap-4 md:grid-cols-2">
         <label className="space-y-2 text-sm text-gray-700">
           <span className="font-medium">Company</span>
-          <input value={form.company ?? ""} onChange={(event) => setForm((value) => ({ ...value, company: event.target.value }))} className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm" placeholder="Acme" />
+          <input autoComplete="organization" value={form.company ?? ""} onChange={(event) => setForm((value) => ({ ...value, company: event.target.value }))} className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm" placeholder="Acme" />
         </label>
         <label className="space-y-2 text-sm text-gray-700">
           <span className="font-medium">Role</span>
-          <input value={form.role ?? ""} onChange={(event) => setForm((value) => ({ ...value, role: event.target.value }))} className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm" placeholder="Product Engineer" />
+          <input autoComplete="organization-title" value={form.role ?? ""} onChange={(event) => setForm((value) => ({ ...value, role: event.target.value }))} className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm" placeholder="Product Engineer" />
         </label>
       </div>
 
       <label className="space-y-2 text-sm text-gray-700">
         <span className="font-medium">Job URL</span>
-        <input value={form.jobUrl ?? ""} onChange={(event) => setForm((value) => ({ ...value, jobUrl: event.target.value }))} className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm" placeholder="https://example.com/careers" />
+        <input autoComplete="url" value={form.jobUrl ?? ""} onChange={(event) => setForm((value) => ({ ...value, jobUrl: event.target.value }))} className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm" placeholder="https://example.com/careers" />
       </label>
 
       <label className="space-y-2 text-sm text-gray-700">
@@ -107,8 +137,24 @@ export function JobForm({ job, onSubmit }: JobFormProps) {
       </div>
 
       <label className="space-y-2 text-sm text-gray-700">
-        <span className="font-medium">Resume version ID</span>
-        <input value={form.resumeVersionId ?? ""} onChange={(event) => setForm((value) => ({ ...value, resumeVersionId: event.target.value }))} className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm" placeholder="resume version id" />
+        <span className="font-medium">Linked resume</span>
+        <select
+          value={form.resumeVersionId ?? ""}
+          onChange={(event) =>
+            setForm((value) => ({
+              ...value,
+              resumeVersionId: event.target.value || null,
+            }))
+          }
+          className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm"
+        >
+          <option value="">No resume linked</option>
+          {resumes.map((resume) => (
+            <option key={resume.id} value={resume.id}>
+              {(resume.title ?? "Untitled Resume") + " • " + new Date(resume.updatedAt).toLocaleDateString()}
+            </option>
+          ))}
+        </select>
       </label>
 
       <label className="space-y-2 text-sm text-gray-700">

@@ -3,6 +3,65 @@
 // SEO content (intro/sections/faqs) consumed by <ToolSeoContent />.
 
 export const toolSEO = {
+  "job-tracker": {
+    title: "Job Application Tracker, Free Pipeline Board | ApplyCraft",
+    description:
+      "Track every job application in one pipeline. Organize status, company, role, and submitted resume version so you never lose context.",
+    keywords: [
+      "job application tracker",
+      "job tracker",
+      "application tracking board",
+      "job search organizer",
+      "track job applications",
+    ],
+
+    intro:
+      "When applications live across notes, spreadsheets, and inbox threads, follow-ups slip and interviews get missed. ApplyCraft Job Tracker gives you one pipeline from Saved to Offer with each company, role, and resume version attached so your job search stays organized and measurable.",
+
+    sections: [
+      {
+        heading: "Why a job tracker matters",
+        body: "A job search creates dozens of moving pieces: versions of your resume, interview stages, recruiter replies, and deadlines. A tracker centralizes this into one view so you can prioritize follow-ups, avoid duplicate applications, and maintain momentum week to week.",
+      },
+      {
+        heading: "What you can track",
+        body: "For each application, store the company, role title, current status, and notes, plus the exact tailored resume you sent. This makes it easier to prepare for interviews because you can quickly reopen what the recruiter actually saw.",
+      },
+      {
+        heading: "How it fits with resume tailoring",
+        body: "Use ApplyCraft to optimize a resume for a job, then immediately save that version into your tracker workflow. Instead of disconnected tools, you get one loop: optimize, apply, track, and follow up from the same system.",
+      },
+    ],
+
+    faqs: [
+      {
+        question: "Is the job tracker free to use?",
+        answer:
+          "Yes. You can start using the tracker with a free account and organize your application pipeline right away.",
+      },
+      {
+        question: "Can I attach the resume version I submitted?",
+        answer:
+          "Yes. The tracker is designed so each application can be tied to the tailored resume you actually sent for that role.",
+      },
+      {
+        question: "What statuses can I use?",
+        answer:
+          "You can track applications across stages like Saved, Applied, Interview, Offer, and Rejected, then update as your process moves forward.",
+      },
+      {
+        question: "How is this different from a spreadsheet?",
+        answer:
+          "A spreadsheet can list applications, but ApplyCraft keeps your resume optimization workflow and application tracking connected, so context is preserved end-to-end.",
+      },
+      {
+        question: "Can I use this with the resume tailor tool?",
+        answer:
+          "Yes. After tailoring a resume for a role, you can store and manage that application in the Job Tracker pipeline for follow-up and interview prep.",
+      },
+    ],
+  },
+
   "resume-tailor": {
     title: "Tailor your resume to any job, free | ApplyCraft",
     description:

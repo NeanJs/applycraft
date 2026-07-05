@@ -9,7 +9,7 @@ export function Header() {
   const openDialog = useJobTrackerStore((state) => state.openDialog);
 
   return (
-    <header className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-gray-100 bg-white px-6 py-4">
+    <header className="sticky top-0 z-10 flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 bg-white px-4 py-4 sm:px-6">
       <div className="flex items-center gap-3">
         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 shadow-sm">
           <span className="text-sm font-semibold text-white">JT</span>
@@ -20,7 +20,7 @@ export function Header() {
         </div>
       </div>
 
-      <div className="ml-8 flex max-w-sm flex-1 items-center gap-3">
+      <div className="order-3 w-full sm:order-2 sm:ml-4 sm:max-w-sm sm:flex-1">
         <div className="relative flex-1">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
           <input
@@ -33,8 +33,8 @@ export function Header() {
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
-        <button className="flex items-center gap-1.5 rounded-xl border border-gray-200 px-3 py-2 text-xs font-medium text-gray-600 transition-colors hover:bg-gray-50">
+      <div className="order-2 flex items-center gap-2 sm:order-3">
+        <button className="hidden sm:flex items-center gap-1.5 rounded-xl border border-gray-200 px-3 py-2 text-xs font-medium text-gray-600 transition-colors hover:bg-gray-50">
           <SlidersHorizontal className="h-3.5 w-3.5" />
           Filter
         </button>

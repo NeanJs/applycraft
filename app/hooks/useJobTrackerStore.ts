@@ -76,7 +76,7 @@ interface JobTrackerStore {
   updateStatus: (id: string, status: JobStatus) => Promise<void>;
 }
 
-export const useJobTrackerStore = create<JobTrackerStore>((set, get) => ({
+export const useJobTrackerStore = create<JobTrackerStore>((set) => ({
   // -------------------
   // Initial State
   // -------------------

@@ -1,11 +1,12 @@
 "use client";
 
+import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
-import { ChevronDown, Clock, ExternalLink, FileText, Link2, StickyNote, X } from "lucide-react";
-import { useMemo, useState } from "react";
+import { ChevronDown, Clock, ExternalLink, FileText, Link2, Pencil, StickyNote, Trash2, X } from "lucide-react";
+import { useState } from "react";
 import { formatDate, STATUS_META } from "@/app/features/job-tracker/constants";
 import { useJobTrackerStore } from "@/app/features/job-tracker/store/useJobTrackerStore";
-import type { JobStatus } from "@/app/features/job-tracker/types";
+import type { JobApplication, JobStatus } from "@/app/features/job-tracker/types";
 
 function CompanyInitials({ company }: { company: string | null }) {
   if (!company) return null;
@@ -25,18 +26,29 @@ function CompanyInitials({ company }: { company: string | null }) {
 
 export function DetailPanel() {
   const selectedJob = useJobTrackerStore((state) => state.selectedJob);
+  if (!selectedJob) return null;
+
+  return <DetailPanelContent key={selectedJob.id} selectedJob={selectedJob} />;
+}
+
+function DetailPanelContent({ selectedJob }: { selectedJob: JobApplication }) {
   const selectJob = useJobTrackerStore((state) => state.selectJob);
   const updateJob = useJobTrackerStore((state) => state.updateJob);
   const updateStatus = useJobTrackerStore((state) => state.updateStatus);
+  const openDialog = useJobTrackerStore((state) => state.openDialog);
+  const deleteJob = useJobTrackerStore((state) => state.deleteJob);
   const [statusOpen, setStatusOpen] = useState(false);
   const [notes, setNotes] = useState(selectedJob?.notes ?? "");
-
-  const meta = useMemo(() => (selectedJob ? STATUS_META[selectedJob.status] : null), [selectedJob]);
-
-  if (!selectedJob) return null;
+  const meta = STATUS_META[selectedJob.status];
 
   const handleNotesBlur = async () => {
     await updateJob(selectedJob.id, { notes });
+  };
+
+  const handleDelete = async () => {
+    const confirmed = window.confirm("Delete this job from your tracker?");
+    if (!confirmed) return;
+    await deleteJob(selectedJob.id);
   };
 
   return (
@@ -48,7 +60,7 @@ export function DetailPanel() {
       transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
       className="shrink-0 overflow-hidden border-l border-gray-100 bg-white"
     >
-      <div className="h-full w-[360px] overflow-y-auto p-6">
+      <div className="h-full w-90 overflow-y-auto p-6">
         <div className="mb-6 flex items-start justify-between">
           <div className="flex items-center gap-3">
             <CompanyInitials company={selectedJob.company} />
@@ -63,6 +75,20 @@ export function DetailPanel() {
         </div>
 
         <div className="mb-6 flex flex-wrap gap-2">
+          <button
+            onClick={() => openDialog(selectedJob)}
+            className="inline-flex items-center gap-1.5 rounded-xl border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:bg-gray-50"
+          >
+            <Pencil className="h-3.5 w-3.5" />
+            Edit
+          </button>
+          <button
+            onClick={() => void handleDelete()}
+            className="inline-flex items-center gap-1.5 rounded-xl border border-red-200 px-3 py-1.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-50"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+            Delete
+          </button>
           <div className="relative">
             <button onClick={() => setStatusOpen((value) => !value)} className={`inline-flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-medium transition-opacity ${meta?.color} ${meta?.bg} ${meta?.border} hover:opacity-80`}>
               <span className={`h-1.5 w-1.5 rounded-full ${meta?.dot}`} />
@@ -123,10 +149,19 @@ export function DetailPanel() {
           {selectedJob.resumeVersion ? (
             <div>
               <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-widest text-gray-400">Linked Resume</p>
-              <span className="inline-flex items-center gap-1.5 rounded-lg bg-gray-100 px-3 py-1.5 text-sm text-gray-800">
-                <FileText className="h-3.5 w-3.5 text-gray-500" />
-                {selectedJob.resumeVersion.title ?? "Generated resume"}
-              </span>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 rounded-lg bg-gray-100 px-3 py-1.5 text-sm text-gray-800">
+                  <FileText className="h-3.5 w-3.5 text-gray-500" />
+                  {selectedJob.resumeVersion.title ?? "Generated resume"}
+                </span>
+                <Link
+                  href={`/resume/${selectedJob.resumeVersion.id}`}
+                  className="inline-flex items-center gap-1.5 text-sm text-indigo-600 transition-colors hover:text-indigo-700 hover:underline"
+                >
+                  View tailored resume
+                  <ExternalLink className="h-3 w-3" />
+                </Link>
+              </div>
             </div>
           ) : null}
         </div>

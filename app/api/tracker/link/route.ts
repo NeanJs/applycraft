@@ -3,6 +3,12 @@ import { prisma } from "@/app/lib/prisma";
 import { syncUser } from "@/app/lib/sync-user";
 import { parseJobContext } from "@/app/helpers/parseJobContext";
 
+function normalize(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : null;
+}
+
 export async function POST(req: Request) {
   const { userId } = await auth();
   if (!userId) {
@@ -15,7 +21,14 @@ export async function POST(req: Request) {
   }
 
   const body = await req.json();
-  const { generationId, jobDescription, resumeId, title, company, role, jobId } = body;
+  const { generationId, jobDescription, resumeId, title, company, role, jobUrl, jobId } = body;
+  const inferred = parseJobContext(jobDescription);
+  const normalizedCompany = normalize(company) ?? normalize(inferred.company);
+  const normalizedRole = normalize(role) ?? normalize(inferred.role);
+  const normalizedJobDescription = normalize(jobDescription);
+  const normalizedJobUrl = normalize(jobUrl);
+  const normalizedResumeId = normalize(resumeId);
+  const linkedNote = `Linked from ${title ?? "tool run"}`;
 
   if (jobId) {
     const existing = await prisma.jobApplication.findFirst({
@@ -29,8 +42,12 @@ export async function POST(req: Request) {
     const job = await prisma.jobApplication.update({
       where: { id: jobId },
       data: {
-        resumeVersionId: resumeId || existing.resumeVersionId || null,
-        notes: existing.notes ? `${existing.notes}\nLinked from ${title ?? "tool run"}` : `Linked from ${title ?? "tool run"}`,
+        company: existing.company ?? normalizedCompany,
+        role: existing.role ?? normalizedRole,
+        jobUrl: existing.jobUrl ?? normalizedJobUrl,
+        jobDescription: existing.jobDescription ?? normalizedJobDescription,
+        resumeVersionId: normalizedResumeId ?? existing.resumeVersionId,
+        notes: existing.notes ? `${existing.notes}\n${linkedNote}` : linkedNote,
       },
       include: {
         resumeVersion: {
@@ -42,23 +59,41 @@ export async function POST(req: Request) {
     return Response.json({ job });
   }
 
-  const inferred = parseJobContext(jobDescription);
-  const existing = await prisma.jobApplication.findFirst({
-    where: { userId: user.id, resumeVersionId: resumeId ?? undefined },
-  });
+  if (normalizedResumeId) {
+    const existing = await prisma.jobApplication.findFirst({
+      where: { userId: user.id, resumeVersionId: normalizedResumeId },
+    });
 
-  if (existing) {
-    return Response.json({ job: existing });
+    if (existing) {
+      const job = await prisma.jobApplication.update({
+        where: { id: existing.id },
+        data: {
+          company: existing.company ?? normalizedCompany,
+          role: existing.role ?? normalizedRole,
+          jobUrl: existing.jobUrl ?? normalizedJobUrl,
+          jobDescription: existing.jobDescription ?? normalizedJobDescription,
+          notes: existing.notes ? `${existing.notes}\n${linkedNote}` : linkedNote,
+        },
+        include: {
+          resumeVersion: {
+            select: { id: true, title: true, createdAt: true },
+          },
+        },
+      });
+
+      return Response.json({ job });
+    }
   }
 
   const job = await prisma.jobApplication.create({
     data: {
       userId: user.id,
-      company: company?.trim() || inferred.company || null,
-      role: role?.trim() || inferred.role || null,
-      jobDescription: jobDescription?.trim() || null,
+      company: normalizedCompany,
+      role: normalizedRole,
+      jobUrl: normalizedJobUrl,
+      jobDescription: normalizedJobDescription,
       status: "SAVED",
-      resumeVersionId: resumeId || null,
+      resumeVersionId: normalizedResumeId,
       notes: title ? `Linked from ${title}` : null,
     },
     include: {
@@ -69,9 +104,9 @@ export async function POST(req: Request) {
   });
 
   if (generationId) {
-    await prisma.generation.update({
-      where: { id: generationId },
-      data: { companyName: company?.trim() || inferred.company || null, jobTitle: role?.trim() || inferred.role || null },
+    await prisma.generation.updateMany({
+      where: { id: generationId, userId: user.id },
+      data: { companyName: normalizedCompany, jobTitle: normalizedRole },
     });
   }
 

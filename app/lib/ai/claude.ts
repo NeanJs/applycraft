@@ -1,5 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 
+type ClaudeMessage = Anthropic.Messages.MessageParam;
+
 export const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY!,
 });
@@ -10,7 +12,7 @@ export async function callClaude({
   maxTokens,
 }: {
   system: string;
-  messages: any[];
+  messages: ClaudeMessage[];
   maxTokens: number;
 }) {
   const response = await anthropic.messages.create({

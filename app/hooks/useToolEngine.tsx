@@ -2,9 +2,9 @@
 
 import { useState, useCallback, useRef } from "react";
 import toast from "react-hot-toast";
-import { track } from "@vercel/analytics/react";
+import { trackEvent } from "@/app/lib/analytics/trackEvent";
 
-export interface ToolEngineOptions<TResult> {
+export interface ToolEngineOptions {
   /** API route to POST to, e.g. "/api/tailor" or "/api/ats-score" */
   apiRoute: string;
   /** Build the request body from the current field values */
@@ -41,7 +41,7 @@ export function useToolEngine<TResult = unknown>({
   stepInterval = 7000,
   onKnownError,
   successMessage = "Done!",
-}: ToolEngineOptions<TResult>): ToolEngineState<TResult> {
+}: ToolEngineOptions): ToolEngineState<TResult> {
   const [result, setResult] = useState<TResult | undefined>(undefined);
   const [loading, setLoading] = useState(false);
   const [loadingStep, setLoadingStep] = useState(0);
@@ -75,10 +75,22 @@ export function useToolEngine<TResult = unknown>({
     }, stepInterval);
 
     try {
-      track("tool_started", {
+      trackEvent("tool_started", {
         apiRoute,
         mode: (body as Record<string, unknown>).mode ?? "unknown",
       });
+
+      if (typeof window !== "undefined") {
+        const hasSeenToolContent =
+          window.sessionStorage.getItem("applycraft_seen_tool_content") === "1";
+        if (hasSeenToolContent) {
+          trackEvent("generate_after_tool_content", {
+            apiRoute,
+            mode: (body as Record<string, unknown>).mode ?? "unknown",
+          });
+          window.sessionStorage.removeItem("applycraft_seen_tool_content");
+        }
+      }
 
       const res = await fetch(apiRoute, {
         method: "POST",
@@ -98,7 +110,7 @@ export function useToolEngine<TResult = unknown>({
       }
 
       toast.success(successMessage);
-      track("generation_completed", {
+      trackEvent("generation_completed", {
         apiRoute,
         mode: (body as Record<string, unknown>).mode ?? "unknown",
       });

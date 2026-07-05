@@ -1,7 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/app/lib/prisma";
 import { syncUser } from "@/app/lib/sync-user";
-import { getClientIP } from "@/app/helpers/checkAnonRateLimit";
 
 export async function POST(req: Request) {
   const { userId } = await auth();

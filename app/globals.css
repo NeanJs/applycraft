@@ -1,8 +1,23 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f7f8f4;
+  --foreground: #12223d;
+  --surface: #ffffff;
+  --muted: #4f6180;
+  --line: #d5deea;
+
+  /* Logo-led brand palette */
+  --brand-navy: #12223d;
+  --brand-blue: #1d8fca;
+  --brand-orange: #f26f21;
+  --brand-orange-strong: #c64f12;
+  --brand-aqua: #2aa794;
+
+  --accent: var(--brand-orange);
+  --accent-strong: var(--brand-orange-strong);
+  --sky: var(--brand-blue);
+  --mint: var(--brand-aqua);
 }
 
 @theme inline {
@@ -14,19 +29,82 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --foreground: #0a0a0a;
-    --background: #ededed;
+    --foreground: #12223d;
+    --background: #f6f7f2;
+    --surface: #ffffff;
+    --muted: #516077;
+    --line: #d8dee8;
   }
 }
+
 html {
   scroll-behavior: smooth !important;
 }
+
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family:
+    "Satoshi",
+    "Manrope",
+    "Avenir Next",
+    "Segoe UI",
+    sans-serif;
   margin: 0;
   padding: 0;
+}
+
+@layer utilities {
+  .brand-shell {
+    background:
+      radial-gradient(900px 420px at 12% -14%, color-mix(in srgb, var(--sky) 7%, transparent), transparent 62%),
+      linear-gradient(180deg, #f8f9f5 0%, #f7f8f4 44%, #ffffff 100%);
+  }
+
+  .brand-mesh {
+    background: #ffffff;
+  }
+
+  .brand-card {
+    background: rgb(255 255 255 / 0.82);
+    border: 1px solid rgb(216 222 232 / 0.9);
+    box-shadow:
+      0 14px 30px -24px rgb(18 34 61 / 0.35),
+      0 2px 5px -3px rgb(18 34 61 / 0.2);
+    backdrop-filter: blur(8px);
+  }
+
+  .brand-pill {
+    background: color-mix(in srgb, var(--sky) 7%, white);
+    border: 1px solid color-mix(in srgb, var(--sky) 22%, white);
+    color: #28486e;
+  }
+
+  .brand-button-primary {
+    background: var(--accent);
+    color: #fff;
+    border: 1px solid color-mix(in srgb, var(--accent-strong) 58%, white);
+    box-shadow: 0 10px 20px -14px color-mix(in srgb, var(--accent-strong) 62%, transparent);
+  }
+
+  .brand-button-primary:hover {
+    background: var(--accent-strong);
+  }
+
+  .brand-button-ghost {
+    background: rgb(255 255 255 / 0.75);
+    border: 1px solid rgb(18 34 61 / 0.16);
+    color: #233a5d;
+  }
+
+  .brand-heading {
+    letter-spacing: -0.03em;
+    color: #0f1e35;
+  }
+
+  .brand-highlight {
+    color: color-mix(in srgb, var(--brand-navy) 82%, var(--sky) 18%);
+  }
 }
 
 /*

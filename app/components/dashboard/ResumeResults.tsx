@@ -97,10 +97,12 @@ export default function ResumeResults({
   result,
   copied,
   resumeID,
+  coverLetterLoading = false,
 }: {
   result: ResponseData;
   copied: boolean;
   resumeID?: string;
+  coverLetterLoading?: boolean;
 }) {
   const [localCopied, setLocalCopied] = useState(false);
 
@@ -312,7 +314,17 @@ export default function ResumeResults({
           <h2 className="text-sm font-semibold mb-4 text-gray-600">
             Cover Letter
           </h2>
-          <CoverLetter text={result.coverLetter} />
+          {coverLetterLoading ? (
+            <div className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-xs text-gray-500">
+              Generating cover letter in the background...
+            </div>
+          ) : result.coverLetter?.trim() ? (
+            <CoverLetter text={result.coverLetter} />
+          ) : (
+            <div className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-xs text-gray-500">
+              Cover letter not generated yet.
+            </div>
+          )}
         </section>
       )}
 

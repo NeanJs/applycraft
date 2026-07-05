@@ -13,6 +13,7 @@ export default function TrackerPage() {
   const jobs = useJobTrackerStore((state) => state.jobs);
   const loading = useJobTrackerStore((state) => state.loading);
   const fetchJobs = useJobTrackerStore((state) => state.fetchJobs);
+  const openDialog = useJobTrackerStore((state) => state.openDialog);
 
   useEffect(() => {
     if (isLoaded && !isSignedIn) {
@@ -58,16 +59,30 @@ export default function TrackerPage() {
       </div>
 
       {jobs.length === 0 ? (
-        <div className="rounded-3xl border border-dashed border-gray-200 bg-gray-50 p-10 text-center">
+        <div className="mb-6 rounded-2xl border border-dashed border-gray-200 bg-gray-50 p-6 text-center">
           <h2 className="text-lg font-semibold text-gray-900">No jobs yet</h2>
           <p className="mt-2 text-sm text-gray-500">
-            Save a result from any of the AI tools or create your first job card
-            from here to start tracking applications.
+            Save a result from any AI tool, or add your first job manually to
+            start tracking your pipeline.
           </p>
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
+            <button
+              onClick={() => openDialog()}
+              className="rounded-xl bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 transition-colors"
+            >
+              Add first job
+            </button>
+            <Link
+              href="/resume-tailor"
+              className="rounded-xl border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:border-gray-400 hover:text-gray-900 transition-colors"
+            >
+              Tailor a resume
+            </Link>
+          </div>
         </div>
-      ) : (
-        <JobTrackerView />
-      )}
+      ) : null}
+
+      <JobTrackerView />
     </div>
   );
 }

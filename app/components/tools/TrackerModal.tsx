@@ -5,17 +5,6 @@ import { useUser } from "@clerk/nextjs";
 import toast from "react-hot-toast";
 import { useJobTrackerStore } from "@/app/features/job-tracker/store/useJobTrackerStore";
 
-interface JobApplication {
-  id: string;
-  company: string | null;
-  role: string | null;
-  jobUrl: string | null;
-  jobDescription: string | null;
-  status: string;
-  resumeVersionId: string | null;
-  notes: string | null;
-}
-
 interface TrackerModalProps {
   open: boolean;
   onClose: () => void;
@@ -25,6 +14,12 @@ interface TrackerModalProps {
   title?: string;
   company?: string;
   role?: string;
+}
+
+interface ResumeOption {
+  id: string;
+  title: string | null;
+  updatedAt: string;
 }
 
 export default function TrackerModal({
@@ -37,19 +32,66 @@ export default function TrackerModal({
   company,
   role,
 }: TrackerModalProps) {
+  if (!open) return null;
+
+  return (
+    <TrackerModalBody
+      onClose={onClose}
+      resumeId={resumeId}
+      generationId={generationId}
+      jobDescription={jobDescription}
+      title={title}
+      company={company}
+      role={role}
+    />
+  );
+}
+
+function TrackerModalBody({
+  onClose,
+  resumeId,
+  generationId,
+  jobDescription,
+  title,
+  company,
+  role,
+}: Omit<TrackerModalProps, "open">) {
   const { isSignedIn } = useUser();
   const jobs = useJobTrackerStore((state) => state.jobs);
   const hasLoaded = useJobTrackerStore((state) => state.hasLoaded);
   const fetchJobs = useJobTrackerStore((state) => state.fetchJobs);
-  const [form, setForm] = useState({ company: company ?? "", role: role ?? "", jobUrl: "", jobDescription: jobDescription ?? "", status: "SAVED", notes: "" });
+  const [form, setForm] = useState({ company: company ?? "", role: role ?? "", jobUrl: "", jobDescription: jobDescription ?? "", status: "SAVED", resumeVersionId: resumeId ?? "", notes: "" });
   const [saving, setSaving] = useState(false);
+  const [resumes, setResumes] = useState<ResumeOption[]>([]);
 
   useEffect(() => {
-    if (!open || !isSignedIn || hasLoaded) return;
+    if (!isSignedIn || hasLoaded) return;
     void fetchJobs();
-  }, [fetchJobs, hasLoaded, isSignedIn, open]);
+  }, [fetchJobs, hasLoaded, isSignedIn]);
 
-  if (!open) return null;
+  useEffect(() => {
+    if (!isSignedIn) return;
+
+    let cancelled = false;
+    async function loadResumes() {
+      try {
+        const res = await fetch("/api/resume");
+        const data = await res.json();
+        if (!res.ok || cancelled) return;
+        setResumes(data.resumes ?? []);
+      } catch {
+        if (!cancelled) {
+          setResumes([]);
+        }
+      }
+    }
+
+    void loadResumes();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isSignedIn]);
 
   async function handleCreate() {
     setSaving(true);
@@ -63,7 +105,7 @@ export default function TrackerModal({
           jobUrl: form.jobUrl,
           jobDescription: form.jobDescription,
           status: form.status,
-          resumeVersionId: resumeId,
+          resumeVersionId: form.resumeVersionId,
           notes: form.notes,
         }),
       });
@@ -90,16 +132,30 @@ export default function TrackerModal({
       const res = await fetch("/api/tracker/link", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ jobId, generationId, resumeId, title, jobDescription, company, role }),
+        body: JSON.stringify({
+          jobId,
+          generationId,
+          resumeId: form.resumeVersionId,
+          title,
+          jobDescription: form.jobDescription,
+          company: form.company,
+          role: form.role,
+          jobUrl: form.jobUrl,
+        }),
       });
       const data = await res.json();
       if (!res.ok) {
         toast.error(data.error ?? "Unable to link job.");
         return;
       }
-      useJobTrackerStore.setState((state) => ({
-        jobs: state.jobs.some((job) => job.id === data.job.id) ? state.jobs : [data.job, ...state.jobs],
-      }));
+      useJobTrackerStore.setState((state) => {
+        const exists = state.jobs.some((job) => job.id === data.job.id);
+        return {
+          jobs: exists
+            ? state.jobs.map((job) => (job.id === data.job.id ? data.job : job))
+            : [data.job, ...state.jobs],
+        };
+      });
       toast.success("Linked to tracker entry.");
       onClose();
     } catch {
@@ -123,12 +179,20 @@ export default function TrackerModal({
         <div className="grid gap-6 md:grid-cols-[1.2fr_0.8fr]">
           <div className="space-y-3">
             <div className="grid gap-3 sm:grid-cols-2">
-              <input className="rounded-xl border border-gray-200 px-3 py-2 text-sm" placeholder="Company" value={form.company} onChange={(e) => setForm((prev) => ({...prev, company: e.target.value}))} />
-              <input className="rounded-xl border border-gray-200 px-3 py-2 text-sm" placeholder="Role" value={form.role} onChange={(e) => setForm((prev) => ({...prev, role: e.target.value}))} />
+              <input aria-label="Company" autoComplete="organization" className="rounded-xl border border-gray-200 px-3 py-2 text-sm" placeholder="Company" value={form.company} onChange={(e) => setForm((prev) => ({...prev, company: e.target.value}))} />
+              <input aria-label="Role" autoComplete="organization-title" className="rounded-xl border border-gray-200 px-3 py-2 text-sm" placeholder="Role" value={form.role} onChange={(e) => setForm((prev) => ({...prev, role: e.target.value}))} />
             </div>
-            <input className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm" placeholder="Job URL" value={form.jobUrl} onChange={(e) => setForm((prev) => ({...prev, jobUrl: e.target.value}))} />
-            <textarea className="w-full min-h-24 rounded-xl border border-gray-200 px-3 py-2 text-sm" placeholder="Job description" value={form.jobDescription} onChange={(e) => setForm((prev) => ({...prev, jobDescription: e.target.value}))} />
-            <textarea className="w-full min-h-20 rounded-xl border border-gray-200 px-3 py-2 text-sm" placeholder="Notes" value={form.notes} onChange={(e) => setForm((prev) => ({...prev, notes: e.target.value}))} />
+            <input aria-label="Job URL" autoComplete="url" className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm" placeholder="Job URL" value={form.jobUrl} onChange={(e) => setForm((prev) => ({...prev, jobUrl: e.target.value}))} />
+            <textarea aria-label="Job description" className="w-full min-h-24 rounded-xl border border-gray-200 px-3 py-2 text-sm" placeholder="Job description" value={form.jobDescription} onChange={(e) => setForm((prev) => ({...prev, jobDescription: e.target.value}))} />
+            <textarea aria-label="Notes" className="w-full min-h-20 rounded-xl border border-gray-200 px-3 py-2 text-sm" placeholder="Notes" value={form.notes} onChange={(e) => setForm((prev) => ({...prev, notes: e.target.value}))} />
+            <select className="rounded-xl border border-gray-200 px-3 py-2 text-sm" value={form.resumeVersionId} onChange={(e) => setForm((prev) => ({...prev, resumeVersionId: e.target.value}))}>
+              <option value="">No resume linked</option>
+              {resumes.map((resume) => (
+                <option key={resume.id} value={resume.id}>
+                  {(resume.title ?? "Untitled Resume") + " • " + new Date(resume.updatedAt).toLocaleDateString()}
+                </option>
+              ))}
+            </select>
             <select className="rounded-xl border border-gray-200 px-3 py-2 text-sm" value={form.status} onChange={(e) => setForm((prev) => ({...prev, status: e.target.value}))}>
               <option value="SAVED">Saved</option>
               <option value="APPLIED">Applied</option>

@@ -55,6 +55,10 @@ export interface ATSBreakdown {
 
 export interface ResponseData {
   jobType: JobType;
+  job?: {
+    jobTitle: string;
+    companyName: string;
+  };
 
   atsBefore: number;
   atsAfter: number;
@@ -66,10 +70,13 @@ export interface ResponseData {
   optimizedResume: ResumeData;
   missingKeywords: string[];
   coverLetter: string;
+  coverLetterPending?: boolean;
+  cacheHit?: boolean;
 
   changesMade?: string[];
 
   resumeId: string | null;
+  generationId?: string | null;
   saved: boolean;
   promptSignup: boolean;
 

@@ -15,23 +15,25 @@ const geist = Geist({
 
 export const metadata: Metadata = {
   title: {
-    default: "ApplyCraft | AI Resume Optimizer & ATS Resume Checker",
+    default: "ApplyCraft | Job Application Tracker, Resume Tailor & ATS Checker",
     template: "%s | ApplyCraft",
   },
 
   description:
-    "Optimize your resume with AI. Improve ATS scores, match job keywords, and create tailored resumes for every job.",
+    "Track every job application, tailor each resume to the role, and improve ATS match before you apply.",
 
   keywords: [
-    "AI resume optimizer",
+    "job application tracker",
+    "application tracking tool",
+    "job tracker",
+    "resume tailoring",
     "ATS resume checker",
     "resume optimization",
-    "AI resume writer",
     "resume keyword matcher",
     "resume scanner",
-    "AI cover letter generator",
-    "job application assistant",
+    "cover letter generator",
     "resume improvement tool",
+    "job search organization",
     "ApplyCraft",
   ],
 
@@ -66,10 +68,10 @@ export const metadata: Metadata = {
   manifest: "/site.webmanifest",
 
   openGraph: {
-    title: "ApplyCraft | AI Resume Optimizer & ATS Resume Checker",
+    title: "ApplyCraft | Job Application Tracker, Resume Tailor & ATS Checker",
 
     description:
-      "Improve your resume with AI-powered ATS scoring, keyword matching, and job-specific optimization.",
+      "Organize your job search, tailor resumes per role, and improve ATS match from one workflow.",
 
     url: "https://applycraft.xyz",
 
@@ -84,7 +86,7 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "ApplyCraft AI Resume Optimizer",
+        alt: "ApplyCraft job tracker and resume tailoring workflow",
       },
     ],
   },
@@ -94,15 +96,15 @@ export const metadata: Metadata = {
 
     site: "@ApplyCraft",
 
-    title: "ApplyCraft | AI Resume Optimizer",
+    title: "ApplyCraft | Job Tracker + Resume Tailoring",
 
     description:
-      "Create ATS-friendly resumes with AI. Match job descriptions and improve your chances of landing interviews.",
+      "Track applications, tailor resumes to each posting, and improve ATS alignment before submitting.",
 
     images: [
       {
         url: "/og-image.png",
-        alt: "ApplyCraft AI Resume Optimizer",
+        alt: "ApplyCraft job tracker and resume tailoring workflow",
       },
     ],
   },

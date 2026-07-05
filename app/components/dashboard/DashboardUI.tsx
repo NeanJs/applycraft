@@ -21,6 +21,7 @@ type Generation = {
 };
 export default function DashboardUI({
   resumes,
+  generations,
   firstName,
 }: {
   resumes: Resume[];
@@ -34,12 +35,12 @@ export default function DashboardUI({
       year: "numeric",
     }).format(date);
   }
-  console.log("pageloaded");
+
   return (
     <div className="min-h-screen bg-zinc-50 text-zinc-900">
       <main className="max-w-5xl mx-auto px-6 py-12">
         {/* Header */}
-        <div className="flex items-start justify-between mb-10">
+        <div className="flex flex-wrap items-start justify-between gap-4 mb-10">
           <div>
             <p className="text-xs font-medium text-zinc-400 uppercase tracking-widest mb-2">
               Dashboard
@@ -58,28 +59,71 @@ export default function DashboardUI({
             </p>
           </div>
 
-          <Link
-            href="/resume-tailor"
-            className="
-              bg-zinc-900 
-              text-white 
-              px-4 
-              py-2.5 
-              rounded-xl 
-              text-sm 
-              font-medium
-              hover:bg-zinc-700
-              transition
-              whitespace-nowrap
-            "
-          >
-            + Tailor Resume
-          </Link>
+          <div className="flex flex-wrap items-center gap-2">
+            <Link
+              href="/resume-tailor"
+              className="
+                bg-zinc-900 
+                text-white 
+                px-4 
+                py-2.5 
+                rounded-xl 
+                text-sm 
+                font-medium
+                hover:bg-zinc-700
+                transition
+                whitespace-nowrap
+              "
+            >
+              + Tailor Resume
+            </Link>
+            <Link
+              href="/tracker"
+              className="rounded-xl border border-zinc-200 px-4 py-2.5 text-sm font-medium text-zinc-700 transition hover:border-zinc-400 hover:text-zinc-900"
+            >
+              Open Job Tracker
+            </Link>
+          </div>
         </div>
 
         {/* Quick Stats */}
 
         <ResumeInsights resumes={resumes} />
+
+        <section className="mb-10 rounded-2xl border border-zinc-200 bg-white p-5">
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-sm font-semibold text-zinc-900">Recent activity</h2>
+            {generations.length > 0 && (
+              <span className="text-xs text-zinc-400">{generations.length} latest</span>
+            )}
+          </div>
+
+          {generations.length === 0 ? (
+            <p className="text-sm text-zinc-500">
+              No generations yet. Start with Resume Tailor to create your first optimized version.
+            </p>
+          ) : (
+            <ul className="space-y-2">
+              {generations.map((generation) => (
+                <li
+                  key={generation.id}
+                  className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-zinc-100 bg-zinc-50 px-3 py-2.5"
+                >
+                  <div>
+                    <p className="text-sm font-medium text-zinc-900">
+                      {generation.title ?? generation.jobTitle ?? "Untitled generation"}
+                    </p>
+                    <p className="text-xs text-zinc-500">
+                      {generation.companyName ?? "No company"} • {generation.type.toLowerCase().replaceAll("_", " ")}
+                    </p>
+                  </div>
+                  <span className="text-xs text-zinc-400">{formatDate(generation.createdAt)}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+
         {/* Resume Section */}
         <section>
           <div className="flex items-center justify-between mb-5">

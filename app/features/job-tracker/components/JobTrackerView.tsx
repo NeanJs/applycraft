@@ -12,7 +12,7 @@ export function JobTrackerView() {
   const selectedJob = useJobTrackerStore((state) => state.selectedJob);
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#f7f7f9]" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="flex min-h-screen flex-col bg-[#f7f7f9]">
       <Header />
       <div className="border-b border-gray-100 bg-white px-6 py-3">
         <StatsBar />

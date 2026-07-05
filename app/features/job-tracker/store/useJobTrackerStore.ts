@@ -21,6 +21,13 @@ interface JobTrackerStore {
   updateStatus: (id: string, status: JobStatus) => Promise<void>;
 }
 
+function getErrorMessage(error: unknown, fallback: string) {
+  if (error instanceof Error && error.message.trim()) {
+    return error.message;
+  }
+  return fallback;
+}
+
 export const useJobTrackerStore = create<JobTrackerStore>((set, get) => ({
   jobs: [],
   selectedJob: null,
@@ -51,7 +58,7 @@ export const useJobTrackerStore = create<JobTrackerStore>((set, get) => ({
       set({ jobs: data.jobs ?? [], loading: false, hasLoaded: true });
     } catch (error) {
       console.error(error);
-      toast.error("Unable to load tracker jobs.");
+      toast.error(getErrorMessage(error, "Unable to load tracker jobs."));
       set({ loading: false });
     }
   },
@@ -76,7 +83,7 @@ export const useJobTrackerStore = create<JobTrackerStore>((set, get) => ({
       toast.success("Job created.");
     } catch (error) {
       console.error(error);
-      toast.error("Unable to create job.");
+      toast.error(getErrorMessage(error, "Unable to create job."));
     }
   },
 
@@ -99,7 +106,7 @@ export const useJobTrackerStore = create<JobTrackerStore>((set, get) => ({
       }));
     } catch (error) {
       console.error(error);
-      toast.error("Unable to update job.");
+      toast.error(getErrorMessage(error, "Unable to update job."));
     }
   },
 
@@ -119,7 +126,7 @@ export const useJobTrackerStore = create<JobTrackerStore>((set, get) => ({
       toast.success("Job removed.");
     } catch (error) {
       console.error(error);
-      toast.error("Unable to delete job.");
+      toast.error(getErrorMessage(error, "Unable to delete job."));
     }
   },
 
@@ -140,7 +147,7 @@ export const useJobTrackerStore = create<JobTrackerStore>((set, get) => ({
       }));
     } catch (error) {
       console.error(error);
-      toast.error("Unable to update status.");
+      toast.error(getErrorMessage(error, "Unable to update status."));
     }
   },
 }));

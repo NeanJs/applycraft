@@ -1,28 +1,36 @@
 // components/navbar.tsx  (server component stays clean)
 import Link from "next/link";
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { UserButton } from "@clerk/nextjs";
 import { NavPublic, NavAuth } from "./nav-client";
 import Logo from "@/public/logo.ico";
 import Image from "next/image";
+import { canAccessAnalytics } from "@/app/lib/internal-access";
 export default async function Navbar() {
   const { userId } = await auth();
+  const user = userId ? await currentUser() : null;
+  const canSeeAnalytics = user
+    ? canAccessAnalytics({
+        userId: user.id,
+        emails: user.emailAddresses.map((email) => email.emailAddress),
+      })
+    : false;
+
   return (
-    <header className="border-b border-gray-200 sticky top-0 bg-white backdrop-blur-md z-20">
-      <div className="relative max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
+    <header className="sticky top-0 z-30 border-b border-[var(--line)]/70 bg-white/80 backdrop-blur-xl">
+      <div className="relative mx-auto flex h-16 max-w-5xl items-center justify-between px-6">
         <Link
           href={userId ? "/dashboard" : "/"}
-          className="flex items-center gap-2"
+          className="group flex items-center gap-2"
         >
-          {/* Swap the black square for something on-brand */}
           <Image
             src={Logo}
-            className="w-10"
+            className="w-10 rounded-lg border border-[var(--line)]/80 bg-white p-1 shadow-sm"
             alt="logo"
             width={100}
             height={100}
           />
-          <span className="text-sm tracking-tight text-gray-700">
+          <span className="text-sm tracking-tight text-[var(--muted)] group-hover:text-[var(--brand-navy)]">
             <strong>Apply</strong>Craft
           </span>
         </Link>
@@ -30,7 +38,7 @@ export default async function Navbar() {
         {!userId && <NavPublic />}
         {userId && (
           <div className="flex items-center gap-6">
-            <NavAuth />
+            <NavAuth canSeeAnalytics={false} />
             <UserButton />
           </div>
         )}

@@ -16,8 +16,31 @@ import ToolForm from "@/app/components/tools/ToolForm";
 import GenerateButton from "@/app/components/tools/GenerateButton";
 import ToolPageShell, { Tip } from "@/app/components/tools/ToolPageShell";
 import ResultPanel from "@/app/components/tools/ResultPanel";
+import QuickStartSamples from "@/app/components/tools/QuickStartSamples";
+import {
+  SAMPLE_JOB_DESCRIPTION_TEXT,
+  SAMPLE_RESUME_TEXT,
+} from "@/app/constant/toolSamples";
 
 type StepStatus = "done" | "active" | "pending";
+
+type TailorApiResponse = Partial<ResponseData> & {
+  error?: string;
+  message?: string;
+  coverLetterPending?: boolean;
+  resumeId?: string | null;
+};
+
+async function parseJsonResponse<T = Record<string, unknown>>(response: Response): Promise<T> {
+  const raw = await response.text();
+  if (!raw) return {} as T;
+
+  try {
+    return JSON.parse(raw) as T;
+  } catch {
+    throw new Error("Invalid JSON response from server.");
+  }
+}
 
 // ── Loading progress ──────────────────────────────────────────────────────
 
@@ -41,6 +64,7 @@ export default function TailorPage() {
   const [loadingStep, setLoadingStep] = useState(0);
   const [showSignupCTA, setShowSignupCTA] = useState(false);
   const [uploadingPdf, setUploadingPdf] = useState(false);
+  const [coverLetterLoading, setCoverLetterLoading] = useState(false);
   // Anon Usage CTA
   const [dismissedCTA, setDismissedCTA] = useState(false);
 
@@ -48,8 +72,26 @@ export default function TailorPage() {
 
   const hasResume = resume.trim().length > 0;
   const hasJD = jobDescription.trim().length > 0;
+  const hasAnyInput = hasResume || hasJD;
   const canGenerate = !loading && !uploadingPdf && hasResume && hasJD;
   const { isSignedIn } = useUser();
+
+  function handleTrySampleData() {
+    setResume(SAMPLE_RESUME_TEXT);
+    setJobDescription(SAMPLE_JOB_DESCRIPTION_TEXT);
+    setResult(undefined);
+    setShowSignupCTA(false);
+    setDismissedCTA(false);
+  }
+
+  function handleClearInputs() {
+    setResume("");
+    setJobDescription("");
+    setResult(undefined);
+    setShowSignupCTA(false);
+    setDismissedCTA(false);
+  }
+
   // Simulate step progression during loading so the UI isn't static
   async function generate() {
     setLoading(true);
@@ -73,22 +115,58 @@ export default function TailorPage() {
         }),
       });
 
-      const data = await res.json();
+      const data = await parseJsonResponse<TailorApiResponse>(res);
 
       if (!res.ok) {
         if (data.error === "free_limit_reached") {
-          toast.error(data.message);
+          toast.error(
+            typeof data.message === "string"
+              ? data.message
+              : "Sign up to continue.",
+          );
           setShowSignupCTA(true);
           return;
         }
 
-        toast.error(data.message || "Something went wrong.");
+        toast.error(
+          typeof data.message === "string"
+            ? data.message
+            : "Something went wrong.",
+        );
         return;
       }
 
       toast.success("Your resume is ready.");
 
-      setResult(data);
+      setResult(data as ResponseData);
+
+      if (data.coverLetterPending) {
+        setCoverLetterLoading(true);
+        fetch("/api/tailor/cover-letter", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            resume,
+            jobDescription,
+            resumeId: data.resumeId,
+          }),
+        })
+          .then(async (response) => {
+            const payload = await parseJsonResponse<TailorApiResponse>(response);
+            if (!response.ok || !payload.coverLetter) return;
+            setResult((prev) =>
+              prev
+                ? {
+                    ...prev,
+                    coverLetter: payload.coverLetter as string,
+                    coverLetterPending: false,
+                  }
+                : prev,
+            );
+          })
+          .catch(() => undefined)
+          .finally(() => setCoverLetterLoading(false));
+      }
     } catch (error) {
       handleError(error, "Something went wrong. Please try again later.");
     } finally {
@@ -111,9 +189,9 @@ export default function TailorPage() {
         method: "POST",
         body: formData,
       });
-      const data = await res.json();
+      const data = await parseJsonResponse<{ text?: string }>(res);
 
-      if (data.text) {
+      if (typeof data.text === "string" && data.text) {
         setResume(data.text);
         toast.success("Resume uploaded.");
       } else {
@@ -174,6 +252,15 @@ export default function TailorPage() {
         ) : undefined
       }
     >
+      {!loading && !result && (
+        <QuickStartSamples
+          onTrySample={handleTrySampleData}
+          onClear={handleClearInputs}
+          hasInput={hasAnyInput}
+          loading={uploadingPdf}
+        />
+      )}
+
       <ToolForm
         inputs={[
           <ResumeInput
@@ -300,6 +387,7 @@ export default function TailorPage() {
                 resumeID={result.resumeId ?? undefined}
                 result={result}
                 copied={false}
+                coverLetterLoading={coverLetterLoading}
               />
             </ResultPanel>
           ) : undefined
