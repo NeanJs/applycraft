@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
@@ -122,14 +122,17 @@ export const metadata: Metadata = {
     },
   },
 
-  themeColor: "#111827",
-
   category: "technology",
 
   creator: "ApplyCraft",
 
   publisher: "ApplyCraft",
 };
+
+export const viewport: Viewport = {
+  themeColor: "#111827",
+};
+
 export default function RootLayout({
   children,
 }: {
