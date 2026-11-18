@@ -46,10 +46,21 @@ async function parseJsonResponse<T = Record<string, unknown>>(response: Response
 
 // LOADING_STEPS for LoadingProgress
 const LOADING_STEPS = [
-  { label: "Classifying role type" },
-  { label: "Scoring original resume" },
-  { label: "Rewriting resume bullets" },
-  { label: "Generating cover letter" },
+  {
+    label: "Reviewing job requirements",
+    detail:
+      "Key responsibilities and qualifications in the posting are identified.",
+  },
+  {
+    label: "Checking resume evidence",
+    detail:
+      "Relevant details are compared with the experience and skills in your resume.",
+  },
+  {
+    label: "Drafting your tailored resume",
+    detail:
+      "A role-focused version is prepared while keeping your supplied facts as the source.",
+  },
 ];
 
 // ── Input panel ───────────────────────────────────────────────────────────
@@ -153,7 +164,14 @@ export default function TailorPage() {
         })
           .then(async (response) => {
             const payload = await parseJsonResponse<TailorApiResponse>(response);
-            if (!response.ok || !payload.coverLetter) return;
+            if (!response.ok || !payload.coverLetter) {
+              toast.error(
+                typeof payload.message === "string"
+                  ? payload.message
+                  : "The cover letter did not pass review. Please try again.",
+              );
+              return;
+            }
             setResult((prev) =>
               prev
                 ? {
@@ -164,7 +182,9 @@ export default function TailorPage() {
                 : prev,
             );
           })
-          .catch(() => undefined)
+          .catch(() => {
+            toast.error("The cover letter could not be generated. Please try again.");
+          })
           .finally(() => setCoverLetterLoading(false));
       }
     } catch (error) {
@@ -213,7 +233,7 @@ export default function TailorPage() {
     <ToolPageShell
       eyebrow="Resume optimizer"
       title="Tailor your resume to any job."
-      description="Paste your resume and the job description, get an ATS score, missing keywords, an optimized resume, and a cover letter."
+      description="Paste your resume and a job description to get an evidence-grounded draft, requirement gaps, a transparent match estimate, and a cover letter. Review every claim before using it."
       steps={[
         { label: "Paste resume", status: step1 },
         { label: "Add job description", status: step2 },
@@ -311,7 +331,7 @@ export default function TailorPage() {
                     />
                   </svg>
                 }
-                label="~30 seconds"
+                label="Generation time varies"
               />
               {!isSignedIn && (
                 <Tip
@@ -355,7 +375,14 @@ export default function TailorPage() {
         }
         loadingProgress={
           loading ? (
-            <LoadingProgress steps={LOADING_STEPS} currentStep={loadingStep} />
+            <LoadingProgress
+              steps={LOADING_STEPS}
+              currentStep={loadingStep}
+              title="Building your tailored resume"
+              eta="Often about 30–40 seconds"
+              helperText="We’re comparing your resume with the job description and preparing a draft. This can take a little while. Keep this page open; your results will appear here when they’re ready."
+              progressNote="The step indicator is illustrative, not live model telemetry. Resume drafting currently runs as one request, so partial resume content is not available while it is being generated."
+            />
           ) : undefined
         }
         result={

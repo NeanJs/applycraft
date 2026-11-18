@@ -10,6 +10,10 @@ type AIRequestMetricInput = {
   dbMs?: number;
   promptVersion: string;
   userId?: string;
+  inputTokens?: number;
+  outputTokens?: number;
+  cacheReadTokens?: number;
+  cacheCreationTokens?: number;
 };
 
 export function logAIRequestMetric(input: AIRequestMetricInput) {
@@ -27,9 +31,15 @@ export function logAIRequestMetric(input: AIRequestMetricInput) {
           llmMs: input.llmMs,
           dbMs: input.dbMs ?? 0,
           promptVersion: input.promptVersion,
+          inputTokens: input.inputTokens ?? 0,
+          outputTokens: input.outputTokens ?? 0,
+          cacheReadTokens: input.cacheReadTokens ?? 0,
+          cacheCreationTokens: input.cacheCreationTokens ?? 0,
         },
         result: { ok: true },
       },
     })
-    .catch(() => undefined);
+    .catch((error: unknown) => {
+      console.error("Failed to persist AI request metrics:", error);
+    });
 }

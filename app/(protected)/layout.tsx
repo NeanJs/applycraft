@@ -1,6 +1,8 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import Navbar from "../components/Navbar";
+import { currentUser } from "@clerk/nextjs/server";
+import DashboardSidebar from "../components/DashboardSidebar";
+import { canAccessAnalytics } from "@/app/lib/internal-access";
 
 export default async function ProtectedLayout({
   children,
@@ -13,10 +15,18 @@ export default async function ProtectedLayout({
     redirect("/");
   }
 
+  const user = await currentUser();
+  const canSeeAnalytics = user
+    ? canAccessAnalytics({
+        userId: user.id,
+        emails: user.emailAddresses.map((email) => email.emailAddress),
+      })
+    : false;
+
   return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
-      <main className="flex-1">{children}</main>
+    <div className="min-h-screen bg-[var(--brand-warm-white)]">
+      <DashboardSidebar canSeeAnalytics={canSeeAnalytics} isSignedIn />
+      <main className="min-h-screen min-w-0 md:pl-64">{children}</main>
     </div>
   );
 }

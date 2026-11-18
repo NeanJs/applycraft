@@ -2,14 +2,20 @@ import Link from "next/link";
 import ResumeList from "@/app/components/dashboard/ResumeLists";
 import { GenerationType } from "@prisma/client";
 import ResumeInsights from "./ResumeInsights";
+import RecentActivity from "./RecentActivity";
 
 type Resume = {
   id: string;
   title: string;
+  createdAt: Date;
   updatedAt: Date;
   atsBefore: number;
   atsAfter: number;
   confidenceScore: number | null;
+  generations: {
+    jobTitle: string | null;
+    companyName: string | null;
+  }[];
 };
 type Generation = {
   id: string;
@@ -90,39 +96,7 @@ export default function DashboardUI({
 
         <ResumeInsights resumes={resumes} />
 
-        <section className="mb-10 rounded-2xl border border-zinc-200 bg-white p-5">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-zinc-900">Recent activity</h2>
-            {generations.length > 0 && (
-              <span className="text-xs text-zinc-400">{generations.length} latest</span>
-            )}
-          </div>
-
-          {generations.length === 0 ? (
-            <p className="text-sm text-zinc-500">
-              No generations yet. Start with Resume Tailor to create your first optimized version.
-            </p>
-          ) : (
-            <ul className="space-y-2">
-              {generations.map((generation) => (
-                <li
-                  key={generation.id}
-                  className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-zinc-100 bg-zinc-50 px-3 py-2.5"
-                >
-                  <div>
-                    <p className="text-sm font-medium text-zinc-900">
-                      {generation.title ?? generation.jobTitle ?? "Untitled generation"}
-                    </p>
-                    <p className="text-xs text-zinc-500">
-                      {generation.companyName ?? "No company"} • {generation.type.toLowerCase().replaceAll("_", " ")}
-                    </p>
-                  </div>
-                  <span className="text-xs text-zinc-400">{formatDate(generation.createdAt)}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
+        <RecentActivity initialItems={generations} />
 
         {/* Resume Section */}
         <section>

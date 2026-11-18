@@ -9,10 +9,19 @@ async function getResumes(userId: string) {
     select: {
       id: true,
       title: true,
+      createdAt: true,
       updatedAt: true,
       atsBefore: true,
       atsAfter: true,
       confidenceScore: true,
+      generations: {
+        orderBy: { createdAt: "desc" },
+        take: 1,
+        select: {
+          jobTitle: true,
+          companyName: true,
+        },
+      },
     },
   });
 }
@@ -49,6 +58,7 @@ export default async function DashboardPage() {
   const dbUser = await getDbUser(clerkUser.id);
 
   if (!dbUser) {
+    console.log("Error Occured");
     return null;
   }
 

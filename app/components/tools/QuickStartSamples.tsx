@@ -16,7 +16,7 @@ export default function QuickStartSamples({
   return (
     <div className="flex items-center justify-between gap-3 rounded-2xl border border-dashed border-gray-300 bg-gray-50 px-4 py-3">
       <p className="text-xs text-gray-600">
-        No resume handy? Load sample data to preview how results look.
+        No resume handy? Try a fictional sample. Replace its details before using any results.
       </p>
       <div className="flex items-center gap-2 shrink-0">
         {hasInput && (

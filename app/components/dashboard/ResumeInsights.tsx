@@ -2,7 +2,6 @@ type ResumeInsightProps = {
   resumes: {
     atsBefore: number;
     atsAfter: number;
-    confidenceScore: number | null;
   }[];
 };
 
@@ -30,29 +29,25 @@ export default function ResumeInsights({ resumes }: ResumeInsightProps) {
       </div>
       <div className="bg-white border border-zinc-200 rounded-2xl p-5">
         <p className="text-xs uppercase tracking-widest text-zinc-400">
-          Average ATS Score
+          Average estimated match
         </p>
 
         <div className="flex items-end gap-2 mt-3">
           <span className="text-3xl font-semibold">{averageAfter}%</span>
 
-          <span className="text-sm text-emerald-600 mb-1">+{improvement}%</span>
+          <span className="text-sm text-emerald-600 mb-1">
+            {improvement > 0 ? "+" : ""}
+            {improvement}%
+          </span>
         </div>
       </div>
 
       <div className="bg-white border border-zinc-200 rounded-2xl p-5">
         <p className="text-xs uppercase tracking-widest text-zinc-400">
-          AI Confidence
+          Average starting estimate
         </p>
 
-        <p className="text-3xl font-semibold mt-3">
-          {Math.round(
-            (resumes.reduce((acc, r) => acc + (r.confidenceScore ?? 0), 0) /
-              resumes.length) *
-              100,
-          )}
-          %
-        </p>
+        <p className="text-3xl font-semibold mt-3">{averageBefore}%</p>
       </div>
     </div>
   );

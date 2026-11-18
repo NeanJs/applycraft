@@ -5,6 +5,7 @@ import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
 import { Toaster } from "react-hot-toast";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import Script from "next/script";
 import UserSync from "./components/auth/UserSync";
 
 const geist = Geist({
@@ -140,8 +141,24 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <html lang="en" className={geist.variable} suppressHydrationWarning>
-        <body className="min-h-screen bg-white text-gray-900 antialiased flex flex-col">
+      <html
+        lang="en"
+        className={geist.variable}
+        data-theme="light"
+        suppressHydrationWarning
+      >
+        <head>
+          <Script id="applycraft-theme-init" strategy="beforeInteractive">
+            {`try {
+              const theme = localStorage.getItem("applycraft-theme");
+              document.documentElement.dataset.theme = theme === "dark" ? "dark" : "light";
+            } catch (error) {
+              console.error("Could not read the ApplyCraft theme preference.", error);
+              document.documentElement.dataset.theme = "light";
+            }`}
+          </Script>
+        </head>
+        <body className="min-h-screen bg-[var(--background)] text-[var(--foreground)] antialiased flex flex-col">
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{

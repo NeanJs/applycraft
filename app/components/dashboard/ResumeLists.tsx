@@ -5,19 +5,28 @@ import Link from "next/link";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { ConfirmDialog } from "../ConfirmDialog";
+import { getResumeDisplayTitle } from "@/app/helpers/resumeTitle";
 
-function formatDate(date: Date) {
+function formatDateTime(date: Date) {
   return new Intl.DateTimeFormat("en-US", {
     month: "short",
     day: "numeric",
     year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    timeZoneName: "short",
   }).format(new Date(date));
 }
 
 interface ResumeProps {
   id: string;
   title: string | null;
+  createdAt: Date;
   updatedAt: Date;
+  generations: {
+    jobTitle: string | null;
+    companyName: string | null;
+  }[];
 }
 
 export default function ResumeList({
@@ -28,6 +37,9 @@ export default function ResumeList({
   const [resumes, setResumes] = useState(initial);
   const [pendingDelete, setPendingDelete] = useState<ResumeProps | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const pendingDeleteTitle = pendingDelete
+    ? getResumeDisplayTitle(pendingDelete.title, pendingDelete.generations[0])
+    : "";
 
   async function confirmDelete() {
     if (!pendingDelete) return;
@@ -60,15 +72,17 @@ export default function ResumeList({
           >
             <div className="flex items-center gap-4 min-w-0">
               <div className="w-9 h-9 rounded-lg border border-gray-200 bg-white flex items-center justify-center text-gray-300 group-hover:text-gray-500 group-hover:border-gray-300 transition-colors shrink-0">
-                <span>{resume.title?.charAt(0)}</span>
+                <span>
+                  {getResumeDisplayTitle(resume.title, resume.generations[0]).charAt(0)}
+                </span>
               </div>
 
               <div className="min-w-0">
                 <p className="text-sm font-medium text-gray-900 truncate">
-                  {resume.title || "Untitled Resume"}
+                  {getResumeDisplayTitle(resume.title, resume.generations[0])}
                 </p>
                 <p className="text-xs text-gray-400 mt-0.5">
-                  Updated {formatDate(resume.updatedAt)}
+                  Generated {formatDateTime(resume.createdAt)}
                 </p>
               </div>
             </div>
@@ -94,7 +108,7 @@ export default function ResumeList({
       <ConfirmDialog
         open={!!pendingDelete}
         title="Delete resume?"
-        description={`"${pendingDelete?.title || "Untitled Resume"}" will be permanently deleted. This can't be undone.`}
+        description={`"${pendingDeleteTitle}" will be permanently deleted. This can't be undone.`}
         confirmLabel={isDeleting ? "Deleting…" : "Delete"}
         onConfirm={confirmDelete}
         onCancel={() => setPendingDelete(null)}

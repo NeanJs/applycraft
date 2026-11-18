@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test:ai-quality": "node --test app/lib/ai/quality.test.mjs",
     "postinstall": "prisma generate"
   },
   "dependencies": {

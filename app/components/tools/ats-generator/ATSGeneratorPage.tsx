@@ -133,12 +133,12 @@ export default function AtsExtractorPage() {
   return (
     <ToolPageShell
       eyebrow="ATS Extractor"
-      title="See exactly how you score."
-      description="Paste your resume and the job posting to get an instant ATS score and a list of missing keywords."
+      title="See how your resume aligns."
+      description="Compare your resume with a job posting using a transparent match estimate, requirement coverage, and evidence-based gaps. This is not a score from a specific ATS."
       steps={[
         { label: "Paste resume", status: step1 },
         { label: "Add job description", status: step2 },
-        { label: "Get ATS score", status: step3 },
+        { label: "Get match estimate", status: step3 },
       ]}
       stickyCTA={
         showStickyCTA ? (

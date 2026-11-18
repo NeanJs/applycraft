@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import ThemeToggle from "./ThemeToggle";
 
 const tools = [
   {
@@ -45,16 +46,18 @@ export function NavPublic() {
       <nav className="hidden items-center gap-5 sm:flex">
         <Link
           href="/resume-tailor"
-          className="text-sm font-medium text-(--muted) transition hover:text-(--brand-navy)"
+          className="text-sm font-medium text-[var(--muted)] transition-colors hover:text-[var(--brand-cobalt)]"
         >
           Start Here
         </Link>
 
         <ToolsDropdown />
 
+        <ThemeToggle />
+
         <Link
           href="/sign-in"
-          className="text-sm text-(--muted) transition hover:text-(--brand-navy)"
+          className="text-sm text-[var(--muted)] transition-colors hover:text-[var(--brand-cobalt)]"
         >
           Sign In
         </Link>
@@ -68,7 +71,7 @@ export function NavPublic() {
       </nav>
 
       <button
-        className="rounded-md p-1.5 text-(--muted) transition hover:bg-[#eff4fb] hover:text-(--brand-navy) sm:hidden"
+        className="rounded-lg p-2 text-[var(--muted)] transition-colors hover:bg-[var(--brand-soft-cobalt)] hover:text-[var(--brand-ink)] sm:hidden"
         onClick={() => setMenuOpen((prev) => !prev)}
         aria-label="Toggle menu"
         aria-expanded={menuOpen}
@@ -82,23 +85,23 @@ export function NavPublic() {
       {menuOpen && (
         <div
           id="mobile-main-nav"
-          className="absolute left-0 right-0 top-14 z-40 flex flex-col gap-4 border-b border-(--line) bg-white/95 px-6 py-4 backdrop-blur sm:hidden"
+          className="absolute left-0 right-0 top-16 z-40 flex flex-col gap-4 border-b border-[var(--line)] bg-white/95 px-5 py-5 shadow-lg backdrop-blur sm:hidden"
         >
-          <div className="rounded-xl border border-(--line)/80 bg-white/85 px-3 py-2.5">
-            <p className="mb-2 text-[11px] uppercase tracking-wider text-[#7a8799]">
+          <div className="rounded-xl border border-[var(--line)] bg-white px-3 py-3">
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-[var(--muted)]">
               Start
             </p>
             <Link
               href="/resume-tailor"
               onClick={() => setMenuOpen(false)}
-              className="block text-sm font-medium text-(--brand-navy)"
+              className="block text-sm font-medium text-[var(--brand-ink)]"
             >
               Resume Tailor
             </Link>
           </div>
 
-          <div className="rounded-xl border border-(--line)/80 bg-white/85 px-3 py-2.5">
-            <p className="mb-2 text-[11px] uppercase tracking-wider text-[#7a8799]">
+          <div className="rounded-xl border border-[var(--line)] bg-white px-3 py-3">
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-[var(--muted)]">
               Tools
             </p>
             <div className="space-y-1.5">
@@ -107,7 +110,7 @@ export function NavPublic() {
                   key={tool.href}
                   href={tool.href}
                   onClick={() => setMenuOpen(false)}
-                  className="block text-sm text-(--brand-navy)"
+                  className="block rounded-md px-1 py-1 text-sm text-[var(--brand-ink)] hover:text-[var(--brand-cobalt)]"
                 >
                   {tool.title}
                 </Link>
@@ -115,7 +118,7 @@ export function NavPublic() {
               <Link
                 href={guestTrackerHref}
                 onClick={() => setMenuOpen(false)}
-                className="block text-sm text-(--brand-navy)"
+                className="block rounded-md px-1 py-1 text-sm text-[var(--brand-ink)] hover:text-[var(--brand-cobalt)]"
               >
                 Job Tracker
               </Link>
@@ -125,10 +128,15 @@ export function NavPublic() {
           <Link
             href="/sign-in"
             onClick={() => setMenuOpen(false)}
-            className="text-sm text-(--brand-navy)"
+            className="text-sm font-medium text-[var(--brand-ink)]"
           >
             Sign In
           </Link>
+
+          <div className="flex items-center justify-between gap-3 border-t border-[var(--line)] pt-4">
+            <span className="text-sm text-[var(--muted)]">Appearance</span>
+            <ThemeToggle />
+          </div>
 
           <Link
             href="/sign-up"
@@ -148,20 +156,20 @@ export function NavAuth({ canSeeAnalytics = false }: { canSeeAnalytics?: boolean
     <nav className="flex items-center gap-6">
       <Link
         href="/dashboard"
-        className="text-sm text-(--muted) transition hover:text-(--brand-navy)"
+        className="text-sm text-[var(--muted)] transition-colors hover:text-[var(--brand-cobalt)]"
       >
         Dashboard
       </Link>
       <Link
         href="/tracker"
-        className="text-sm text-(--muted) transition hover:text-(--brand-navy)"
+        className="text-sm text-[var(--muted)] transition-colors hover:text-[var(--brand-cobalt)]"
       >
         Job Tracker
       </Link>
       {canSeeAnalytics && (
         <Link
           href="/analytics"
-          className="text-sm text-(--muted) transition hover:text-(--brand-navy)"
+          className="text-sm text-[var(--muted)] transition-colors hover:text-[var(--brand-cobalt)]"
         >
           Analytics
         </Link>
@@ -193,7 +201,7 @@ function ToolsDropdown() {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen((prev) => !prev)}
-        className="flex items-center gap-1 text-sm text-(--muted) transition hover:text-(--brand-navy)"
+        className="flex items-center gap-1 text-sm text-[var(--muted)] transition-colors hover:text-[var(--brand-cobalt)]"
         aria-expanded={open}
         aria-haspopup="menu"
       >
@@ -212,7 +220,7 @@ function ToolsDropdown() {
       </button>
 
       <div
-        className={`absolute left-0 top-full z-50 mt-5 w-72 rounded-xl border border-(--line) bg-white/95 p-2 shadow-lg backdrop-blur ${open ? "block" : "hidden"}`}
+        className={`absolute left-0 top-full z-50 mt-3 w-72 rounded-xl border border-[var(--line)] bg-white p-2 shadow-xl ${open ? "block" : "hidden"}`}
       >
         {tools.map((tool) => (
           <DropdownItem key={tool.href} {...tool} />
@@ -234,11 +242,11 @@ function DropdownItem({
   return (
     <Link
       href={href}
-      className="block rounded-lg px-3 py-2 transition hover:bg-[#f3f6fb]"
+      className="block rounded-lg px-3 py-2 transition-colors hover:bg-[var(--brand-soft-cobalt)]"
     >
-      <div className="text-sm font-medium text-(--brand-navy)">{title}</div>
+      <div className="text-sm font-medium text-[var(--brand-ink)]">{title}</div>
 
-      <div className="mt-0.5 text-xs text-(--muted)">{description}</div>
+      <div className="mt-0.5 text-xs text-[var(--muted)]">{description}</div>
     </Link>
   );
 }

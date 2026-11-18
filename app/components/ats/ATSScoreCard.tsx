@@ -5,15 +5,6 @@ type ATSScoreCardProps = {
 };
 
 export default function ATSScoreCard({ atsScore }: ATSScoreCardProps) {
-  const status =
-    atsScore >= 80
-      ? "Excellent Match"
-      : atsScore >= 60
-        ? "Good Match"
-        : atsScore >= 40
-          ? "Needs Improvement"
-          : "Poor Match";
-
   const scoreColor =
     atsScore >= 80
       ? "text-emerald-600"
@@ -35,15 +26,13 @@ export default function ATSScoreCard({ atsScore }: ATSScoreCardProps) {
   return (
     <div className="rounded-2xl border border-gray-200 bg-white p-6">
       <p className="text-xs uppercase tracking-wider text-gray-400">
-        ATS Score
+        Estimated job match
       </p>
 
       <div className="mt-4 flex items-end gap-3">
         <span className={`text-5xl font-bold ${scoreColor}`}>{atsScore}%</span>
 
-        <span className={`pb-2 text-sm font-medium ${scoreColor}`}>
-          {status}
-        </span>
+        <span className="pb-2 text-sm font-medium text-gray-600">estimate</span>
       </div>
 
       <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-gray-100">
@@ -54,9 +43,15 @@ export default function ATSScoreCard({ atsScore }: ATSScoreCardProps) {
       </div>
 
       <p className="mt-4 text-sm text-gray-500">
-        This score estimates how well your resume aligns with the target job
-        description based on keyword coverage, role relevance, and ATS-friendly
-        structure.
+        This estimate weights required requirements twice as much as preferred
+        ones. The total is 40% keyword coverage, 30% role match, 15% section
+        structure, and 15% bullet length. It is not a score from an ATS and
+        cannot predict screening or hiring outcomes.
+      </p>
+      <p className="mt-2 text-xs leading-relaxed text-gray-400">
+        A strong match means at least 75% of meaningful requirement terms appear
+        in resume evidence; partial means some terms appear, and no evidence is
+        a missing match. Requirement extraction is model-assisted.
       </p>
     </div>
   );

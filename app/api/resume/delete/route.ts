@@ -9,9 +9,16 @@ export async function POST(req: Request) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { resumeId } = await req.json();
+    const body: unknown = await req.json();
+    const resumeId =
+      typeof body === "object" &&
+      body !== null &&
+      "resumeId" in body &&
+      typeof body.resumeId === "string"
+        ? body.resumeId
+        : "";
 
-    if (!resumeId) {
+    if (!resumeId.trim()) {
       return Response.json({ error: "Missing resumeId" }, { status: 400 });
     }
 
@@ -24,22 +31,33 @@ export async function POST(req: Request) {
       return Response.json({ error: "User not found" }, { status: 404 });
     }
 
-    // verify ownership
-    const resume = await prisma.resume.findFirst({
-      where: {
-        id: resumeId,
-        userId: dbUser.id,
-      },
+    const deleted = await prisma.$transaction(async (tx) => {
+      const resume = await tx.resume.findFirst({
+        where: {
+          id: resumeId,
+          userId: dbUser.id,
+        },
+        select: { id: true },
+      });
+
+      if (!resume) return false;
+
+      await tx.generation.deleteMany({
+        where: {
+          resumeId: resume.id,
+          userId: dbUser.id,
+        },
+      });
+      await tx.resume.delete({
+        where: { id: resume.id },
+      });
+
+      return true;
     });
 
-    if (!resume) {
+    if (!deleted) {
       return Response.json({ error: "Resume not found" }, { status: 404 });
     }
-
-    // delete
-    await prisma.resume.delete({
-      where: { id: resumeId },
-    });
 
     return Response.json({ success: true });
   } catch (err) {

@@ -1,6 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import { Prisma } from "@prisma/client";
-import { runTailorEngine } from "@/app/lib/ai/tailor-engine";
+import { runTailorEngine, TailorInputLengthError } from "@/app/lib/ai/tailor-engine";
 import {
   getClientIP,
   checkAnonRateLimit,
@@ -21,20 +21,27 @@ import { withInFlight } from "@/app/lib/ai/inflight";
 import { logAIRequestMetric } from "@/app/lib/analytics/server-track";
 import { handleError } from "@/app/lib/errorHandler";
 import type { JobMetadata } from "@/app/types/tailor";
+import { ParseClaudeResponseError } from "@/app/lib/ai/parser";
+import {
+  AIOutputValidationError,
+  MAX_JOB_DESCRIPTION_CHARS,
+  MAX_RESUME_CHARS,
+} from "@/app/lib/ai/quality";
 
-const PROMPT_VERSION = "v2-week1";
+const PROMPT_VERSION = "v5-resume-metadata";
 
 type TailorResultData = {
   job?: unknown;
   atsBefore?: number | null;
   atsAfter?: number | null;
   atsBreakdown?: unknown;
-  optimizedResume?: string;
+  optimizedResume?: Record<string, unknown>;
   coverLetter?: string;
   missingKeywords?: string[];
   changesMade?: string[];
   confidenceScore?: number | null;
   jobType?: string | null;
+  jobAnalysis?: Record<string, unknown>;
 } & Record<string, unknown>;
 
 function isTailorMode(value: unknown): value is TailorMode {
@@ -134,10 +141,30 @@ export async function POST(req: Request) {
       return Response.json({ error: "Resume is required." }, { status: 400 });
     }
 
+    if (cleanedResume.length > MAX_RESUME_CHARS) {
+      return Response.json(
+        {
+          error: "resume_too_long",
+          message: `Resume must be ${MAX_RESUME_CHARS.toLocaleString()} characters or fewer.`,
+        },
+        { status: 413 },
+      );
+    }
+
     if (requiresJobDescription && !cleanedJobDescription) {
       return Response.json(
         { error: "Resume and job description are required." },
         { status: 400 },
+      );
+    }
+
+    if (cleanedJobDescription.length > MAX_JOB_DESCRIPTION_CHARS) {
+      return Response.json(
+        {
+          error: "job_description_too_long",
+          message: `Job description must be ${MAX_JOB_DESCRIPTION_CHARS.toLocaleString()} characters or fewer.`,
+        },
+        { status: 413 },
       );
     }
 
@@ -177,13 +204,23 @@ export async function POST(req: Request) {
       hash: requestHash,
     });
 
-    let result: { mode: TailorMode; data: TailorResultData };
+    let result: {
+      mode: TailorMode;
+      data: TailorResultData;
+      usage: {
+        inputTokens: number;
+        outputTokens: number;
+        cacheReadTokens: number;
+        cacheCreationTokens: number;
+      } | null;
+    };
     const cacheHit = !!cached;
 
     if (cached) {
       result = {
         mode,
         data: cached as TailorResultData,
+        usage: null,
       };
     } else {
       const llmStart = performance.now();
@@ -198,6 +235,7 @@ export async function POST(req: Request) {
           return {
             mode,
             data: maybeCached as TailorResultData,
+            usage: null,
           };
         }
 
@@ -219,6 +257,7 @@ export async function POST(req: Request) {
         return {
           mode,
           data: generated.data as TailorResultData,
+          usage: generated.usage,
         };
       });
       llmMs = performance.now() - llmStart;
@@ -306,6 +345,10 @@ export async function POST(req: Request) {
       dbMs,
       promptVersion: PROMPT_VERSION,
       userId: dbUser?.id,
+      inputTokens: result.usage?.inputTokens,
+      outputTokens: result.usage?.outputTokens,
+      cacheReadTokens: result.usage?.cacheReadTokens,
+      cacheCreationTokens: result.usage?.cacheCreationTokens,
     });
 
     return responseWithTiming(responsePayload, {
@@ -319,19 +362,29 @@ export async function POST(req: Request) {
 
     const totalMs = performance.now() - startedAt;
     const message = error instanceof Error ? error.message : "Unknown error";
-    const parsingIssue = /parse Claude JSON response|Unexpected end of JSON input|Unexpected token|Unterminated string|empty text response/i.test(
+    const parsingIssue =
+      error instanceof AIOutputValidationError ||
+      error instanceof ParseClaudeResponseError ||
+      /parse Claude JSON response|Unexpected end of JSON input|Unexpected token|Unterminated string|empty text response/i.test(
       message,
-    );
+      );
+    const inputLengthIssue = error instanceof TailorInputLengthError;
 
     return Response.json(
       {
-        error: parsingIssue ? "invalid_model_response" : "tailor_failed",
-        message: parsingIssue
-          ? "Could not parse model output. Please retry."
-          : "Something went wrong while tailoring your resume. Please try again.",
+        error: inputLengthIssue
+          ? "input_too_long"
+          : parsingIssue
+            ? "invalid_model_response"
+            : "tailor_failed",
+        message: inputLengthIssue
+          ? message
+          : parsingIssue
+            ? "Generated content did not pass validation. Please retry."
+            : "Something went wrong while tailoring your resume. Please try again.",
       },
       {
-        status: parsingIssue ? 502 : 500,
+        status: inputLengthIssue ? 413 : parsingIssue ? 502 : 500,
         headers: {
           "Server-Timing": `total;dur=${totalMs.toFixed(1)}`,
         },

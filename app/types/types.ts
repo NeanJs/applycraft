@@ -1,4 +1,5 @@
 import { JsonValue } from "@prisma/client/runtime/library";
+import type { JobRequirement } from "../lib/ai/quality";
 
 export interface WorkExperience {
   company: string;
@@ -66,6 +67,9 @@ export interface ResponseData {
   atsImprovement?: number;
 
   atsBreakdown?: ATSBreakdown | null;
+  jobAnalysis?: {
+    requirements: JobRequirement[];
+  };
 
   optimizedResume: ResumeData;
   missingKeywords: string[];

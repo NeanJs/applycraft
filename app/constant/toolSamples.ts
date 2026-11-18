@@ -1,18 +1,18 @@
-export const SAMPLE_RESUME_TEXT = `Jordan Patel
-Toronto, ON | jordan.patel@email.com | +1 416-555-0198
+export const SAMPLE_RESUME_TEXT = `Jordan Patel (fictional sample)
+Toronto, ON | jordan.patel@example.com | +1 416-555-0101
 
 PROFESSIONAL SUMMARY
-Customer-facing operations specialist with 4+ years of experience improving service quality, handling high-volume workflows, and supporting cross-functional teams. Skilled in CRM workflows, process documentation, and KPI reporting.
+Customer-facing operations specialist experienced in handling service requests, documenting workflows, and supporting cross-functional teams. Skilled in CRM workflows, process documentation, and KPI reporting.
 
 EXPERIENCE
 Operations Coordinator | Northstar Services | 2022-Present
-- Managed 80+ weekly customer requests and reduced average response time by 28% by introducing a triage workflow.
+- Managed customer requests and introduced a triage workflow.
 - Collaborated with recruiting and onboarding teams to document SOPs and improve handoffs between departments.
 - Built weekly performance reports in Google Sheets to track SLA adherence and escalation trends.
 
 Client Support Associate | Horizon Retail Group | 2020-2022
-- Resolved 50+ customer issues per day across email and live chat while maintaining 96% satisfaction.
-- Trained new teammates on ticketing standards, reducing QA errors by 18%.
+- Resolved customer issues across email and live chat.
+- Trained new teammates on ticketing standards.
 - Coordinated with product teams to surface recurring bugs and policy gaps.
 
 SKILLS

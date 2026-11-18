@@ -9,21 +9,21 @@ const BREAKDOWN_META: Record<
 > = {
   structure: {
     label: "Structure",
-    description: "Formatting and ATS readability",
+    description: "Contact details and standard resume sections",
   },
 
   roleMatch: {
     label: "Role Match",
-    description: "Alignment with the target role",
+    description: "Responsibility, experience, and seniority coverage",
   },
 
   keywordMatch: {
     label: "Keyword Coverage",
-    description: "Relevant keywords found in your resume",
+    description: "Required terms count twice; preferred terms once",
   },
   readability: {
     label: "Readability",
-    description: "Clarity and quality of bullet points",
+    description: "Bullets with 5-35 words and at most 240 characters",
   },
 };
 function ATSBreakdownCard({ breakdown }: ATSBreakdownCardProps) {

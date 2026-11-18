@@ -1,14 +1,28 @@
 import { callClaude } from "./claude";
 
-import { parseClaudeResponse, ParseClaudeResponseError } from "./parser";
+import { parseClaudeResponse } from "./parser";
 
 import { BASE_SYSTEM_PROMPT } from "./prompts/base";
 import { MODE_CONFIG, TailorMode } from "./prompts/modes/modes";
+import {
+  MAX_JOB_DESCRIPTION_CHARS,
+  MAX_RESUME_CHARS,
+  validateTailorOutput,
+} from "./quality";
 
-const JSON_REPAIR_SYSTEM_PROMPT = `You are a strict JSON repair service.
-Return only valid JSON with no markdown, no explanation, and no surrounding text.
-Preserve the original schema and values as much as possible.
-If the input is truncated or malformed, repair it into a syntactically valid JSON object.`;
+export class TailorInputLengthError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "TailorInputLengthError";
+  }
+}
+
+export type AIUsage = {
+  inputTokens: number;
+  outputTokens: number;
+  cacheReadTokens: number;
+  cacheCreationTokens: number;
+};
 
 export async function runTailorEngine({
   resume,
@@ -21,19 +35,27 @@ export async function runTailorEngine({
   mode?: TailorMode;
   includeCoverLetter?: boolean;
 }) {
+  if (resume.length > MAX_RESUME_CHARS) {
+    throw new TailorInputLengthError(
+      `Resume exceeds the ${MAX_RESUME_CHARS.toLocaleString()} character limit.`,
+    );
+  }
+  if (jobDescription.length > MAX_JOB_DESCRIPTION_CHARS) {
+    throw new TailorInputLengthError(
+      `Job description exceeds the ${MAX_JOB_DESCRIPTION_CHARS.toLocaleString()} character limit.`,
+    );
+  }
+
   const config = MODE_CONFIG[mode];
 
   const modePrompt = config.prompt;
 
   const systemPrompt = `${BASE_SYSTEM_PROMPT}\n---\n${modePrompt}`;
 
-  const compactResume = resume.slice(0, 5000);
-  const compactJD = jobDescription.slice(0, 3000);
-
   const payload = {
     includeCoverLetter,
-    resume: compactResume,
-    jobDescription: compactJD,
+    resume,
+    jobDescription,
   };
 
   const response = await callClaude({
@@ -47,36 +69,18 @@ export async function runTailorEngine({
     ],
   });
 
-  let parsed: unknown;
-
-  try {
-    parsed = parseClaudeResponse(response);
-  } catch (error) {
-    if (!(error instanceof ParseClaudeResponseError)) {
-      throw error;
-    }
-
-    const repairInput =
-      error.cleanedText && error.cleanedText.length > 0
-        ? error.cleanedText
-        : error.rawText;
-
-    const repairedResponse = await callClaude({
-      system: JSON_REPAIR_SYSTEM_PROMPT,
-      maxTokens: Math.max(1400, config.maxTokens),
-      messages: [
-        {
-          role: "user",
-          content: `Repair this JSON so it is valid and return only JSON:\n\n${repairInput.slice(0, 18000)}`,
-        },
-      ],
-    });
-
-    parsed = parseClaudeResponse(repairedResponse);
-  }
+  const parsed = parseClaudeResponse(response);
+  const data = validateTailorOutput(mode, parsed, resume, jobDescription);
+  const usage = {
+    inputTokens: response.usage.input_tokens,
+    outputTokens: response.usage.output_tokens,
+    cacheReadTokens: response.usage.cache_read_input_tokens ?? 0,
+    cacheCreationTokens: response.usage.cache_creation_input_tokens ?? 0,
+  };
 
   return {
     mode,
-    data: parsed,
+    data,
+    usage,
   };
 }

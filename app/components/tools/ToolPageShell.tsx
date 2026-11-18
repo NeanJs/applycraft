@@ -26,10 +26,10 @@ export function Step({
         className={`h-5 w-5 shrink-0 rounded-full border text-[10px] font-medium flex items-center justify-center transition-colors
           ${
             status === "done"
-              ? "border-[#2fa287]/40 bg-[#2fa287]/12 text-[#1f7f69]"
+              ? "border-[var(--success)]/40 bg-[var(--success)]/10 text-[var(--success)]"
               : status === "active"
-                ? "border-[#f26f21] bg-[#f26f21] text-white"
-                : "border-(--line) bg-white text-[#7a8799]"
+                ? "border-[var(--brand-cobalt)] bg-[var(--brand-cobalt)] text-white"
+                : "border-[var(--line)] bg-white text-[var(--muted)]"
           }`}
       >
         {status === "done" ? (
@@ -47,7 +47,7 @@ export function Step({
         )}
       </div>
       <span
-        className={`text-xs ${status === "active" ? "font-semibold text-[#12223d]" : "text-[#74849a]"}`}
+        className={`text-xs ${status === "active" ? "font-semibold text-[var(--brand-ink)]" : "text-[var(--muted)]"}`}
       >
         {label}
       </span>
@@ -56,14 +56,14 @@ export function Step({
 }
 
 export function StepDivider() {
-  return <div className="mx-1 h-4 w-px bg-(--line)" />;
+  return <div className="mx-1 h-4 w-px bg-[var(--line)]" />;
 }
 
 // ── Tip pill ──────────────────────────────────────────────────────────────
 
 export function Tip({ icon, label }: { icon: React.ReactNode; label: string }) {
   return (
-    <div className="inline-flex items-center gap-1.5 rounded-full border border-[#2f9ecf]/30 bg-[#2f9ecf]/10 px-3 py-1 text-[11px] text-[#29557a]">
+    <div className="inline-flex items-center gap-1.5 rounded-full border border-[var(--brand-cobalt)]/20 bg-[var(--brand-soft-cobalt)] px-3 py-1 text-[11px] text-[var(--brand-cobalt)]">
       {icon}
       {label}
     </div>
@@ -92,19 +92,19 @@ export default function ToolPageShell({
   children,
 }: ToolPageShellProps) {
   return (
-    <div className="brand-shell text-gray-900">
+    <div className="brand-shell text-[var(--brand-ink)]">
       <main
         id="tool-workspace"
-        className={`mx-auto max-w-5xl px-6 py-12 ${stickyCTA ? "pb-20" : ""}`}
+        className={`mx-auto max-w-6xl px-5 py-8 sm:px-8 sm:py-12 ${stickyCTA ? "pb-20" : ""}`}
       >
-        <section className="brand-card mb-8 rounded-3xl p-6 md:p-8">
-          <p className="mb-2 text-[11px] font-semibold uppercase tracking-widest text-[#5a789a]">
+        <section className="brand-card mb-8 rounded-2xl p-5 sm:p-7 md:p-8">
+          <p className="mb-2 text-[11px] font-semibold uppercase tracking-widest text-[var(--brand-cobalt)]">
             {eyebrow}
           </p>
-          <h1 className="brand-heading mb-2 text-3xl font-semibold tracking-tight text-[#10213b] md:text-4xl">
+          <h1 className="brand-heading mb-2 text-3xl font-semibold tracking-tight text-[var(--brand-ink)] md:text-4xl">
             {title}
           </h1>
-          <p className="mb-5 max-w-2xl text-sm leading-relaxed text-[#516077] md:text-base">
+          <p className="mb-5 max-w-2xl text-sm leading-relaxed text-[var(--muted)] md:text-base">
             {description}
           </p>
 

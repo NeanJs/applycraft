@@ -1,6 +1,7 @@
 // types/tailor.ts
 
 import { ResumeData, ATSBreakdown } from "./types";
+import type { JobRequirement } from "../lib/ai/quality";
 
 export interface JobMetadata {
   jobTitle: string;
@@ -28,6 +29,9 @@ export interface ATSResult {
 
 export interface ATSOnlyResult extends GenerationMetadata {
   atsScore: number;
+  jobAnalysis: {
+    requirements: JobRequirement[];
+  };
 
   keywordAnalysis: {
     matchedKeywords: string[];
@@ -54,7 +58,7 @@ export interface SummaryVersions {
 }
 
 export interface SummaryResult extends GenerationMetadata {
-  job: JobMetadata;
+  job?: JobMetadata;
   summaries: SummaryVersions;
 }
 
@@ -76,10 +80,13 @@ export interface ExperienceOptimizerResults extends GenerationMetadata {
 
 export interface FullOptimizerResult extends GenerationMetadata {
   jobType: string;
+  jobAnalysis: {
+    requirements: JobRequirement[];
+  };
   atsBefore: number;
   atsAfter: number;
   atsBreakdown: ATSBreakdown;
-  confidenceScore: number;
+  confidenceScore?: number;
   missingKeywords: string[];
   changesMade: string[];
   coverLetter: string;

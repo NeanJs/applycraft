@@ -3,12 +3,14 @@ import ATSBreakdownCard from "./ATSBreakdownCard";
 import ATSInsightsCard from "./ATSInsights";
 import ATSScoreCard from "./ATSScoreCard";
 import MissingKeywords from "./MissingKeywords";
+import JobRequirementsList from "./JobRequirementsList";
 
 export function ATSResults({ result }: { result: ATSOnlyResult }) {
   return (
     <div className="space-y-6">
       <ATSScoreCard atsScore={result.atsScore} />
       <ATSBreakdownCard breakdown={result.breakdown} />
+      <JobRequirementsList requirements={result.jobAnalysis.requirements} />
       <section className="px-8 py-7 border-b border-gray-100 bg-white">
         <p className="text-[10px] uppercase text-gray-400">Skill gaps</p>
         <h2 className="text-sm font-semibold mb-4 text-gray-600">

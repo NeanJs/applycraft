@@ -65,7 +65,7 @@ export const toolSEO = {
   "resume-tailor": {
     title: "Tailor your resume to any job, free | ApplyCraft",
     description:
-      "Paste a job description. ApplyCraft rewrites your resume to match it, ATS score, missing keywords, tailored bullets, and a cover letter in 30 seconds.",
+      "Compare a resume with a job description, review evidence-backed requirements and gaps, and create a tailored draft with a transparent match estimate.",
     keywords: [
       "resume optimizer",
       "ATS resume checker",
@@ -75,20 +75,20 @@ export const toolSEO = {
     ],
 
     intro:
-      "A resume tailored to a specific job consistently outperforms a generic one, recruiters spend seconds scanning, and applicant tracking systems score resumes against the exact language in the job posting. ApplyCraft's resume tailor reads your resume and a target job description side by side, then rewrites your bullet points, surfaces missing keywords, and scores how well you'd match before you submit.",
+      "ApplyCraft compares the resume and job description you provide, identifies role requirements, and drafts clearer, role-relevant wording from the supplied experience. Its match estimate uses a documented heuristic; it is not a vendor-specific ATS score and cannot predict screening or hiring outcomes.",
 
     sections: [
       {
-        heading: "Why tailoring beats a one-size-fits-all resume",
-        body: "Most applicant tracking systems rank resumes by keyword overlap with the job description before a human ever opens the file. A resume written for 'Software Engineer' in general will miss the specific stack, certifications, or responsibilities listed in any one posting. Tailoring closes that gap, not by inventing experience, but by surfacing and rephrasing what you already did in the language the employer used.",
+        heading: "How tailoring can help",
+        body: "Job descriptions use role-specific language, but applicant tracking systems differ and employers configure them differently. Reviewing how your documented experience relates to a particular posting can help you decide what to emphasize. Never add a skill or qualification simply because it appears in the posting.",
       },
       {
         heading: "What gets rewritten",
-        body: "The tailor tool focuses on three things: bullet points (rewritten to mirror the priorities and phrasing of the job description), keywords (skills and tools mentioned in the posting that your resume is missing), and structure (formatting and section order that ATS software parses reliably). Your work history, dates, and job titles stay factual, only the framing and emphasis shift to match the role.",
+        body: "The tool extracts required and preferred terms, checks for supporting resume evidence, and drafts concise wording that reflects relevant experience. The estimate checks selected section headings and bullet length; it does not inspect every document-layout or vendor-specific parsing rule. Review all generated details against your original before use.",
       },
       {
-        heading: "How long it takes",
-        body: "Paste your resume and the job posting, from a PDF, LinkedIn, or any job board, and get a rewritten resume plus an ATS match score in about 30 seconds. No account is required for your first optimization, and nothing is stored unless you choose to create one.",
+        heading: "Review before applying",
+        body: "Paste resume text or upload a PDF, then compare the generated draft with your source. The estimate is based on requirements extracted from the posting and a fixed rubric; it is not an ATS result or a promise of an interview.",
       },
     ],
 
@@ -96,17 +96,17 @@ export const toolSEO = {
       {
         question: "Does resume tailoring mean lying on my resume?",
         answer:
-          "No. Tailoring rewords and reorders real experience to match a job's language and priorities, it doesn't add skills, titles, or experience you don't have. ApplyCraft only works with what's already in your resume.",
+          "Tailoring should clarify and prioritize documented experience, not add qualifications. ApplyCraft prompts and checks outputs against the supplied resume, but automated checks cannot prove every statement's meaning. Review each claim and correct or remove anything that is not accurate.",
       },
       {
         question: "How is this different from a generic resume builder?",
         answer:
-          "A resume builder helps you format a resume once. ApplyCraft re-optimizes that resume for every job you apply to, scoring it against the specific posting and rewriting bullet points to match, something a static builder doesn't do.",
+          "It compares the supplied resume with a specific job description and suggests evidence-grounded wording and requirement coverage. The result is a draft for your review, not an automatically verified resume.",
       },
       {
         question: "Will a tailored resume actually pass an ATS?",
         answer:
-          "ApplyCraft checks your resume against the same keyword-matching and formatting logic used by common ATS platforms like Workday, Greenhouse, and Lever, so the match score reflects how those systems are likely to parse and rank it.",
+          "There is no guarantee. Applicant tracking systems and employer configurations vary. ApplyCraft provides a transparent estimate from extracted requirements, resume evidence, section presence, and bullet length; it does not reproduce or predict any named ATS decision.",
       },
       {
         question: "Do I need to create an account to try it?",
@@ -116,7 +116,7 @@ export const toolSEO = {
       {
         question: "What file formats can I upload?",
         answer:
-          "You can paste your resume as plain text or upload it as a PDF. The job description can be pasted from anywhere, LinkedIn, Greenhouse, Lever, or any job board.",
+          "You can paste your resume as plain text or upload it as a PDF. Paste the job description text from the source where you found it.",
       },
     ],
   },
@@ -124,7 +124,7 @@ export const toolSEO = {
   "ats-resume-checker": {
     title: "Free ATS Resume Checker, Scan Your Resume | ApplyCraft",
     description:
-      "Check your resume against real ATS rules. Get a match score, missing keywords, and formatting fixes, in seconds, free.",
+      "Get a transparent resume-to-job match estimate, requirement coverage, and evidence-based gaps. The estimate is not a score from a specific ATS.",
     keywords: [
       "ATS resume checker",
       "ATS score",
@@ -134,20 +134,20 @@ export const toolSEO = {
     ],
 
     intro:
-      "Applicant tracking systems reject a large share of resumes before a recruiter ever sees them, not because the candidate is unqualified, but because the resume is formatted or worded in a way the software can't parse correctly. ApplyCraft's ATS checker scores your resume against the same logic these systems use, so you can fix the gaps before you apply, not after a rejection.",
+      "Applicant tracking systems differ in how they parse and rank applications, and their scoring methods are not publicly consistent. ApplyCraft compares resume text with a job description using a fixed heuristic and shows the extracted requirements, evidence, and gaps. It cannot predict how a particular employer's system will process an application.",
 
     sections: [
       {
-        heading: "What an ATS actually checks",
-        body: "Applicant tracking systems parse resumes into structured fields, contact info, work history, skills, education, then rank candidates by keyword overlap with the job posting and flag formatting issues like tables, columns, headers, or images that don't parse cleanly. A resume can read perfectly to a human and still score poorly here if it uses the wrong layout or misses the terms the job posting uses.",
+        heading: "What this estimate checks",
+        body: "The estimate uses requirements extracted from the job description, resume evidence, the presence of contact details and common section headings, and a simple bullet-length check. It is a transparent heuristic over text, not an inspection of every layout feature or the rules used by a particular ATS.",
       },
       {
-        heading: "What your score actually means",
-        body: "The checker returns a match percentage along with the specific keywords found and missing, so a low score isn't just a number, it points to exactly what to add or rephrase. Scores typically improve significantly once missing hard skills, tools, and certifications mentioned in the job posting are added in the resume's own language.",
+        heading: "How to use the result",
+        body: "Review each required or preferred item and its resume evidence. Missing evidence is a prompt to reflect on your experience or provide a verified clarification, not a suggestion to add an unsupported skill. The estimate is not a qualification judgment or hiring prediction.",
       },
       {
-        heading: "Formatting issues that quietly hurt your score",
-        body: "Multi-column layouts, text inside tables or images, unusual section headers, and non-standard file types can all cause an ATS to misread or skip sections of a resume entirely. The checker flags these structural issues alongside the keyword analysis, since fixing formatting often matters as much as fixing wording.",
+        heading: "Limits of text-based checks",
+        body: "PDF text extraction can lose layout details, and this tool does not test how a particular ATS handles columns, tables, graphics, or vendor-specific fields. Use a simple, readable document and check the exported text yourself when layout parsing is important.",
       },
     ],
 
@@ -155,17 +155,17 @@ export const toolSEO = {
       {
         question: "What is an ATS resume checker?",
         answer:
-          "An ATS resume checker scores your resume against the same rules applicant tracking systems use to rank candidates, keyword matching and formatting, so you can see how your resume is likely to be parsed before you apply.",
+          "It compares resume text with a job description and reports an estimated match using a fixed heuristic. It does not reproduce the private scoring or parsing rules of a specific applicant tracking system.",
       },
       {
         question: "Is a low ATS score the same as being unqualified?",
         answer:
-          "No. A low score usually means the resume is missing keywords from the specific job posting or uses formatting the ATS can't parse, not that the candidate lacks the experience. Most scores improve quickly once those gaps are fixed.",
+          "No. This estimate is not a qualification judgment. Review the requirements and evidence individually, and do not add skills or experience that you cannot verify.",
       },
       {
         question: "Which ATS platforms does this check against?",
         answer:
-          "The checker is built around the keyword-matching and formatting rules common to widely used platforms like Workday, Greenhouse, Lever, and Taleo.",
+          "It does not score against named platforms. ATS products and employer configurations vary, so the result should be treated as a general estimate only.",
       },
       {
         question: "Is the ATS resume checker free?",
@@ -175,7 +175,7 @@ export const toolSEO = {
       {
         question: "How is this different from the resume tailor tool?",
         answer:
-          "The ATS checker focuses on scoring and diagnosing your resume against a job description. The <a href=\"/resume-tailor\">resume tailor</a> goes a step further and rewrites your resume to fix the gaps it finds.",
+          "The ATS checker focuses on requirement coverage and evidence. The <a href=\"/resume-tailor\">resume tailor</a> also drafts role-specific wording for you to review; it should not add unsupported qualifications.",
       },
     ],
   },
@@ -193,16 +193,16 @@ export const toolSEO = {
     ],
 
     intro:
-      "Most AI-generated cover letters read the same way, generic enthusiasm, recycled phrasing, no real connection to the job. ApplyCraft's cover letter generator uses your actual resume and the job description together, so the letter reflects real experience and the specific role instead of filler language a recruiter has read a hundred times.",
+      "ApplyCraft's cover letter generator uses the resume and job description text you provide to draft a role-specific letter. The output is a draft: check every claim against your experience and verify any company-specific details before sending it.",
 
     sections: [
       {
         heading: "Why most cover letters sound robotic",
-        body: "Generic cover letter tools work from a template and a few prompts, which produces predictable phrasing, 'I am excited to apply' and 'I believe I would be a great fit' show up constantly because they're the safest, most generic things an AI can say. A cover letter grounded in your actual resume and the actual job description has specific details to draw on instead of filler.",
+        body: "Generic templates can lead to broad statements that do not explain why a role fits. Providing both resume and job-description text gives the generator specific source material, but review the result for unsupported details and wording that does not sound like you.",
       },
       {
         heading: "How ApplyCraft writes a more specific letter",
-        body: "The generator pulls directly from your resume's real experience and the responsibilities listed in the job posting, then writes a letter that connects the two, referencing actual past work rather than vague claims of enthusiasm or fit. The tone aims for confident and direct rather than overly formal or stiff.",
+        body: "The generator uses the supplied resume and job posting as context to draft a letter connecting relevant experience with the role. Generated wording can still be inaccurate, so verify each statement and remove anything that overstates your background.",
       },
       {
         heading: "What to still edit yourself",
@@ -214,12 +214,12 @@ export const toolSEO = {
       {
         question: "Will the cover letter sound like generic AI writing?",
         answer:
-          "ApplyCraft is prompted specifically to avoid common AI-sounding phrases and generic enthusiasm, and it draws on your actual resume content rather than filler, but it's still worth a quick personal read-through before sending.",
+          "The prompt asks for specific wording based on the provided resume and job description, but the result may still need editing. Read it for accuracy, tone, and company details before sending.",
       },
       {
         question: "Does it need my resume to work?",
         answer:
-          "Yes, the generator works best with both your resume and the job description, since it draws specific details from your real experience to connect to the role rather than writing generically.",
+          "Both inputs help ground the draft in your supplied experience and the role requirements. Review the result to ensure it accurately represents you.",
       },
       {
         question: "Can I generate multiple cover letters for different jobs?",
@@ -242,7 +242,7 @@ export const toolSEO = {
   "resume-bullet-improver": {
     title: "AI Resume Bullet Point Improver | ApplyCraft",
     description:
-      "Turn weak resume bullets into strong, ATS-friendly ones with measurable impact. Free, instant rewrites.",
+      "Draft clearer resume bullets from your experience. Review each rewrite to confirm it preserves the original meaning and facts.",
     keywords: [
       "resume bullet point generator",
       "improve resume bullets",
@@ -252,20 +252,20 @@ export const toolSEO = {
     ],
 
     intro:
-      "Most resume bullets describe a duty instead of an outcome, 'responsible for managing a team' tells a recruiter what the job was, not what was accomplished in it. ApplyCraft's bullet improver rewrites flat, duty-based bullets into specific, outcome-focused ones that read stronger to both a human reviewer and an ATS keyword scan.",
+      "A clear bullet helps a reader understand the work performed. ApplyCraft's bullet improver suggests concise wording from the resume text you provide. Its prompts and checks discourage unsupported claims, but you should verify that every rewrite preserves your meaning.",
 
     sections: [
       {
-        heading: "Why 'responsible for' bullets fall flat",
-        body: "Phrases like 'responsible for' or 'helped with' describe a role, not a result, and they tend to blur together across resumes because they don't say what actually happened. A bullet point built around a specific action and outcome, what was done, how, and with what measurable effect, stands out and gives an ATS more concrete keywords to match against.",
+        heading: "Make bullets clearer while checking the facts",
+        body: "A bullet can name the action and context more directly. Not every responsibility has a measurable outcome, and a number should never be added unless the candidate can verify it. Review generated wording for any change in scope or meaning.",
       },
       {
         heading: "What a stronger bullet actually looks like",
-        body: "A strong bullet generally follows action → method → result: what you did, how you did it, and what changed because of it. 'Helped guests during shifts' becomes something like 'Managed multi-table sections during peak service, upselling menu items while maintaining food safety standards', same real experience, written as a specific accomplishment rather than a vague duty.",
+        body: "'Helped customers and handled orders' can become 'Assisted customers with product inquiries and processed orders while supporting daily store operations.' The rewrite clarifies the stated work without claiming a metric or an outcome that was not provided.",
       },
       {
-        heading: "Adding numbers without inventing them",
-        body: "Quantifying impact, team size, percentage improvement, time saved, revenue affected, makes a bullet more credible and scannable, but it should only reflect numbers you can actually stand behind in an interview. The improver will suggest where a number would strengthen a bullet, but the figure itself should come from your real experience.",
+        heading: "When a number belongs in a bullet",
+        body: "Use a figure only when it comes from your records or a detail you can verify. If a number would help but is not in the source, gather the information yourself before adding it; the tool does not establish missing results.",
       },
     ],
 
@@ -273,12 +273,12 @@ export const toolSEO = {
       {
         question: "Will this make up achievements I didn't have?",
         answer:
-          "No. The bullet improver rewrites the framing and wording of your real experience, it doesn't invent metrics, responsibilities, or outcomes you didn't have. Any numbers it suggests should be ones you can verify.",
+          "The prompt and output checks are designed to preserve the source meaning and reject unsupported numeric claims, but they cannot prove every paraphrase is accurate. Review each rewrite and remove anything that overstates your experience.",
       },
       {
         question: "How many bullets can I improve at once?",
         answer:
-          "You can paste as many bullet points as you'd like rewritten in a single pass, there's no per-bullet limit.",
+          "You can provide multiple bullets within the input size limit. Review the returned bullets against the originals before using them.",
       },
       {
         question: "Does this work for non-corporate roles?",
@@ -301,7 +301,7 @@ export const toolSEO = {
   "resume-summary-generator": {
     title: "AI Resume Summary Generator - Create Professional Summaries",
     description:
-      "Create a professional resume summary with AI. Generate a compelling summary that highlights your skills, experience, and career goals.",
+      "Create three concise resume-summary drafts based on the experience and skills in your resume.",
     keywords: [
       "resume summary generator",
       "AI resume summary",
@@ -311,16 +311,16 @@ export const toolSEO = {
     ],
 
     intro:
-      "A resume summary is the first thing a recruiter reads, and on average they spend only a few seconds deciding whether to keep reading, which makes those two or three opening sentences disproportionately important. ApplyCraft's resume summary generator reads your full resume and writes a sharp, specific opening that highlights your strongest experience instead of a generic statement of career goals.",
+      "A concise summary can help a reader understand a candidate's professional focus. ApplyCraft drafts three short variants from the resume text you provide, without treating the target role as evidence of qualifications.",
 
     sections: [
       {
         heading: "Resume summary vs. objective statement",
-        body: "An objective statement describes what you want from a job; a summary describes what you bring to it. Recruiters generally respond better to summaries because they front-load relevant experience and skills immediately, rather than starting with the candidate's own goals. Most modern resumes use a summary rather than an objective for this reason.",
+        body: "An objective statement describes what you want from a job; a summary describes relevant experience and skills. Choose the format that best fits your background and the role rather than assuming one is always better.",
       },
       {
         heading: "What makes a summary actually work",
-        body: "A strong summary is specific rather than generic, it names an actual role, years of experience, and one or two standout skills or achievements, instead of phrases like 'hardworking team player seeking opportunities.' Three to four sentences is usually enough: who you are professionally, your strongest relevant experience, and what you're looking to do next.",
+        body: "A useful summary is specific rather than generic. It can describe a professional identity, relevant experience, and verified skills in a few sentences. Include a title, years of experience, or achievement only when the resume supports it.",
       },
       {
         heading: "When to skip a summary entirely",
@@ -332,7 +332,7 @@ export const toolSEO = {
       {
         question: "How long should a resume summary be?",
         answer:
-          "Three to four sentences is typically enough, long enough to highlight your role, experience level, and a standout skill or achievement, short enough that a recruiter reads the whole thing in the few seconds they spend scanning it.",
+          "There is no single required length. This tool returns variants of up to three sentences; keep only details that are relevant and accurate for your background.",
       },
       {
         question: "Resume summary vs. objective, which should I use?",
@@ -343,7 +343,7 @@ export const toolSEO = {
         question:
           "Does the AI resume summary generator work for career changers?",
         answer:
-          "Yes, it can frame transferable skills and relevant experience from a different field in a way that connects to the role you're targeting, rather than just listing your previous job title.",
+          "It can highlight transferable skills stated in your resume. A job description can guide emphasis, but it does not establish candidate qualifications; check that each detail is accurate.",
       },
       {
         question: "Is the resume summary generator free?",
@@ -358,7 +358,7 @@ export const toolSEO = {
       {
         question: "Will it just repeat my resume back to me?",
         answer:
-          "No, it identifies your most relevant experience and condenses it into a forward-looking opening statement, rather than just restating your work history in different words.",
+          "It aims to synthesize relevant details into a short summary, but may reuse wording or details from your resume. Review the variants to confirm they are accurate and sound like you.",
       },
     ],
   },

@@ -1,0 +1,74 @@
+[
+  {
+    "id": "entry-level-technical",
+    "candidateType": "entry-level applicant",
+    "resume": "Alex Rivera\nalex@example.com\nSUMMARY\nComputer science student seeking a software internship.\nSKILLS\nPython, Excel\nEXPERIENCE\n- Built a class project using Python to organize student records.\nEDUCATION\nBSc Computer Science",
+    "jobDescription": "Required: Python fundamentals for a software internship.",
+    "requirement": "Python",
+    "category": "technical_skill",
+    "importance": "required",
+    "applicability": "applicable",
+    "supportingEvidence": "using Python",
+    "expectedStatus": "strong_match"
+  },
+  {
+    "id": "international-student",
+    "candidateType": "international student",
+    "resume": "Mina Chen\nmina@example.com\nSUMMARY\nInternational student pursuing a business degree.\nSKILLS\nExcel\nEXPERIENCE\n- Prepared class reports and reviewed spreadsheets.\nEDUCATION\nBachelor of Business Administration",
+    "jobDescription": "Preferred: SQL knowledge for the business analyst internship.",
+    "requirement": "SQL",
+    "category": "technical_skill",
+    "importance": "preferred",
+    "applicability": "applicable",
+    "supportingEvidence": "",
+    "expectedStatus": "missing_evidence"
+  },
+  {
+    "id": "career-changer",
+    "candidateType": "career changer",
+    "resume": "Jordan Lee\njordan@example.com\nSUMMARY\nRetail associate transitioning into customer support.\nSKILLS\nCustomer service\nEXPERIENCE\n- Answered customer questions and processed returns.\nEDUCATION\nAssociate Degree",
+    "jobDescription": "Required: customer communication and issue resolution.",
+    "requirement": "customer communication",
+    "category": "soft_skill",
+    "importance": "required",
+    "applicability": "applicable",
+    "supportingEvidence": "Answered customer questions",
+    "expectedStatus": "partial_match"
+  },
+  {
+    "id": "experienced-technical",
+    "candidateType": "experienced technical professional",
+    "resume": "Sam Patel\nsam@example.com\nSUMMARY\nSoftware engineer focused on distributed systems.\nSKILLS\nGo, Kubernetes\nEXPERIENCE\n- Designed distributed systems for internal services.\nEDUCATION\nBS Computer Science",
+    "jobDescription": "Required: experience designing distributed systems.",
+    "requirement": "distributed systems",
+    "category": "responsibility",
+    "importance": "required",
+    "applicability": "applicable",
+    "supportingEvidence": "Designed distributed systems",
+    "expectedStatus": "strong_match"
+  },
+  {
+    "id": "technical-career-transition",
+    "candidateType": "technical experience with limited formal credentials",
+    "resume": "Taylor Morgan\ntaylor@example.com\nSUMMARY\nIT support technician.\nSKILLS\nLinux, device support\nEXPERIENCE\n- Maintained Linux workstations and resolved user issues.\nEDUCATION\nTechnical diploma",
+    "jobDescription": "Preferred: Linux administration experience.",
+    "requirement": "Linux",
+    "category": "technical_skill",
+    "importance": "preferred",
+    "applicability": "applicable",
+    "supportingEvidence": "Maintained Linux workstations",
+    "expectedStatus": "strong_match"
+  },
+  {
+    "id": "non-technical-professional",
+    "candidateType": "non-technical professional",
+    "resume": "Riley Diaz\nriley@example.com\nSUMMARY\nRetail associate supporting customers and store operations.\nSKILLS\nCustomer service, inventory\nEXPERIENCE\n- Processed orders and supported daily store operations.\nEDUCATION\nHigh school diploma",
+    "jobDescription": "Required: accurate order processing in a busy retail environment.",
+    "requirement": "order processing",
+    "category": "responsibility",
+    "importance": "required",
+    "applicability": "applicable",
+    "supportingEvidence": "Processed orders",
+    "expectedStatus": "partial_match"
+  }
+]
