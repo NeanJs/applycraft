@@ -115,21 +115,6 @@ export function useToolEngine<TResult = unknown>({
         mode: (body as Record<string, unknown>).mode ?? "unknown",
       });
 
-      if (typeof window !== "undefined") {
-        const sessionKey = window.sessionStorage.getItem("applycraft_session") ?? crypto.randomUUID();
-        window.sessionStorage.setItem("applycraft_session", sessionKey);
-        fetch("/api/anon-generation", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            sessionKey,
-            toolType: apiRoute,
-            input: body,
-            result: data,
-          }),
-        }).catch(() => undefined);
-      }
-
       setResult(data as TResult);
     } catch {
       toast.error("Something went wrong. Please try again later.");

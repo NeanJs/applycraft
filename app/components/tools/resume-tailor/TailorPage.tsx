@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ResponseData } from "@/app/types/types";
 import ResumeResults from "@/app/components/dashboard/ResumeResults";
 import Link from "next/link";
+import { parseResumeFile } from "@/app/lib/parseResume";
 import toast from "react-hot-toast";
 import { handleError } from "@/app/lib/errorHandler";
 import { useUser } from "@clerk/nextjs";
@@ -201,22 +202,10 @@ export default function TailorPage() {
 
     setUploadingPdf(true);
 
-    const formData = new FormData();
-    formData.append("file", file);
-
     try {
-      const res = await fetch("/api/parse-resume", {
-        method: "POST",
-        body: formData,
-      });
-      const data = await parseJsonResponse<{ text?: string }>(res);
-
-      if (typeof data.text === "string" && data.text) {
-        setResume(data.text);
-        toast.success("Resume uploaded.");
-      } else {
-        toast.error("Could not read the PDF. Try pasting your resume instead.");
-      }
+      const text = await parseResumeFile(file);
+      setResume(text);
+      toast.success("Resume uploaded.");
     } catch (err) {
       handleError(err, "Failed to parse PDF");
     } finally {
@@ -354,7 +343,7 @@ export default function TailorPage() {
                       />
                     </svg>
                   }
-                  label="Your data isn't stored"
+                  label="Not saved to your account"
                 />
               )}
               <Tip

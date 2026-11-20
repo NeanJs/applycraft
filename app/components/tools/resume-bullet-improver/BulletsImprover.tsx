@@ -4,6 +4,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
+import { parseResumeFile } from "@/app/lib/parseResume";
 
 import ToolPageShell, {
   StepStatus,
@@ -88,22 +89,12 @@ export default function ImprovedBulletsPage() {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploadingPdf(true);
-    const formData = new FormData();
-    formData.append("file", file);
     try {
-      const res = await fetch("/api/parse-resume", {
-        method: "POST",
-        body: formData,
-      });
-      const data = await res.json();
-      if (data.text) {
-        setResume(data.text);
-        toast.success("Resume uploaded.");
-      } else {
-        toast.error("Could not read the PDF. Try pasting instead.");
-      }
-    } catch {
-      toast.error("Failed to parse PDF.");
+      const text = await parseResumeFile(file);
+      setResume(text);
+      toast.success("Resume uploaded.");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to parse PDF.");
     } finally {
       setUploadingPdf(false);
     }
@@ -138,7 +129,7 @@ export default function ImprovedBulletsPage() {
     <ToolPageShell
       eyebrow="Improved Bullets"
       title="Make every bullet count."
-      description="Paste your resume and get stronger, metrics-driven bullet points that grab a recruiter's attention, optionally tailored to a specific job."
+      description="Paste your resume and get clearer bullet point drafts that keep your supplied facts as the source, optionally tailored to a specific job."
       steps={[
         { label: "Paste resume", status: step1 },
         { label: "Get improved bullets", status: step2 },
@@ -258,7 +249,7 @@ export default function ImprovedBulletsPage() {
                       />
                     </svg>
                   }
-                  label="Your data isn't stored"
+                  label="Not saved to your account"
                 />
               )}
               <Tip

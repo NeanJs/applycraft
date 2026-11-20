@@ -68,18 +68,7 @@ export default function DashboardUI({
           <div className="flex flex-wrap items-center gap-2">
             <Link
               href="/resume-tailor"
-              className="
-                bg-zinc-900 
-                text-white 
-                px-4 
-                py-2.5 
-                rounded-xl 
-                text-sm 
-                font-medium
-                hover:bg-zinc-700
-                transition
-                whitespace-nowrap
-              "
+              className="bg-zinc-900 text-white px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-zinc-700 transition whitespace-nowrap"
             >
               + Tailor Resume
             </Link>

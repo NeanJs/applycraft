@@ -8,10 +8,12 @@
   "start": "next start",
   "lint": "eslint",
   "test:ai-quality": "node --test app/lib/ai/quality.test.mjs",
+  "test:resume-export": "node --test app/services/services.test.mjs",
+  "test:tracker-validation": "node --test app/lib/tracker/validation.test.mjs",
   "check:types": "tsc --noEmit",
   "check:lint": "npm run lint",
   "check:ai": "npm run test:ai-quality",
-  "check": "npm run check:types && npm run check:lint && npm run check:ai",
+  "check": "npm run check:types && npm run check:lint && npm run check:ai && npm run test:resume-export && npm run test:tracker-validation",
   "check:full": "npm run check && npm run build",
   "postinstall": "prisma generate"
 },
