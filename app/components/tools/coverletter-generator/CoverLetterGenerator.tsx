@@ -26,6 +26,11 @@ import CoverLetter from "@/app/components/tools/CoverLetter";
 
 import { CoverLetterResult } from "@/app/types/tailor";
 import AnonStickyCTA from "@/app/components/misc/StickyCTA";
+import QuickStartSamples from "@/app/components/tools/QuickStartSamples";
+import {
+  SAMPLE_JOB_DESCRIPTION_TEXT,
+  SAMPLE_RESUME_TEXT,
+} from "@/app/constant/toolSamples";
 
 // ── Types ─────────────────────────────────────────────────────────────────
 
@@ -96,12 +101,27 @@ export default function CoverLetterPage() {
   // Step indicator
   const hasResume = resume.trim().length > 0;
   const hasJD = jobDescription.trim().length > 0;
+  const hasAnyInput = hasResume || hasJD;
   const step1: StepStatus = hasResume ? "done" : "active";
   const step2: StepStatus =
     hasResume && hasJD ? "done" : hasResume ? "active" : "pending";
   const step3: StepStatus = result ? "done" : loading ? "active" : "pending";
 
   const showStickyCTA = !!result && result.promptSignUp && !dismissedCTA;
+
+  function handleTrySampleData() {
+    setResume(SAMPLE_RESUME_TEXT);
+    setJobDescription(SAMPLE_JOB_DESCRIPTION_TEXT);
+    setShowSignupCTA(false);
+    setDismissedCTA(false);
+  }
+
+  function handleClearInputs() {
+    setResume("");
+    setJobDescription("");
+    setShowSignupCTA(false);
+    setDismissedCTA(false);
+  }
 
   return (
     <ToolPageShell
@@ -122,6 +142,15 @@ export default function CoverLetterPage() {
         ) : undefined
       }
     >
+      {!loading && !result && (
+        <QuickStartSamples
+          onTrySample={handleTrySampleData}
+          onClear={handleClearInputs}
+          hasInput={hasAnyInput}
+          loading={uploadingPdf}
+        />
+      )}
+
       <ToolForm
         inputs={[
           <ResumeInput
@@ -144,6 +173,7 @@ export default function CoverLetterPage() {
             loading={loading}
             label="Write cover letter →"
             loadingLabel="Writing…"
+            hint={!hasResume || !hasJD ? "Paste your resume and a job description to unlock the letter." : undefined}
           />
         }
         tips={
@@ -190,7 +220,7 @@ export default function CoverLetterPage() {
                       />
                     </svg>
                   }
-                  label="Your data isn't stored"
+                  label="Not saved to your account"
                 />
               )}
               <Tip
@@ -222,6 +252,14 @@ export default function CoverLetterPage() {
           result ? (
             <ResultPanel
               job={result.job}
+              trackerProps={{
+                resumeId: (result as { resumeId?: string | null }).resumeId ?? null,
+                generationId: (result as { generationId?: string | null }).generationId ?? null,
+                jobDescription,
+                title: "Cover letter",
+                company: result.job?.companyName,
+                role: result.job?.jobTitle,
+              }}
               footer={
                 <>
                   <p className="text-xs text-gray-400">

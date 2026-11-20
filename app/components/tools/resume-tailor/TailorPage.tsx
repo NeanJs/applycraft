@@ -13,18 +13,55 @@ import { TAILOR_MODES } from "@/app/lib/ai/prompts/modes/modes";
 import JobDescriptionInput from "@/app/components/tools/JobDescriptionInput";
 import ResumeInput from "@/app/components/tools/ResumeInput";
 import LoadingProgress from "@/app/components/tools/LoadingProgress";
-import { Step, StepDivider, Tip } from "@/app/components/tools/ToolPageShell";
+import ToolForm from "@/app/components/tools/ToolForm";
+import GenerateButton from "@/app/components/tools/GenerateButton";
+import ToolPageShell, { Tip } from "@/app/components/tools/ToolPageShell";
+import ResultPanel from "@/app/components/tools/ResultPanel";
+import QuickStartSamples from "@/app/components/tools/QuickStartSamples";
+import {
+  SAMPLE_JOB_DESCRIPTION_TEXT,
+  SAMPLE_RESUME_TEXT,
+} from "@/app/constant/toolSamples";
 
 type StepStatus = "done" | "active" | "pending";
+
+type TailorApiResponse = Partial<ResponseData> & {
+  error?: string;
+  message?: string;
+  coverLetterPending?: boolean;
+  resumeId?: string | null;
+};
+
+async function parseJsonResponse<T = Record<string, unknown>>(response: Response): Promise<T> {
+  const raw = await response.text();
+  if (!raw) return {} as T;
+
+  try {
+    return JSON.parse(raw) as T;
+  } catch {
+    throw new Error("Invalid JSON response from server.");
+  }
+}
 
 // ── Loading progress ──────────────────────────────────────────────────────
 
 // LOADING_STEPS for LoadingProgress
 const LOADING_STEPS = [
-  { label: "Classifying role type" },
-  { label: "Scoring original resume" },
-  { label: "Rewriting resume bullets" },
-  { label: "Generating cover letter" },
+  {
+    label: "Reviewing job requirements",
+    detail:
+      "Key responsibilities and qualifications in the posting are identified.",
+  },
+  {
+    label: "Checking resume evidence",
+    detail:
+      "Relevant details are compared with the experience and skills in your resume.",
+  },
+  {
+    label: "Drafting your tailored resume",
+    detail:
+      "A role-focused version is prepared while keeping your supplied facts as the source.",
+  },
 ];
 
 // ── Input panel ───────────────────────────────────────────────────────────
@@ -39,6 +76,7 @@ export default function TailorPage() {
   const [loadingStep, setLoadingStep] = useState(0);
   const [showSignupCTA, setShowSignupCTA] = useState(false);
   const [uploadingPdf, setUploadingPdf] = useState(false);
+  const [coverLetterLoading, setCoverLetterLoading] = useState(false);
   // Anon Usage CTA
   const [dismissedCTA, setDismissedCTA] = useState(false);
 
@@ -46,8 +84,26 @@ export default function TailorPage() {
 
   const hasResume = resume.trim().length > 0;
   const hasJD = jobDescription.trim().length > 0;
+  const hasAnyInput = hasResume || hasJD;
   const canGenerate = !loading && !uploadingPdf && hasResume && hasJD;
   const { isSignedIn } = useUser();
+
+  function handleTrySampleData() {
+    setResume(SAMPLE_RESUME_TEXT);
+    setJobDescription(SAMPLE_JOB_DESCRIPTION_TEXT);
+    setResult(undefined);
+    setShowSignupCTA(false);
+    setDismissedCTA(false);
+  }
+
+  function handleClearInputs() {
+    setResume("");
+    setJobDescription("");
+    setResult(undefined);
+    setShowSignupCTA(false);
+    setDismissedCTA(false);
+  }
+
   // Simulate step progression during loading so the UI isn't static
   async function generate() {
     setLoading(true);
@@ -71,22 +127,67 @@ export default function TailorPage() {
         }),
       });
 
-      const data = await res.json();
+      const data = await parseJsonResponse<TailorApiResponse>(res);
 
       if (!res.ok) {
         if (data.error === "free_limit_reached") {
-          toast.error(data.message);
+          toast.error(
+            typeof data.message === "string"
+              ? data.message
+              : "Sign up to continue.",
+          );
           setShowSignupCTA(true);
           return;
         }
 
-        toast.error(data.message || "Something went wrong.");
+        toast.error(
+          typeof data.message === "string"
+            ? data.message
+            : "Something went wrong.",
+        );
         return;
       }
 
       toast.success("Your resume is ready.");
 
-      setResult(data);
+      setResult(data as ResponseData);
+
+      if (data.coverLetterPending) {
+        setCoverLetterLoading(true);
+        fetch("/api/tailor/cover-letter", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            resume,
+            jobDescription,
+            resumeId: data.resumeId,
+          }),
+        })
+          .then(async (response) => {
+            const payload = await parseJsonResponse<TailorApiResponse>(response);
+            if (!response.ok || !payload.coverLetter) {
+              toast.error(
+                typeof payload.message === "string"
+                  ? payload.message
+                  : "The cover letter did not pass review. Please try again.",
+              );
+              return;
+            }
+            setResult((prev) =>
+              prev
+                ? {
+                    ...prev,
+                    coverLetter: payload.coverLetter as string,
+                    coverLetterPending: false,
+                  }
+                : prev,
+            );
+          })
+          .catch(() => {
+            toast.error("The cover letter could not be generated. Please try again.");
+          })
+          .finally(() => setCoverLetterLoading(false));
+      }
     } catch (error) {
       handleError(error, "Something went wrong. Please try again later.");
     } finally {
@@ -118,217 +219,17 @@ export default function TailorPage() {
   const step3: StepStatus = result ? "done" : loading ? "active" : "pending";
 
   return (
-    <div
-      className=" bg-white text-gray-900"
-      style={{ fontFamily: "'Inter', sans-serif" }}
-    >
-      {/* Navbar slot */}
-
-      <main
-        className={`max-w-5xl mx-auto px-6 py-12 ${showStickyCTA ? "pb-20" : ""}`}
-      >
-        {/* Header */}
-        <div className="mb-8">
-          <p className="text-[11px] font-medium text-gray-400 uppercase tracking-widest mb-2">
-            Resume optimizer
-          </p>
-          <h1 className="text-3xl font-semibold tracking-tight text-gray-900 mb-2">
-            Tailor your resume to any job.
-          </h1>
-          <p className="text-sm text-gray-500 max-w-lg leading-relaxed mb-5">
-            Paste your resume and the job description, get an ATS score,
-            missing keywords, an optimized resume, and a cover letter.
-          </p>
-
-          {/* Step indicator */}
-          <div className="flex items-center gap-1 flex-wrap">
-            <Step n="1" label="Paste resume" status={step1} />
-            <StepDivider />
-            <Step n="2" label="Add job description" status={step2} />
-            <StepDivider />
-            <Step n="3" label="Get results" status={step3} />
-          </div>
-        </div>
-
-        {/* Input grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
-          <ResumeInput
-            onChange={setResume}
-            value={resume}
-            onPdfUpload={handlePdfUpload}
-            uploadingPdf={uploadingPdf}
-          />
-
-          <JobDescriptionInput
-            onChange={setJobDescription}
-            value={jobDescription}
-          />
-        </div>
-
-        {/* CTA */}
-        <button
-          onClick={generate}
-          disabled={!canGenerate}
-          className={`w-full py-3.5 rounded-xl text-sm font-medium transition-all mb-4 ${
-            canGenerate
-              ? "bg-gray-900 text-white hover:bg-gray-700 hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
-              : "bg-gray-100 text-gray-400 cursor-not-allowed"
-          }`}
-        >
-          {loading ? (
-            <span className="flex items-center justify-center gap-2">
-              <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              Generating…
-            </span>
-          ) : (
-            "Optimize resume →"
-          )}
-        </button>
-
-        {/* Trust tips */}
-        {!loading && !result && (
-          <div className="flex items-center justify-center gap-2 flex-wrap">
-            <Tip
-              icon={
-                <svg width="10" height="10" viewBox="0 0 16 16" fill="none">
-                  <circle
-                    cx="8"
-                    cy="8"
-                    r="6.5"
-                    stroke="currentColor"
-                    strokeWidth="1.25"
-                  />
-                  <path
-                    d="M8 5v3.5l2 2"
-                    stroke="currentColor"
-                    strokeWidth="1.25"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              }
-              label="~30 seconds"
-            />
-            {!isSignedIn && (
-              <Tip
-                icon={
-                  <svg width="10" height="10" viewBox="0 0 16 16" fill="none">
-                    <rect
-                      x="3"
-                      y="7"
-                      width="10"
-                      height="7"
-                      rx="1"
-                      stroke="currentColor"
-                      strokeWidth="1.25"
-                    />
-                    <path
-                      d="M5.5 7V5a2.5 2.5 0 015 0v2"
-                      stroke="currentColor"
-                      strokeWidth="1.25"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                }
-                label="Your data isn't stored"
-              />
-            )}
-
-            <Tip
-              icon={
-                <svg width="10" height="10" viewBox="0 0 16 16" fill="none">
-                  <path
-                    d="M8 1.5l1.5 3.5H13l-2.8 2.2 1 3.5L8 8.7l-3.2 2 1-3.5L3 5h3.5L8 1.5z"
-                    stroke="currentColor"
-                    strokeWidth="1.25"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              }
-              label="First result is free"
-            />
-          </div>
-        )}
-
-        {/* Loading progress */}
-        {loading && (
-          <LoadingProgress steps={LOADING_STEPS} currentStep={loadingStep} />
-        )}
-
-        {/* Results */}
-        {result && (
-          <ResumeResults
-            resumeID={result.resumeId ?? undefined}
-            result={result}
-            copied={false}
-          />
-        )}
-
-        {/* Post-result footer */}
-        {result && !loading && (
-          <div className="mt-6 flex items-center justify-between">
-            <p className="text-xs text-gray-400">
-              Optimize again by editing above
-            </p>
-            <Link
-              href="/dashboard"
-              className="text-xs font-medium text-gray-600 border border-gray-200 px-4 py-2 rounded-lg hover:border-gray-400 hover:text-gray-900 transition-colors"
-            >
-              ← Back to dashboard
-            </Link>
-          </div>
-        )}
-        {showSignupCTA && (
-          <div className="mt-6 bg-white border border-gray-200 rounded-2xl px-5 py-4 flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-full bg-gray-50 border border-gray-200 flex items-center justify-center shrink-0">
-                <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
-                  <rect
-                    x="3"
-                    y="7"
-                    width="10"
-                    height="7"
-                    rx="1"
-                    stroke="currentColor"
-                    strokeWidth="1.25"
-                  />
-                  <path
-                    d="M5.5 7V5a2.5 2.5 0 015 0v2"
-                    stroke="currentColor"
-                    strokeWidth="1.25"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-900">
-                  You&apos;ve used your free optimization
-                </p>
-                <p className="text-xs text-gray-500 mt-0.5">
-                  Sign up to save results, view your cover letter, and optimize
-                  again.
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 shrink-0">
-              <button
-                onClick={() => setShowSignupCTA(false)}
-                className="text-xs text-gray-400 border border-gray-200 rounded-lg px-3 py-2 hover:border-gray-300 hover:text-gray-600 transition-colors"
-              >
-                Maybe later
-              </button>
-              <Link
-                href="/sign-up"
-                onClick={() =>
-                  track("anon_cta_clicked", { source: "sticky_bar" })
-                }
-                className="text-xs font-medium text-white bg-gray-900 rounded-lg px-4 py-2 hover:bg-gray-700 transition-colors whitespace-nowrap"
-              >
-                Create free account →
-              </Link>
-            </div>
-          </div>
-        )}
-        {showStickyCTA && (
+    <ToolPageShell
+      eyebrow="Resume optimizer"
+      title="Tailor your resume to any job."
+      description="Paste your resume and a job description to get an evidence-grounded draft, requirement gaps, a transparent match estimate, and a cover letter. Review every claim before using it."
+      steps={[
+        { label: "Paste resume", status: step1 },
+        { label: "Add job description", status: step2 },
+        { label: "Get results", status: step3 },
+      ]}
+      stickyCTA={
+        showStickyCTA ? (
           <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 px-6 py-3 flex items-center justify-between gap-4">
             <div className="flex items-center gap-2.5">
               <div className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0" />
@@ -342,7 +243,7 @@ export default function TailorPage() {
             <div className="flex items-center gap-2 shrink-0">
               <button
                 onClick={() => setDismissedCTA(true)}
-                className="hidden sm:block text-xs t text-gray-400 border border-gray-200 rounded-lg px-3 py-2 hover:border-gray-300 transition-colors"
+                className="hidden sm:block text-xs text-gray-400 border border-gray-200 rounded-lg px-3 py-2 hover:border-gray-300 transition-colors"
               >
                 Dismiss
               </button>
@@ -357,8 +258,209 @@ export default function TailorPage() {
               </Link>
             </div>
           </div>
-        )}
-      </main>
-    </div>
+        ) : undefined
+      }
+    >
+      {!loading && !result && (
+        <QuickStartSamples
+          onTrySample={handleTrySampleData}
+          onClear={handleClearInputs}
+          hasInput={hasAnyInput}
+          loading={uploadingPdf}
+        />
+      )}
+
+      <ToolForm
+        inputs={[
+          <ResumeInput
+            key="resume"
+            value={resume}
+            onChange={setResume}
+            uploadingPdf={uploadingPdf}
+            onPdfUpload={handlePdfUpload}
+          />,
+          <JobDescriptionInput
+            key="jd"
+            value={jobDescription}
+            onChange={setJobDescription}
+          />,
+        ]}
+        cta={
+          <GenerateButton
+            onClick={generate}
+            disabled={!canGenerate}
+            loading={loading}
+            label="Optimize resume →"
+            loadingLabel="Generating…"
+            hint={
+              !hasResume || !hasJD
+                ? "Paste your resume and a job description to unlock the full optimization."
+                : undefined
+            }
+          />
+        }
+        tips={
+          !loading && !result ? (
+            <>
+              <Tip
+                icon={
+                  <svg width="10" height="10" viewBox="0 0 16 16" fill="none">
+                    <circle
+                      cx="8"
+                      cy="8"
+                      r="6.5"
+                      stroke="currentColor"
+                      strokeWidth="1.25"
+                    />
+                    <path
+                      d="M8 5v3.5l2 2"
+                      stroke="currentColor"
+                      strokeWidth="1.25"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                }
+                label="Generation time varies"
+              />
+              {!isSignedIn && (
+                <Tip
+                  icon={
+                    <svg width="10" height="10" viewBox="0 0 16 16" fill="none">
+                      <rect
+                        x="3"
+                        y="7"
+                        width="10"
+                        height="7"
+                        rx="1"
+                        stroke="currentColor"
+                        strokeWidth="1.25"
+                      />
+                      <path
+                        d="M5.5 7V5a2.5 2.5 0 015 0v2"
+                        stroke="currentColor"
+                        strokeWidth="1.25"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  }
+                  label="Not saved to your account"
+                />
+              )}
+              <Tip
+                icon={
+                  <svg width="10" height="10" viewBox="0 0 16 16" fill="none">
+                    <path
+                      d="M8 1.5l1.5 3.5H13l-2.8 2.2 1 3.5L8 8.7l-3.2 2 1-3.5L3 5h3.5L8 1.5z"
+                      stroke="currentColor"
+                      strokeWidth="1.25"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                }
+                label="First result is free"
+              />
+            </>
+          ) : undefined
+        }
+        loadingProgress={
+          loading ? (
+            <LoadingProgress
+              steps={LOADING_STEPS}
+              currentStep={loadingStep}
+              title="Building your tailored resume"
+              eta="Often about 30–40 seconds"
+              helperText="We’re comparing your resume with the job description and preparing a draft. This can take a little while. Keep this page open; your results will appear here when they’re ready."
+              progressNote="The step indicator is illustrative, not live model telemetry. Resume drafting currently runs as one request, so partial resume content is not available while it is being generated."
+            />
+          ) : undefined
+        }
+        result={
+          result ? (
+            <ResultPanel
+              trackerProps={{
+                resumeId: result.resumeId ?? null,
+                generationId: result.generationId ?? null,
+                jobDescription,
+                title: "Resume tailor",
+                company: result.job?.companyName,
+                role: result.job?.jobTitle,
+              }}
+              footer={
+                <>
+                  <p className="text-xs text-gray-400">
+                    Optimize again by editing above
+                  </p>
+                  <Link
+                    href="/dashboard"
+                    className="text-xs font-medium text-gray-600 border border-gray-200 px-4 py-2 rounded-lg hover:border-gray-400 hover:text-gray-900 transition-colors"
+                  >
+                    ← Back to dashboard
+                  </Link>
+                </>
+              }
+            >
+              <ResumeResults
+                resumeID={result.resumeId ?? undefined}
+                result={result}
+                copied={false}
+                coverLetterLoading={coverLetterLoading}
+              />
+            </ResultPanel>
+          ) : undefined
+        }
+      />
+
+      {showSignupCTA && (
+        <div className="mt-6 bg-white border border-gray-200 rounded-2xl px-5 py-4 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-full bg-gray-50 border border-gray-200 flex items-center justify-center shrink-0">
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+                <rect
+                  x="3"
+                  y="7"
+                  width="10"
+                  height="7"
+                  rx="1"
+                  stroke="currentColor"
+                  strokeWidth="1.25"
+                />
+                <path
+                  d="M5.5 7V5a2.5 2.5 0 015 0v2"
+                  stroke="currentColor"
+                  strokeWidth="1.25"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-900">
+                You&apos;ve used your free optimization
+              </p>
+              <p className="text-xs text-gray-500 mt-0.5">
+                Sign up to save results, view your cover letter, and optimize
+                again.
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={() => setShowSignupCTA(false)}
+              className="text-xs text-gray-400 border border-gray-200 rounded-lg px-3 py-2 hover:border-gray-300 hover:text-gray-600 transition-colors"
+            >
+              Maybe later
+            </button>
+            <Link
+              href="/sign-up"
+              onClick={() =>
+                track("anon_cta_clicked", { source: "sticky_bar" })
+              }
+              className="text-xs font-medium text-white bg-gray-900 rounded-lg px-4 py-2 hover:bg-gray-700 transition-colors whitespace-nowrap"
+            >
+              Create free account →
+            </Link>
+          </div>
+        </div>
+      )}
+    </ToolPageShell>
   );
 }

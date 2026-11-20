@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef } from "react";
 import toast from "react-hot-toast";
+import { trackEvent } from "@/app/lib/analytics/trackEvent";
 
 export interface ToolEngineOptions {
   /** API route to POST to, e.g. "/api/tailor" or "/api/ats-score" */
@@ -54,6 +55,7 @@ export function useToolEngine<TResult = unknown>({
   };
 
   const generate = useCallback(async () => {
+    const body = buildBody();
     // Client-side validation
     if (validate) {
       const err = validate();
@@ -73,10 +75,27 @@ export function useToolEngine<TResult = unknown>({
     }, stepInterval);
 
     try {
+      trackEvent("tool_started", {
+        apiRoute,
+        mode: (body as Record<string, unknown>).mode ?? "unknown",
+      });
+
+      if (typeof window !== "undefined") {
+        const hasSeenToolContent =
+          window.sessionStorage.getItem("applycraft_seen_tool_content") === "1";
+        if (hasSeenToolContent) {
+          trackEvent("generate_after_tool_content", {
+            apiRoute,
+            mode: (body as Record<string, unknown>).mode ?? "unknown",
+          });
+          window.sessionStorage.removeItem("applycraft_seen_tool_content");
+        }
+      }
+
       const res = await fetch(apiRoute, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(buildBody()),
+        body: JSON.stringify(body),
       });
 
       const data = await res.json();
@@ -91,6 +110,11 @@ export function useToolEngine<TResult = unknown>({
       }
 
       toast.success(successMessage);
+      trackEvent("generation_completed", {
+        apiRoute,
+        mode: (body as Record<string, unknown>).mode ?? "unknown",
+      });
+
       setResult(data as TResult);
     } catch {
       toast.error("Something went wrong. Please try again later.");

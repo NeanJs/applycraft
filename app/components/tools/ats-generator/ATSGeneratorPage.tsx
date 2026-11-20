@@ -24,6 +24,11 @@ import { TAILOR_MODES } from "@/app/lib/ai/prompts/modes/modes";
 import { ATSResults } from "@/app/components/ats/ATSResults";
 import { ATSOnlyResult } from "@/app/types/tailor";
 import AnonStickyCTA from "@/app/components/misc/StickyCTA";
+import QuickStartSamples from "@/app/components/tools/QuickStartSamples";
+import {
+  SAMPLE_JOB_DESCRIPTION_TEXT,
+  SAMPLE_RESUME_TEXT,
+} from "@/app/constant/toolSamples";
 
 const LOADING_STEPS: LoadingStep[] = [
   {
@@ -94,6 +99,7 @@ export default function AtsExtractorPage() {
   // Step indicator state
   const hasResume = resume.trim().length > 0;
   const hasJD = jobDescription.trim().length > 0;
+  const hasAnyInput = hasResume || hasJD;
   const step1: StepStatus = hasResume ? "done" : "active";
   const step2: StepStatus =
     hasResume && hasJD ? "done" : hasResume ? "active" : "pending";
@@ -101,15 +107,29 @@ export default function AtsExtractorPage() {
 
   const showStickyCTA = !!result && result.promptSignUp && !dismissedCTA;
 
+  function handleTrySampleData() {
+    setResume(SAMPLE_RESUME_TEXT);
+    setJobDescription(SAMPLE_JOB_DESCRIPTION_TEXT);
+    setShowSignupCTA(false);
+    setDismissedCTA(false);
+  }
+
+  function handleClearInputs() {
+    setResume("");
+    setJobDescription("");
+    setShowSignupCTA(false);
+    setDismissedCTA(false);
+  }
+
   return (
     <ToolPageShell
       eyebrow="ATS Extractor"
-      title="See exactly how you score."
-      description="Paste your resume and the job posting to get an instant ATS score and a list of missing keywords."
+      title="See how your resume aligns."
+      description="Compare your resume with a job posting using a transparent match estimate, requirement coverage, and evidence-based gaps. This is not a score from a specific ATS."
       steps={[
         { label: "Paste resume", status: step1 },
         { label: "Add job description", status: step2 },
-        { label: "Get ATS score", status: step3 },
+        { label: "Get match estimate", status: step3 },
       ]}
       stickyCTA={
         showStickyCTA ? (
@@ -120,6 +140,15 @@ export default function AtsExtractorPage() {
         ) : undefined
       }
     >
+      {!loading && !result && (
+        <QuickStartSamples
+          onTrySample={handleTrySampleData}
+          onClear={handleClearInputs}
+          hasInput={hasAnyInput}
+          loading={uploadingPdf}
+        />
+      )}
+
       <ToolForm
         inputs={[
           <ResumeInput
@@ -142,6 +171,7 @@ export default function AtsExtractorPage() {
             loading={loading}
             label="Analyze resume →"
             loadingLabel="Analyzing…"
+            hint={!hasResume || !hasJD ? "Paste your resume and a job description to unlock the analysis." : undefined}
           />
         }
         tips={
@@ -188,7 +218,7 @@ export default function AtsExtractorPage() {
                       />
                     </svg>
                   }
-                  label="Your data isn't stored"
+                  label="Not saved to your account"
                 />
               )}
               <Tip
@@ -220,6 +250,14 @@ export default function AtsExtractorPage() {
           result ? (
             <ResultPanel
               job={result.job}
+              trackerProps={{
+                resumeId: (result as { resumeId?: string | null }).resumeId ?? null,
+                generationId: (result as { generationId?: string | null }).generationId ?? null,
+                jobDescription,
+                title: "ATS analysis",
+                company: result.job?.companyName,
+                role: result.job?.jobTitle,
+              }}
               footer={
                 <>
                   <p className="text-xs text-gray-400">

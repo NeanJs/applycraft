@@ -1,8 +1,53 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
+  --background: #f3efe6;
+  --foreground: #1c1e25;
+  --surface: #ffffff;
+  --muted: #737373;
+  --line: #e5e5e5;
+  --brand-cobalt: #2857ec;
+  --brand-cobalt-hover: #2148c7;
+  --brand-ink: #1c1e25;
+  --brand-warm-white: #f3efe6;
+  --brand-soft-cobalt: #eef2ff;
+  --success: #16836a;
+  --warning: #a66012;
+  --error: #c43d3d;
+  --radius-control: 0.625rem;
+  --radius-card: 1rem;
+  --radius-panel: 1.25rem;
+  --shadow-card: 0 8px 24px -20px rgb(28 30 37 / 0.32);
+  --content-width: 76rem;
+  --transition-standard: 160ms ease;
+
+  /* Compatibility aliases for existing components during the staged migration. */
+  --brand-navy: var(--brand-ink);
+  --brand-blue: var(--brand-cobalt);
+  --brand-orange: var(--brand-cobalt);
+  --brand-orange-strong: var(--brand-cobalt-hover);
+  --brand-aqua: var(--success);
+  --accent: var(--brand-cobalt);
+  --accent-strong: var(--brand-cobalt-hover);
+  --sky: var(--brand-cobalt);
+  --mint: var(--success);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #121419;
+  --foreground: #f3efe6;
+  --surface: #1c1e25;
+  --muted: #a1a4ac;
+  --line: #343840;
+  --brand-ink: #f3efe6;
+  --brand-warm-white: #121419;
+  --brand-soft-cobalt: #202b4a;
+  --success: #42b89d;
+  --warning: #f2b45d;
+  --error: #ff7676;
+  --shadow-card: 0 12px 32px -20px rgb(0 0 0 / 0.8);
 }
 
 @theme inline {
@@ -12,21 +57,188 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground: #0a0a0a;
-    --background: #ededed;
-  }
-}
 html {
-  scroll-behavior: smooth !important;
+  scroll-behavior: smooth;
 }
+
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), "Segoe UI", sans-serif;
   margin: 0;
   padding: 0;
+}
+
+html[data-theme="dark"] .bg-white {
+  background-color: var(--surface);
+}
+
+html[data-theme="dark"] .bg-gray-50,
+html[data-theme="dark"] .bg-zinc-50 {
+  background-color: color-mix(in srgb, var(--surface) 74%, var(--background));
+}
+
+html[data-theme="dark"] .bg-gray-100,
+html[data-theme="dark"] .bg-zinc-100 {
+  background-color: var(--brand-warm-white);
+}
+
+html[data-theme="dark"] .border-gray-100,
+html[data-theme="dark"] .border-gray-200,
+html[data-theme="dark"] .border-gray-300,
+html[data-theme="dark"] .border-zinc-100,
+html[data-theme="dark"] .border-zinc-200,
+html[data-theme="dark"] .border-zinc-300 {
+  border-color: var(--line);
+}
+
+html[data-theme="dark"] .text-gray-900,
+html[data-theme="dark"] .text-zinc-900,
+html[data-theme="dark"] .text-gray-800,
+html[data-theme="dark"] .text-zinc-800,
+html[data-theme="dark"] .text-gray-700,
+html[data-theme="dark"] .text-zinc-700,
+html[data-theme="dark"] .text-gray-600,
+html[data-theme="dark"] .text-zinc-600 {
+  color: var(--foreground);
+}
+
+html[data-theme="dark"] .text-gray-500,
+html[data-theme="dark"] .text-zinc-500,
+html[data-theme="dark"] .text-gray-400,
+html[data-theme="dark"] .text-zinc-400,
+html[data-theme="dark"] .text-gray-300,
+html[data-theme="dark"] .text-zinc-300 {
+  color: var(--muted);
+}
+
+html[data-theme="dark"] [data-color-theme="light"] {
+  color-scheme: light;
+  --background: #ffffff;
+  --foreground: #1c1e25;
+  --surface: #ffffff;
+  --muted: #737373;
+  --line: #e5e5e5;
+  --brand-ink: #1c1e25;
+  --brand-warm-white: #f3efe6;
+}
+
+html[data-theme="dark"] [data-color-theme="light"] .bg-white {
+  background-color: #ffffff;
+}
+
+html[data-theme="dark"] [data-color-theme="light"] .bg-gray-100 {
+  background-color: #f3f4f6;
+}
+
+html[data-theme="dark"] [data-color-theme="light"] .text-gray-900 {
+  color: #111827;
+}
+
+html[data-theme="dark"] [data-color-theme="light"] .text-gray-800 {
+  color: #1f2937;
+}
+
+html[data-theme="dark"] [data-color-theme="light"] .text-gray-700 {
+  color: #374151;
+}
+
+html[data-theme="dark"] [data-color-theme="light"] .text-gray-600 {
+  color: #4b5563;
+}
+
+html[data-theme="dark"] [data-color-theme="light"] .text-gray-500 {
+  color: #6b7280;
+}
+
+html[data-theme="dark"] [data-color-theme="light"] .text-gray-400 {
+  color: #9ca3af;
+}
+
+html[data-theme="dark"] [data-color-theme="light"] .border-gray-400 {
+  border-color: #9ca3af;
+}
+
+:focus-visible {
+  outline: 3px solid var(--brand-cobalt);
+  outline-offset: 3px;
+}
+
+@keyframes loading-progress-sweep {
+  from {
+    transform: translateX(-110%);
+  }
+  to {
+    transform: translateX(320%);
+  }
+}
+
+.loading-progress-indicator {
+  animation: loading-progress-sweep 1.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-progress-indicator {
+    animation: none;
+    transform: translateX(100%);
+  }
+}
+
+@layer utilities {
+  .brand-shell {
+    background: var(--background);
+  }
+
+  .brand-mesh {
+    background: var(--surface);
+  }
+
+  .brand-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-card);
+  }
+
+  .brand-pill {
+    background: var(--brand-soft-cobalt);
+    border: 1px solid color-mix(in srgb, var(--brand-cobalt) 18%, var(--surface));
+    color: var(--brand-cobalt);
+  }
+
+  .brand-button-primary {
+    background: var(--brand-cobalt);
+    color: #fff;
+    border: 1px solid var(--brand-cobalt);
+    transition: background-color var(--transition-standard),
+      border-color var(--transition-standard);
+  }
+
+  .brand-button-primary:hover {
+    background: var(--brand-cobalt-hover);
+    border-color: var(--brand-cobalt-hover);
+  }
+
+  .brand-button-ghost {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    color: var(--brand-ink);
+    transition: background-color var(--transition-standard),
+      border-color var(--transition-standard);
+  }
+
+  .brand-button-ghost:hover {
+    background: var(--brand-soft-cobalt);
+    border-color: color-mix(in srgb, var(--brand-cobalt) 35%, var(--surface));
+  }
+
+  .brand-heading {
+    letter-spacing: -0.03em;
+    color: var(--brand-ink);
+  }
+
+  .brand-highlight {
+    color: var(--brand-cobalt);
+  }
 }
 
 /*
@@ -51,6 +263,8 @@ body {
     }
   }
   body {
+    background: #ffffff;
+    color: #1c1e25;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }

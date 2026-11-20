@@ -9,7 +9,20 @@ function buildTitle(fallback: string, job?: JobMetadata) {
   if (job?.jobTitle) {
     return `${job.jobTitle} Resume`;
   }
+  if (job?.companyName) {
+    return `Resume for ${job.companyName}`;
+  }
   return fallback;
+}
+
+export function getResumeDisplayTitle(
+  title: string | null | undefined,
+  job?: Pick<JobMetadata, "jobTitle" | "companyName"> | null,
+) {
+  if (title && !["Resume Optimization", "Untitled Resume"].includes(title)) {
+    return title;
+  }
+  return buildTitle("Tailored Resume", job ?? undefined);
 }
 
 export const getGenerationMeta = (mode: TailorMode, job?: JobMetadata) => {

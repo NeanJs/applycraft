@@ -1,4 +1,5 @@
 import { JsonValue } from "@prisma/client/runtime/library";
+import type { JobRequirement } from "../lib/ai/quality";
 
 export interface WorkExperience {
   company: string;
@@ -55,6 +56,10 @@ export interface ATSBreakdown {
 
 export interface ResponseData {
   jobType: JobType;
+  job?: {
+    jobTitle: string;
+    companyName: string;
+  };
 
   atsBefore: number;
   atsAfter: number;
@@ -62,14 +67,20 @@ export interface ResponseData {
   atsImprovement?: number;
 
   atsBreakdown?: ATSBreakdown | null;
+  jobAnalysis?: {
+    requirements: JobRequirement[];
+  };
 
   optimizedResume: ResumeData;
   missingKeywords: string[];
   coverLetter: string;
+  coverLetterPending?: boolean;
+  cacheHit?: boolean;
 
   changesMade?: string[];
 
   resumeId: string | null;
+  generationId?: string | null;
   saved: boolean;
   promptSignup: boolean;
 
@@ -138,3 +149,29 @@ export function parseATSBreakdown(
 }
 
 export type Plan = "anonymous" | "free" | "pro";
+
+type Status = "SAVED" | "APPLIED" | "INTERVIEW" | "OFFER" | "REJECTED";
+
+export interface JobApplication {
+  id: string;
+
+  company?: string;
+  role?: string;
+
+  jobUrl?: string;
+  jobDescription?: string;
+
+  status: Status;
+
+  resumeVersionId?: string;
+  resumeVersion?: {
+    id: string;
+    title: string;
+  };
+
+  notes?: string;
+
+  createdAt: string;
+  updatedAt: string;
+  appliedAt?: string;
+}

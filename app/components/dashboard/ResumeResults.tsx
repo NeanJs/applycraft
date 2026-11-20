@@ -8,6 +8,7 @@ import { useState } from "react";
 import ResumeTemplate from "@/app/components/templates/ResumeTemplate";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import JobRequirementsList from "@/app/components/ats/JobRequirementsList";
 
 // ── Constants ─────────────────────────────────────────────────────────────
 
@@ -33,19 +34,19 @@ const BREAKDOWN_META: Record<
 > = {
   keywordMatch: {
     label: "Keyword match",
-    description: "Required skills and terms found in your resume",
+    description: "Requirement coverage; required terms count twice",
   },
   structure: {
     label: "Structure",
-    description: "Section order, formatting, and parsability",
+    description: "Presence of contact, summary, skills, experience, and education",
   },
   readability: {
     label: "Readability",
-    description: "Clarity and conciseness of your bullet points",
+    description: "Share of bullets within the length guideline",
   },
   roleMatch: {
     label: "Role match",
-    description: "Alignment between your experience and the role level",
+    description: "Coverage of responsibilities, experience, and seniority",
   },
 };
 
@@ -97,10 +98,12 @@ export default function ResumeResults({
   result,
   copied,
   resumeID,
+  coverLetterLoading = false,
 }: {
   result: ResponseData;
   copied: boolean;
   resumeID?: string;
+  coverLetterLoading?: boolean;
 }) {
   const [localCopied, setLocalCopied] = useState(false);
 
@@ -116,7 +119,6 @@ export default function ResumeResults({
   const atsBefore = result.atsBefore ?? 0;
   const atsAfter = result.atsAfter ?? 0;
   const improvement = atsAfter - atsBefore;
-  const confidenceScore = result.confidenceScore ?? 0;
   const isPreview = false;
   const changesMade = result.changesMade ?? [];
   const breakdown = result.atsBreakdown;
@@ -128,7 +130,7 @@ export default function ResumeResults({
 
   return (
     <div className="mt-10 rounded-2xl border border-gray-200 bg-white overflow-hidden shadow-sm">
-      {/* ── Role type + ATS scores ── */}
+      {/* ── Role type + estimated match ── */}
       <section className="px-8 py-8 border-b border-gray-100 bg-white">
         {/* Job type pill */}
         <div className="flex items-center gap-2 mb-6">
@@ -142,10 +144,14 @@ export default function ResumeResults({
             {jobTypeInfo.description}
           </span>
         </div>
+        <p className="mb-5 text-xs leading-relaxed text-gray-500">
+          This is a draft. Check every role, date, skill, and rewritten claim
+          against your original resume before you export or apply.
+        </p>
 
-        {/* Before / after / improvement / confidence */}
+        {/* Before / after / change */}
         <p className="text-[10px] uppercase tracking-wider text-gray-400 mb-4">
-          ATS improvement
+          Estimated job match
         </p>
         <div className="flex items-center gap-10 mb-4">
           <div className="text-center">
@@ -159,15 +165,10 @@ export default function ResumeResults({
             </p>
           </div>
           <div className="text-center">
-            <p className="text-xs text-gray-400 mb-0.5">Improvement</p>
+            <p className="text-xs text-gray-400 mb-0.5">Change</p>
             <p className="text-2xl font-semibold text-gray-900">
-              +{improvement}%
-            </p>
-          </div>
-          <div className="text-center">
-            <p className="text-xs text-gray-400 mb-0.5">Confidence</p>
-            <p className="text-2xl font-semibold text-emerald-600">
-              {Math.round(confidenceScore * 100)}%
+              {improvement > 0 ? "+" : ""}
+              {improvement}%
             </p>
           </div>
         </div>
@@ -179,6 +180,14 @@ export default function ResumeResults({
             style={{ width: `${atsAfter}%` }}
           />
         </div>
+
+        <p className="mt-4 text-xs leading-relaxed text-gray-500">
+          This is a repeatable estimate, not a score from a specific ATS. It
+          weights required requirements twice as much as preferred ones, then
+          combines keyword match (40%), role match (30%), section structure
+          (15%), and bullet length (15%). It cannot predict an ATS decision or
+          hiring outcome.
+        </p>
 
         {/* ATS breakdown, only rendered when present */}
         {breakdown && (
@@ -204,6 +213,12 @@ export default function ResumeResults({
           </>
         )}
       </section>
+
+      {result.jobAnalysis?.requirements && (
+        <section className="border-b border-gray-100 bg-white px-8 py-7">
+          <JobRequirementsList requirements={result.jobAnalysis.requirements} />
+        </section>
+      )}
 
       {/* ── Optimized resume ── */}
       {!isPreview && (
@@ -312,7 +327,17 @@ export default function ResumeResults({
           <h2 className="text-sm font-semibold mb-4 text-gray-600">
             Cover Letter
           </h2>
-          <CoverLetter text={result.coverLetter} />
+          {coverLetterLoading ? (
+            <div className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-xs text-gray-500">
+              Generating cover letter in the background...
+            </div>
+          ) : result.coverLetter?.trim() ? (
+            <CoverLetter text={result.coverLetter} />
+          ) : (
+            <div className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-xs text-gray-500">
+              Cover letter not generated yet.
+            </div>
+          )}
         </section>
       )}
 
@@ -322,7 +347,7 @@ export default function ResumeResults({
           <div className="max-w-lg mx-auto text-center">
             <h2 className="text-lg font-semibold">Your resume is ready</h2>
             <p className="text-sm text-gray-500 mt-2 leading-relaxed">
-              We improved your ATS score from{" "}
+              The estimated job match changed from{" "}
               <span className="font-medium text-red-500">{atsBefore}%</span> to{" "}
               <span className="font-medium text-emerald-600">{atsAfter}%</span>.
               Create a free account to view your optimized resume, cover letter,

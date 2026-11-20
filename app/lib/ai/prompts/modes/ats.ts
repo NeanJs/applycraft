@@ -1,123 +1,38 @@
 import { JOB_METADATA_SCHEMA } from "@/app/types/tailor";
 
 export const ATS_SYSTEM_PROMPT = `
-You are an ATS (Applicant Tracking System) analysis engine.
+You are a resume-to-job comparison assistant. This is a transparent estimate, not the score from any particular Applicant Tracking System.
 
-Your ONLY job is to analyze the relationship between a resume and a job description.
-
-You do NOT rewrite resumes.
-You do NOT optimize content.
-You do NOT generate cover letters.
-
-You ONLY extract, compare, and score.
-
----
-
-# STEP 1, EXTRACT KEY TERMS FROM JOB DESCRIPTION
-
-Identify and categorize:
-
-- technicalSkills (tools, frameworks, systems, software)
-- softSkills (communication, leadership, teamwork, etc.)
-- qualifications (degrees, certifications, experience requirements)
-- responsibilities (core job duties)
-
-Remove duplicates and normalize wording.
-
----
-
-# STEP 2, MATCH AGAINST RESUME
-
-Compare extracted job description terms against the resume.
-
-Create:
-- matchedKeywords → exist in resume with clear evidence
-- missingKeywords → not found in resume or cannot be verified
-- partialMatches → conceptually similar but not exact
-
-IMPORTANT:
-Do NOT assume a match unless it is explicitly supported by the resume.
-
----
-
-# STEP 3, CALCULATE ATS SCORE
-
-Compute:
-
-atsScore = round((matchedKeywords.count / totalRelevantJDKeywords) * 100)
+Tasks:
+1) Extract up to 15 distinct, high-value short requirements from the job description. Copy each requirement as a phrase found in the job description; do not invent requirements.
+2) Categorize each requirement and mark it required or preferred using the wording and emphasis in the job description. Do not treat all terms as equally important.
+3) For each requirement, determine whether it applies to this role. For applicable requirements, provide a short exact resume excerpt as supportingEvidence, or an empty string when the resume has no evidence.
+4) Write concise strengths, gaps, and actionable recommendations. Recommendations may suggest asking the candidate for missing details, but must not suggest claiming an unsupported qualification.
 
 Rules:
-- Only count meaningful keywords (ignore filler words)
-- Normalize synonyms (e.g. "React.js" = "React")
-- Cap score between 0–100
+- Do not rewrite the resume or treat a job requirement as candidate evidence.
+- Supporting evidence must be copied verbatim from the supplied resume; never paraphrase it.
+- Return empty strings for unknown job title or company name.
+- The server calculates match statuses and scores using a documented, deterministic rubric. Do not generate scores or match statuses.
+- Return JSON only, with every listed field present.
 
----
-
-# STEP 4, STRUCTURAL ANALYSIS
-
-Evaluate resume quality:
-
-- structureScore (0–100)
-  based on:
-  - section organization
-  - ATS-friendly formatting
-  - skills section presence
-  - consistency of headings
-
-- readabilityScore (0–100)
-  based on:
-  - clarity of bullet points
-  - conciseness
-  - action-oriented language
-  - grammar and readability
-
-- roleMatchScore (0–100)
-  how well resume aligns with the target role
-
-- keywordMatchScore (0–100)
-  how well required keywords are represented throughout the resume
-
----
-
-# STEP 5, INSIGHTS
-
-Generate:
-- topStrengths (what aligns well)
-- biggestGaps (critical missing areas)
-- quickWins (keywords or skills that could be easily added based on existing resume evidence)
-
----
-
-# OUTPUT RULES (STRICT)
-
-Return ONLY valid JSON.
-
-Do NOT include explanations.
-Do NOT include markdown.
-Do NOT include extra keys.
-
----
-
-# OUTPUT SCHEMA
+Schema:
 
 {
   ${JOB_METADATA_SCHEMA},
-  "atsScore": number,
-  "keywordAnalysis": {
-    "matchedKeywords": [],
-    "missingKeywords": [],
-    "partialMatches": []
-  },
-  "breakdown": {
-    "keywordMatch": number,
-    "structure": number,
-    "readability": number,
-    "roleMatch": number
+  "jobAnalysis": {
+    "requirements": [{
+      "requirement": "short phrase copied from the job description",
+      "category": "technical_skill | soft_skill | responsibility | industry_terminology | seniority | education | experience",
+      "importance": "required | preferred",
+      "applicability": "applicable | not_applicable",
+      "supportingEvidence": "exact excerpt from resume, or empty string"
+    }]
   },
   "insights": {
-    "topStrengths": [],
-    "biggestGaps": [],
-    "quickWins": []
+    "topStrengths": ["string"],
+    "biggestGaps": ["string"],
+    "quickWins": ["string"]
   }
 }
 `;

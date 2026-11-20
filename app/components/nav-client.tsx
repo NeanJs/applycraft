@@ -1,10 +1,15 @@
-// components/navbar-client.tsx
 "use client";
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import ThemeToggle from "./ThemeToggle";
 
 const tools = [
+  {
+    href: "/job-tracker",
+    title: "Job Tracker",
+    description: "Track every application and status in one place",
+  },
   {
     href: "/resume-tailor",
     title: "Resume Tailor",
@@ -34,108 +39,111 @@ const tools = [
 
 export function NavPublic() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const guestTrackerHref = "/sign-up?redirect_url=/tracker";
 
   return (
     <>
-      {/* Desktop */}
-      <nav className="hidden sm:flex items-center gap-6">
-        <a
-          href="#features"
-          className="text-sm text-gray-500 hover:text-gray-900 transition"
+      <nav className="hidden items-center gap-5 sm:flex">
+        <Link
+          href="/resume-tailor"
+          className="text-sm font-medium text-[var(--muted)] transition-colors hover:text-[var(--brand-cobalt)]"
         >
-          Features
-        </a>
+          Start Here
+        </Link>
 
-        <a
-          href="#how-it-works"
-          className="text-sm text-gray-500 hover:text-gray-900 transition"
-        >
-          How It Works
-        </a>
-        <a
-          href="#faqs"
-          className="text-sm text-gray-500 hover:text-gray-900 transition"
-        >
-          FAQs
-        </a>
         <ToolsDropdown />
+
+        <ThemeToggle />
 
         <Link
           href="/sign-in"
-          className="text-sm text-gray-500 hover:text-gray-900 transition"
+          className="text-sm text-[var(--muted)] transition-colors hover:text-[var(--brand-cobalt)]"
         >
           Sign In
         </Link>
 
         <Link
           href="/sign-up"
-          className="bg-gray-900 text-white px-3.5 py-1.5 rounded-lg text-sm font-medium hover:bg-gray-700 transition"
+          className="brand-button-primary rounded-lg px-4 py-2 text-sm font-semibold transition-transform hover:scale-[1.02]"
         >
-          Get Started →
+          Get Started
         </Link>
       </nav>
 
-      {/* Mobile hamburger */}
       <button
-        className="sm:hidden p-1.5 rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition"
+        className="rounded-lg p-2 text-[var(--muted)] transition-colors hover:bg-[var(--brand-soft-cobalt)] hover:text-[var(--brand-ink)] sm:hidden"
         onClick={() => setMenuOpen((prev) => !prev)}
         aria-label="Toggle menu"
+        aria-expanded={menuOpen}
+        aria-controls="mobile-main-nav"
       >
-        <span className="block w-5 h-0.5 bg-current mb-1" />
-        <span className="block w-5 h-0.5 bg-current mb-1" />
-        <span className="block w-5 h-0.5 bg-current" />
+        <span className="mb-1 block h-0.5 w-5 bg-current" />
+        <span className="mb-1 block h-0.5 w-5 bg-current" />
+        <span className="block h-0.5 w-5 bg-current" />
       </button>
 
-      {/* Mobile */}
       {menuOpen && (
-        <div className="absolute top-14 left-0 right-0 bg-white border-b border-gray-200 px-6 py-4 flex flex-col gap-4 sm:hidden">
-          <a
-            href="#features"
-            onClick={() => setMenuOpen(false)}
-            className="text-sm text-gray-700"
-          >
-            Features
-          </a>
+        <div
+          id="mobile-main-nav"
+          className="absolute left-0 right-0 top-16 z-40 flex flex-col gap-4 border-b border-[var(--line)] bg-white/95 px-5 py-5 shadow-lg backdrop-blur sm:hidden"
+        >
+          <div className="rounded-xl border border-[var(--line)] bg-white px-3 py-3">
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-[var(--muted)]">
+              Start
+            </p>
+            <Link
+              href="/resume-tailor"
+              onClick={() => setMenuOpen(false)}
+              className="block text-sm font-medium text-[var(--brand-ink)]"
+            >
+              Resume Tailor
+            </Link>
+          </div>
 
-          <a
-            href="#how-it-works"
-            onClick={() => setMenuOpen(false)}
-            className="text-sm text-gray-700"
-          >
-            How It Works
-          </a>
-
-          <div className="flex flex-col gap-3">
-            <p className="text-xs uppercase tracking-wider text-gray-400">
+          <div className="rounded-xl border border-[var(--line)] bg-white px-3 py-3">
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-[var(--muted)]">
               Tools
             </p>
-
-            {tools.map((tool) => (
+            <div className="space-y-1.5">
+              {tools.map((tool) => (
+                <Link
+                  key={tool.href}
+                  href={tool.href}
+                  onClick={() => setMenuOpen(false)}
+                  className="block rounded-md px-1 py-1 text-sm text-[var(--brand-ink)] hover:text-[var(--brand-cobalt)]"
+                >
+                  {tool.title}
+                </Link>
+              ))}
               <Link
-                key={tool.href}
-                href={tool.href}
+                href={guestTrackerHref}
                 onClick={() => setMenuOpen(false)}
-                className="text-sm text-gray-700"
+                className="block rounded-md px-1 py-1 text-sm text-[var(--brand-ink)] hover:text-[var(--brand-cobalt)]"
               >
-                {tool.title}
+                Job Tracker
               </Link>
-            ))}
+            </div>
           </div>
 
           <Link
             href="/sign-in"
             onClick={() => setMenuOpen(false)}
-            className="text-sm text-gray-700"
+            className="text-sm font-medium text-[var(--brand-ink)]"
           >
             Sign In
           </Link>
 
+          <div className="flex items-center justify-between gap-3 border-t border-[var(--line)] pt-4">
+            <span className="text-sm text-[var(--muted)]">Appearance</span>
+            <ThemeToggle />
+          </div>
+
           <Link
             href="/sign-up"
             onClick={() => setMenuOpen(false)}
-            className="bg-gray-900 text-white px-3.5 py-2 rounded-lg text-sm font-medium text-center"
+            className="brand-button-primary rounded-lg px-3.5 py-2 text-center text-sm font-semibold"
           >
-            Get Started →
+            Get Started
           </Link>
         </div>
       )}
@@ -143,16 +151,29 @@ export function NavPublic() {
   );
 }
 
-export function NavAuth() {
+export function NavAuth({ canSeeAnalytics = false }: { canSeeAnalytics?: boolean }) {
   return (
     <nav className="flex items-center gap-6">
       <Link
         href="/dashboard"
-        className="text-sm text-gray-500 hover:text-gray-900 transition"
+        className="text-sm text-[var(--muted)] transition-colors hover:text-[var(--brand-cobalt)]"
       >
         Dashboard
       </Link>
-
+      <Link
+        href="/tracker"
+        className="text-sm text-[var(--muted)] transition-colors hover:text-[var(--brand-cobalt)]"
+      >
+        Job Tracker
+      </Link>
+      {canSeeAnalytics && (
+        <Link
+          href="/analytics"
+          className="text-sm text-[var(--muted)] transition-colors hover:text-[var(--brand-cobalt)]"
+        >
+          Analytics
+        </Link>
+      )}
       <ToolsDropdown />
     </nav>
   );
@@ -180,7 +201,9 @@ function ToolsDropdown() {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen((prev) => !prev)}
-        className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-900 transition"
+        className="flex items-center gap-1 text-sm text-[var(--muted)] transition-colors hover:text-[var(--brand-cobalt)]"
+        aria-expanded={open}
+        aria-haspopup="menu"
       >
         Tools
         <svg
@@ -196,13 +219,13 @@ function ToolsDropdown() {
         </svg>
       </button>
 
-      {open && (
-        <div className="absolute top-full left-0 mt-5 w-72 rounded-xl border border-gray-200 bg-white shadow-lg p-2 z-50">
-          {tools.map((tool) => (
-            <DropdownItem key={tool.href} {...tool} />
-          ))}
-        </div>
-      )}
+      <div
+        className={`absolute left-0 top-full z-50 mt-3 w-72 rounded-xl border border-[var(--line)] bg-white p-2 shadow-xl ${open ? "block" : "hidden"}`}
+      >
+        {tools.map((tool) => (
+          <DropdownItem key={tool.href} {...tool} />
+        ))}
+      </div>
     </div>
   );
 }
@@ -219,11 +242,11 @@ function DropdownItem({
   return (
     <Link
       href={href}
-      className="block rounded-lg px-3 py-2 hover:bg-gray-50 transition"
+      className="block rounded-lg px-3 py-2 transition-colors hover:bg-[var(--brand-soft-cobalt)]"
     >
-      <div className="text-sm font-medium text-gray-900">{title}</div>
+      <div className="text-sm font-medium text-[var(--brand-ink)]">{title}</div>
 
-      <div className="text-xs text-gray-500 mt-0.5">{description}</div>
+      <div className="mt-0.5 text-xs text-[var(--muted)]">{description}</div>
     </Link>
   );
 }

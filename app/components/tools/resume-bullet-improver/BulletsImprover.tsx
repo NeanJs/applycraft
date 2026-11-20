@@ -24,6 +24,11 @@ import SignUpCTA from "@/app/components/misc/SignUpCTA";
 import { TAILOR_MODES } from "@/app/lib/ai/prompts/modes/modes";
 import { ExperienceOptimizerResults } from "@/app/types/tailor";
 import AnonStickyCTA from "@/app/components/misc/StickyCTA";
+import QuickStartSamples from "@/app/components/tools/QuickStartSamples";
+import {
+  SAMPLE_JOB_DESCRIPTION_TEXT,
+  SAMPLE_RESUME_TEXT,
+} from "@/app/constant/toolSamples";
 
 // ── Types ─────────────────────────────────────────────────────────────────
 
@@ -98,16 +103,33 @@ export default function ImprovedBulletsPage() {
   // Step indicator
   const hasResume = resume.trim().length > 0;
   const hasJD = jobDescription.trim().length > 0;
+  const hasAnyInput = hasResume || hasJD;
   const step1: StepStatus = hasResume ? "done" : "active";
   const step2: StepStatus = result ? "done" : loading ? "active" : "pending";
 
   const showStickyCTA = !!result && result.promptSignUp && !dismissedCTA;
 
+  function handleTrySampleData() {
+    setResume(SAMPLE_RESUME_TEXT);
+    setShowJD(true);
+    setJobDescription(SAMPLE_JOB_DESCRIPTION_TEXT);
+    setShowSignupCTA(false);
+    setDismissedCTA(false);
+  }
+
+  function handleClearInputs() {
+    setResume("");
+    setJobDescription("");
+    setShowJD(false);
+    setShowSignupCTA(false);
+    setDismissedCTA(false);
+  }
+
   return (
     <ToolPageShell
       eyebrow="Improved Bullets"
       title="Make every bullet count."
-      description="Paste your resume and get stronger, metrics-driven bullet points that grab a recruiter's attention, optionally tailored to a specific job."
+      description="Paste your resume and get clearer bullet point drafts that keep your supplied facts as the source, optionally tailored to a specific job."
       steps={[
         { label: "Paste resume", status: step1 },
         { label: "Get improved bullets", status: step2 },
@@ -121,6 +143,15 @@ export default function ImprovedBulletsPage() {
         ) : undefined
       }
     >
+      {!loading && !result && (
+        <QuickStartSamples
+          onTrySample={handleTrySampleData}
+          onClear={handleClearInputs}
+          hasInput={hasAnyInput}
+          loading={uploadingPdf}
+        />
+      )}
+
       <ToolForm
         inputs={[
           <ResumeInput
@@ -150,7 +181,7 @@ export default function ImprovedBulletsPage() {
             <button
               key="add-jd"
               onClick={() => setShowJD(true)}
-              className="flex items-center justify-center gap-2 h-full min-h-[200px] border border-dashed border-gray-200 rounded-2xl text-sm text-gray-400 hover:border-gray-300 hover:text-gray-600 transition-colors bg-gray-50/50"
+              className="flex items-center justify-center gap-2 h-full min-h-50 border border-dashed border-gray-200 rounded-2xl text-sm text-gray-400 hover:border-gray-300 hover:text-gray-600 transition-colors bg-gray-50/50"
             >
               <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
                 <path
@@ -171,6 +202,7 @@ export default function ImprovedBulletsPage() {
             loading={loading}
             label="Improve bullets →"
             loadingLabel="Rewriting…"
+            hint={!hasResume ? "Paste your resume to unlock improved bullets." : undefined}
           />
         }
         tips={
@@ -217,7 +249,7 @@ export default function ImprovedBulletsPage() {
                       />
                     </svg>
                   }
-                  label="Your data isn't stored"
+                  label="Not saved to your account"
                 />
               )}
               <Tip
@@ -266,6 +298,14 @@ export default function ImprovedBulletsPage() {
           result ? (
             <ResultPanel
               job={result.job ?? undefined}
+              trackerProps={{
+                resumeId: (result as { resumeId?: string | null }).resumeId ?? null,
+                generationId: (result as { generationId?: string | null }).generationId ?? null,
+                jobDescription: showJD ? jobDescription : undefined,
+                title: "Bullet improvement",
+                company: result.job?.companyName,
+                role: result.job?.jobTitle,
+              }}
               footer={
                 <>
                   <p className="text-xs text-gray-400">

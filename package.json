@@ -3,12 +3,20 @@
   "version": "1.2.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint",
-    "postinstall": "prisma generate"
-  },
+  "dev": "next dev",
+  "build": "next build",
+  "start": "next start",
+  "lint": "eslint",
+  "test:ai-quality": "node --test app/lib/ai/quality.test.mjs",
+  "test:resume-export": "node --test app/services/services.test.mjs",
+  "test:tracker-validation": "node --test app/lib/tracker/validation.test.mjs",
+  "check:types": "tsc --noEmit",
+  "check:lint": "npm run lint",
+  "check:ai": "npm run test:ai-quality",
+  "check": "npm run check:types && npm run check:lint && npm run check:ai && npm run test:resume-export && npm run test:tracker-validation",
+  "check:full": "npm run check && npm run build",
+  "postinstall": "prisma generate"
+},
   "dependencies": {
     "@anthropic-ai/sdk": "^0.100.1",
     "@clerk/nextjs": "^7.4.2",
@@ -25,6 +33,7 @@
     "jsonwebtoken": "^9.0.3",
     "jspdf": "^4.2.1",
     "lucide-react": "^1.17.0",
+    "motion": "^12.42.2",
     "next": "16.2.6",
     "openai": "^6.39.1",
     "pdf-parse": "^2.2.4",
@@ -35,7 +44,8 @@
     "react-hot-toast": "^2.6.0",
     "stripe": "^22.2.0",
     "svix": "^1.96.0",
-    "unpdf": "^1.6.2"
+    "unpdf": "^1.6.2",
+    "zustand": "^5.0.14"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

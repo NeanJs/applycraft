@@ -18,27 +18,27 @@ export type TailorMode = (typeof TAILOR_MODES)[keyof typeof TAILOR_MODES];
 export const MODE_CONFIG = {
   full_optimizer: {
     prompt: FULL_SYSTEM_PROMPT,
-    maxTokens: 3000,
+    maxTokens: 6000,
   },
 
   ats_only: {
     prompt: ATS_SYSTEM_PROMPT,
-    maxTokens: 1500,
+    maxTokens: 2200,
   },
 
   summary_only: {
     prompt: SUMMARY_SYSTEM_PROMPT,
-    maxTokens: 1200,
+    maxTokens: 700,
   },
 
   bullet_improver: {
     prompt: BULLET_SYSTEM_PROMPT,
-    maxTokens: 1200,
+    maxTokens: 1800,
   },
 
   cover_letter_only: {
     prompt: COVER_LETTER_SYSTEM_PROMPT,
-    maxTokens: 1800,
+    maxTokens: 1400,
   },
 } as const satisfies Record<
   TailorMode,

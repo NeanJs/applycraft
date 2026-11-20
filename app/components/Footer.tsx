@@ -1,67 +1,151 @@
 import Image from "next/image";
 import Link from "next/link";
-import Logo from "@/public/logo.ico";
-export default function Footer() {
+import { auth, currentUser } from "@clerk/nextjs/server";
+
+import { canAccessAnalytics } from "@/app/lib/internal-access";
+
+export default async function Footer() {
+  const { userId } = await auth();
+  const user = userId ? await currentUser() : null;
+  const canSeeAnalytics = user
+    ? canAccessAnalytics({
+        userId: user.id,
+        emails: user.emailAddresses.map((email) => email.emailAddress),
+      })
+    : false;
+
   return (
-    <footer className="border-t border-gray-100 bg-white">
-      <div className="max-w-5xl mx-auto px-6 py-4 flex flex-col items-center gap-3">
-        {/* Top row: logo | links | copyright, links truly centered via grid */}
-        <div className="w-full grid grid-cols-1 sm:grid-cols-3 items-center gap-3">
-          <div className="flex items-center gap-2 justify-center sm:justify-start">
+    <footer className="mt-12 border-t border-[var(--line)] bg-[var(--brand-warm-white)]">
+      <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
+          <div className="flex items-start gap-3">
             <Image
-              src={Logo}
-              className="w-10"
-              alt="logo"
+              src="./logo.ico"
+              className="h-9 w-9 rounded-lg border border-[var(--line)] bg-white p-1"
+              alt="ApplyCraft"
               width={100}
               height={100}
+              unoptimized
             />
-            <span className="text-sm tracking-tight text-gray-700">
-              <span>
+            <div className="text-sm tracking-tight text-[var(--brand-ink)]">
+              <div>
                 <strong>Apply</strong>Craft
-              </span>
-              <p className="text-gray-500">
-                Craft applications that get noticed.
+              </div>
+              <p className="mt-1 max-w-xs text-(--muted)">
+                One workspace for your job search.
               </p>
-            </span>
+            </div>
           </div>
 
-          <div className="flex items-center justify-center gap-5">
+          <div>
+            <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">
+              Product
+            </p>
+            <div className="space-y-2">
+              <Link
+                href="/resume-tailor"
+                className="block text-sm text-[var(--muted)] transition-colors hover:text-[var(--brand-cobalt)]"
+              >
+                Resume Tailor
+              </Link>
+              <Link
+                href="/job-tracker"
+                className="block text-sm text-[var(--muted)] transition-colors hover:text-[var(--brand-cobalt)]"
+              >
+                Job Tracker
+              </Link>
+              <Link
+                href="/dashboard"
+                className="block text-sm text-[var(--muted)] transition-colors hover:text-[var(--brand-cobalt)]"
+              >
+                Dashboard
+              </Link>
+              {canSeeAnalytics && (
+                <Link
+                  href="/analytics"
+                  className="block text-sm text-[var(--muted)] transition-colors hover:text-[var(--brand-cobalt)]"
+                >
+                  Analytics
+                </Link>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">
+              Tools
+            </p>
+            <div className="space-y-2">
+              <Link
+                href="/ats-resume-checker"
+                className="block text-sm text-[var(--muted)] transition-colors hover:text-[var(--brand-cobalt)]"
+              >
+                ATS Checker
+              </Link>
+              <Link
+                href="/cover-letter-generator"
+                className="block text-sm text-[var(--muted)] transition-colors hover:text-[var(--brand-cobalt)]"
+              >
+                Cover Letter Generator
+              </Link>
+              <Link
+                href="/resume-bullet-improver"
+                className="block text-sm text-[var(--muted)] transition-colors hover:text-[var(--brand-cobalt)]"
+              >
+                Bullet Improver
+              </Link>
+              <Link
+                href="/resume-summary-generator"
+                className="block text-sm text-[var(--muted)] transition-colors hover:text-[var(--brand-cobalt)]"
+              >
+                Summary Generator
+              </Link>
+            </div>
+          </div>
+
+          <div>
+            <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">
+              Company
+            </p>
+            <div className="space-y-2">
+              <Link
+                href="/"
+                className="block text-sm text-[var(--muted)] transition-colors hover:text-[var(--brand-cobalt)]"
+              >
+                Home
+              </Link>
             <Link
-              href="/"
-              className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
-            >
-              Home
-            </Link>
-            <Link
-              href="/#faq"
-              className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+              href="/#faqs"
+              className="block text-sm text-[var(--muted)] transition-colors hover:text-[var(--brand-cobalt)]"
             >
               FAQ
             </Link>
             <a
               href="mailto:hello@applycraft.xyz"
-              className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+              className="block text-sm text-[var(--muted)] transition-colors hover:text-[var(--brand-cobalt)]"
             >
               Contact
             </a>
+            </div>
           </div>
-
-          <p className="text-xs text-gray-400 text-center sm:text-right">
-            &copy; {new Date().getFullYear()} ApplyCraft. All rights reserved.
-          </p>
         </div>
 
-        <p className="text-xs text-gray-400">
-          Crafted with ❤️ By{" "}
-          <a
-            className="text-blue-700 hover:underline"
-            href="https://nijanadhikari.com.np"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nijan Adhikari
-          </a>
-        </p>
+        <div className="mt-8 flex flex-col items-center justify-between gap-2 border-t border-[var(--line)] pt-4 sm:flex-row">
+          <p className="text-center text-xs text-[var(--muted)]">
+            &copy; {new Date().getFullYear()} ApplyCraft. All rights reserved.
+          </p>
+          <p className="text-xs text-[var(--muted)]">
+            Crafted with ❤️ By{" "}
+            <a
+              className="text-[var(--sky)] hover:underline"
+              href="https://nijanadhikari.com.np"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Nijan Adhikari
+            </a>
+          </p>
+        </div>
       </div>
     </footer>
   );

@@ -2,14 +2,20 @@ import Link from "next/link";
 import ResumeList from "@/app/components/dashboard/ResumeLists";
 import { GenerationType } from "@prisma/client";
 import ResumeInsights from "./ResumeInsights";
+import RecentActivity from "./RecentActivity";
 
 type Resume = {
   id: string;
   title: string;
+  createdAt: Date;
   updatedAt: Date;
   atsBefore: number;
   atsAfter: number;
   confidenceScore: number | null;
+  generations: {
+    jobTitle: string | null;
+    companyName: string | null;
+  }[];
 };
 type Generation = {
   id: string;
@@ -21,6 +27,7 @@ type Generation = {
 };
 export default function DashboardUI({
   resumes,
+  generations,
   firstName,
 }: {
   resumes: Resume[];
@@ -39,7 +46,7 @@ export default function DashboardUI({
     <div className="min-h-screen bg-zinc-50 text-zinc-900">
       <main className="max-w-5xl mx-auto px-6 py-12">
         {/* Header */}
-        <div className="flex items-start justify-between mb-10">
+        <div className="flex flex-wrap items-start justify-between gap-4 mb-10">
           <div>
             <p className="text-xs font-medium text-zinc-400 uppercase tracking-widest mb-2">
               Dashboard
@@ -58,28 +65,28 @@ export default function DashboardUI({
             </p>
           </div>
 
-          <Link
-            href="/resume-tailor"
-            className="
-              bg-zinc-900 
-              text-white 
-              px-4 
-              py-2.5 
-              rounded-xl 
-              text-sm 
-              font-medium
-              hover:bg-zinc-700
-              transition
-              whitespace-nowrap
-            "
-          >
-            + Tailor Resume
-          </Link>
+          <div className="flex flex-wrap items-center gap-2">
+            <Link
+              href="/resume-tailor"
+              className="bg-zinc-900 text-white px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-zinc-700 transition whitespace-nowrap"
+            >
+              + Tailor Resume
+            </Link>
+            <Link
+              href="/tracker"
+              className="rounded-xl border border-zinc-200 px-4 py-2.5 text-sm font-medium text-zinc-700 transition hover:border-zinc-400 hover:text-zinc-900"
+            >
+              Open Job Tracker
+            </Link>
+          </div>
         </div>
 
         {/* Quick Stats */}
 
         <ResumeInsights resumes={resumes} />
+
+        <RecentActivity initialItems={generations} />
+
         {/* Resume Section */}
         <section>
           <div className="flex items-center justify-between mb-5">

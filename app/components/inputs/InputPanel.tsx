@@ -27,7 +27,7 @@ export default function InputPanel({
         {badge}
       </div>
       <textarea
-        className="flex-1 min-h-[200px] px-4 py-3 text-sm text-gray-900 bg-white placeholder-gray-300 resize-none focus:outline-none leading-relaxed"
+        className="flex-1 min-h-50 px-4 py-3 text-sm text-gray-900 bg-white placeholder-gray-300 resize-none focus:outline-none leading-relaxed"
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value.slice(0, maxLength))}

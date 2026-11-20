@@ -25,6 +25,8 @@ import { SummaryResult } from "@/app/types/tailor";
 import { TAILOR_MODES } from "@/app/lib/ai/prompts/modes/modes";
 import SummaryCard from "@/app/components/tools/SummaryCard";
 import AnonStickyCTA from "@/app/components/misc/StickyCTA";
+import QuickStartSamples from "@/app/components/tools/QuickStartSamples";
+import { SAMPLE_RESUME_TEXT } from "@/app/constant/toolSamples";
 
 const LOADING_STEPS: LoadingStep[] = [
   { label: "Reading your resume", doneLabel: "parsed", doneVariant: "text" },
@@ -77,10 +79,23 @@ export default function ResumeSummaryPage() {
 
   // Step indicator
   const hasResume = resume.trim().length > 0;
+  const hasAnyInput = hasResume;
   const step1: StepStatus = hasResume ? "done" : "active";
   const step2: StepStatus = result ? "done" : loading ? "active" : "pending";
 
   const showStickyCTA = !!result && result.promptSignUp && !dismissedCTA;
+
+  function handleTrySampleData() {
+    setResume(SAMPLE_RESUME_TEXT);
+    setShowSignupCTA(false);
+    setDismissedCTA(false);
+  }
+
+  function handleClearInputs() {
+    setResume("");
+    setShowSignupCTA(false);
+    setDismissedCTA(false);
+  }
 
   return (
     <ToolPageShell
@@ -100,6 +115,15 @@ export default function ResumeSummaryPage() {
         ) : undefined
       }
     >
+      {!loading && !result && (
+        <QuickStartSamples
+          onTrySample={handleTrySampleData}
+          onClear={handleClearInputs}
+          hasInput={hasAnyInput}
+          loading={uploadingPdf}
+        />
+      )}
+
       <ToolForm
         inputs={[
           <ResumeInput
@@ -117,6 +141,7 @@ export default function ResumeSummaryPage() {
             loading={loading}
             label="Generate summary →"
             loadingLabel="Generating…"
+            hint={!hasResume ? "Paste your resume to unlock a summary." : undefined}
           />
         }
         tips={
@@ -163,7 +188,7 @@ export default function ResumeSummaryPage() {
                       />
                     </svg>
                   }
-                  label="Your data isn't stored"
+                  label="Not saved to your account"
                 />
               )}
               <Tip
@@ -195,6 +220,13 @@ export default function ResumeSummaryPage() {
         result={
           result ? (
             <ResultPanel
+              trackerProps={{
+                resumeId: (result as { resumeId?: string | null }).resumeId ?? null,
+                generationId: (result as { generationId?: string | null }).generationId ?? null,
+                title: "Resume summary",
+                company: result.job?.companyName,
+                role: result.job?.jobTitle,
+              }}
               footer={
                 <>
                   <p className="text-xs text-gray-400">

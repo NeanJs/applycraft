@@ -8,19 +8,21 @@ export async function syncUser() {
   const clerkUser = await currentUser();
   if (!clerkUser) return null;
 
-  const email = clerkUser.emailAddresses[0]?.emailAddress;
+  const primaryEmail = clerkUser.emailAddresses.find(
+    (address) => address.id === clerkUser.primaryEmailAddressId,
+  );
+  const email = primaryEmail?.emailAddress;
   if (!email) return null;
 
-  return prisma.user
-    .upsert({
-      where: { clerkId: userId },
-      update: { email },
-      create: { clerkId: userId, email },
-    })
-    .catch(async () => {
-      return prisma.user.update({
-        where: { email },
-        data: { clerkId: userId },
-      });
-    });
+  const existingEmailUser = await prisma.user.findUnique({
+    where: { email },
+    select: { clerkId: true },
+  });
+  if (existingEmailUser && existingEmailUser.clerkId !== userId) return null;
+
+  return prisma.user.upsert({
+    where: { clerkId: userId },
+    update: { email },
+    create: { clerkId: userId, email },
+  });
 }

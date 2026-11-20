@@ -1,11 +1,22 @@
 import { ResumeData } from "../types/types";
 
-const formatResumeText = (data: ResumeData): string => {
+export const formatResumeText = (data: ResumeData): string => {
   const sections: string[] = [];
+
+  const contactDetails = [
+    data.email,
+    data.phone,
+    data.location,
+    data.linkedin ? `LinkedIn: ${data.linkedin}` : "",
+    data.github ? `GitHub: ${data.github}` : "",
+    data.website ? `Website: ${data.website}` : "",
+  ]
+    .filter(Boolean)
+    .join(" | ");
 
   sections.push(`${data.name}
 ${data.title}
-${data.email} | ${data.phone} | ${data.location}`);
+${contactDetails}`);
 
   if (data.summary) {
     sections.push(`SUMMARY\n${data.summary}`);
@@ -34,7 +45,8 @@ ${exp.bullets.map((b) => `- ${b}`).join("\n")}`,
     sections.push(
       `PROJECTS\n${data.projects
         .map(
-          (p) => `${p.name}: ${p.description} (${p.technologies.join(", ")})`,
+          (p) =>
+            `${p.name}: ${p.description} (${p.technologies.join(", ")})${p.link ? ` - ${p.link}` : ""}`,
         )
         .join("\n")}`,
     );
@@ -44,8 +56,16 @@ ${exp.bullets.map((b) => `- ${b}`).join("\n")}`,
     sections.push(
       `EDUCATION\n${data.education
         .map(
-          (e) =>
-            `${e.degree} in ${e.field} - ${e.institution} (${e.graduationDate})`,
+          (e) => {
+            const details = [
+              e.honors,
+              e.gpa ? `GPA: ${e.gpa}` : "",
+            ]
+              .filter(Boolean)
+              .join(" | ");
+
+            return `${e.degree} in ${e.field} - ${e.institution} (${e.graduationDate})${details ? ` | ${details}` : ""}`;
+          },
         )
         .join("\n")}`,
     );

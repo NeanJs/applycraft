@@ -53,7 +53,10 @@ export default function ResumeTemplate({
   const d = resumeData;
 
   return (
-    <div className="bg-gray-100 p-8 print:bg-white print:p-0">
+    <div
+      data-color-theme="light"
+      className="bg-gray-100 p-8 print:bg-white print:p-0"
+    >
       <main className="mx-auto w-full max-w-204 bg-white px-12 py-7 shadow-md print:p-0 print:shadow-none">
         <header className="mb-3">
           <h1 className="text-[24px] font-bold leading-tight tracking-tight text-gray-900">

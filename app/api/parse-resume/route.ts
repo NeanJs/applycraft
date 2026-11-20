@@ -1,4 +1,5 @@
 import { parsePdf } from "@/app/lib/pdfParse";
+import { MAX_RESUME_CHARS } from "@/app/lib/ai/quality";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
@@ -27,15 +28,24 @@ export async function POST(req: Request) {
 
     const buffer = Buffer.from(await file.arrayBuffer());
     const text = await parsePdf(buffer);
-    const cleaned = text.replace(/\s+/g, " ").trim();
-    const limit = 6000;
+    const cleaned = text
+      .replace(/\r\n/g, "\n")
+      .replace(/[ \t]+/g, " ")
+      .replace(/ *\n */g, "\n")
+      .replace(/\n{3,}/g, "\n\n")
+      .trim();
 
-    const sliced =
-      cleaned.length > limit
-        ? cleaned.slice(0, limit).replace(/\s+\S*$/, "") + "…"
-        : cleaned;
+    if (cleaned.length > MAX_RESUME_CHARS) {
+      return Response.json(
+        {
+          error: "resume_too_long",
+          message: `Extracted resume text exceeds the ${MAX_RESUME_CHARS.toLocaleString()} character limit.`,
+        },
+        { status: 413 },
+      );
+    }
 
-    return Response.json({ text: sliced });
+    return Response.json({ text: cleaned });
   } catch (err) {
     console.error("PDF parse error:", err);
     return Response.json(
