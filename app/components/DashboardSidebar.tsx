@@ -80,7 +80,7 @@ export default function DashboardSidebar({
       );
     });
   }
-
+// New Sidebar Feature
   const sidebar = (
     <div className="flex h-full flex-col bg-white">
       <Link
