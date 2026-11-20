@@ -1,0 +1,45 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Development Server",
+      "type": "shell",
+      "command": "npm run dev",
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "TypeScript Check",
+      "type": "shell",
+      "command": "npx tsc --noEmit",
+      "problemMatcher": []
+    },
+    {
+      "label": "Lint",
+      "type": "shell",
+      "command": "npm run lint",
+      "problemMatcher": []
+    },
+    {
+      "label": "Production Build",
+      "type": "shell",
+      "command": "npm run build",
+      "problemMatcher": []
+    },
+
+    {
+      "label": "ApplyCraft: Quality Check",
+      "type": "shell",
+      "command": "npm run check",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "ApplyCraft: Full Validation",
+      "type": "shell",
+      "command": "npm run check:full",
+      "group": "test",
+      "problemMatcher": []
+    }
+  ]
+}

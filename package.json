@@ -3,13 +3,18 @@
   "version": "1.2.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint",
-    "test:ai-quality": "node --test app/lib/ai/quality.test.mjs",
-    "postinstall": "prisma generate"
-  },
+  "dev": "next dev",
+  "build": "next build",
+  "start": "next start",
+  "lint": "eslint",
+  "test:ai-quality": "node --test app/lib/ai/quality.test.mjs",
+  "check:types": "tsc --noEmit",
+  "check:lint": "npm run lint",
+  "check:ai": "npm run test:ai-quality",
+  "check": "npm run check:types && npm run check:lint && npm run check:ai",
+  "check:full": "npm run check && npm run build",
+  "postinstall": "prisma generate"
+},
   "dependencies": {
     "@anthropic-ai/sdk": "^0.100.1",
     "@clerk/nextjs": "^7.4.2",
