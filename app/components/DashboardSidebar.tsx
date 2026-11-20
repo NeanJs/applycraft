@@ -17,7 +17,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useState } from "react";
-import Logo from "@/public/logo.ico";
+
 import ThemeToggle from "./ThemeToggle";
 
 const primaryLinks = [
@@ -34,7 +34,11 @@ const toolLinks = [
     label: "Bullet improver",
     icon: ClipboardCheck,
   },
-  { href: "/resume-summary-generator", label: "Summary writer", icon: FileText },
+  {
+    href: "/resume-summary-generator",
+    label: "Summary writer",
+    icon: FileText,
+  },
 ];
 
 export default function DashboardSidebar({
@@ -85,8 +89,9 @@ export default function DashboardSidebar({
         onClick={() => setMobileOpen(false)}
       >
         <Image
-          src={Logo}
+          src="/logo.ico"
           alt=""
+          unoptimized
           width={36}
           height={36}
           className="rounded-lg border border-[var(--line)] bg-white p-1"
@@ -160,7 +165,7 @@ export default function DashboardSidebar({
           href={isSignedIn ? "/dashboard" : "/"}
           className="flex items-center gap-2"
         >
-          <Image src={Logo} alt="" width={30} height={30} />
+          <Image src="/logo.ico" alt="" width={30} height={30} unoptimized/>
           <span className="text-sm font-semibold text-[var(--brand-ink)]">
             ApplyCraft
           </span>

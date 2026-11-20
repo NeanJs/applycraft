@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { auth, currentUser } from "@clerk/nextjs/server";
-import Logo from "@/public/logo.ico";
+
 import { canAccessAnalytics } from "@/app/lib/internal-access";
 
 export default async function Footer() {
@@ -20,11 +20,12 @@ export default async function Footer() {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div className="flex items-start gap-3">
             <Image
-              src={Logo}
+              src="./logo.ico"
               className="h-9 w-9 rounded-lg border border-[var(--line)] bg-white p-1"
               alt="ApplyCraft"
               width={100}
               height={100}
+              unoptimized
             />
             <div className="text-sm tracking-tight text-[var(--brand-ink)]">
               <div>

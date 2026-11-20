@@ -4,7 +4,7 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import { UserButton } from "@clerk/nextjs";
 import { NavPublic, NavAuth } from "./nav-client";
 import ThemeToggle from "./ThemeToggle";
-import Logo from "@/public/logo.ico";
+
 import Image from "next/image";
 import { canAccessAnalytics } from "@/app/lib/internal-access";
 export default async function Navbar() {
@@ -25,10 +25,11 @@ export default async function Navbar() {
           className="group flex items-center gap-2.5"
         >
           <Image
-            src={Logo}
+            src={"/logo.ico"}
             className="h-9 w-9 rounded-lg border border-[var(--line)]/80 bg-white p-1 shadow-sm"
             alt="ApplyCraft"
             width={100}
+            unoptimized
             height={100}
           />
           <span className="text-sm tracking-tight text-[var(--brand-ink)]">
